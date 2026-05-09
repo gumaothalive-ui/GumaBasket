@@ -1,16 +1,13 @@
 {
-  "name": "qiqas-basket-monorepo",
+  "name": "qiqas-basket-repo",
   "version": "1.0.0",
   "private": true,
   "workspaces": [
-    "web",
-    "business-portal"
+    "web"
   ],
   "scripts": {
     "dev": "npm run dev -w web",
-    "dev:portal": "npm run dev -w business-portal",
     "build": "npm run build -w web",
-    "build:portal": "npm run build -w business-portal",
     "start": "npm run start -w web",
     "lint": "npm run lint -w web",
     "install:all": "npm install"
