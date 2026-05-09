@@ -107,14 +107,55 @@ export function MobileHome({ products, sellers = [] }: MobileHomeProps) {
           </div>
           <div className={styles.storesScroll}>
             {sellers.map((merchant, idx) => (
-              <Link href={merchant.link || `/stores/${merchant.id}`} key={idx} className={styles.storeCard}>
-                <div className={styles.storeImageWrapper}>
-                  <img src={merchant.logo || '/promo-entertaining.png'} alt={merchant.name} className={styles.storeImage} />
-                  <div className={styles.storeOverlay}>OPEN</div>
+              <Link href={merchant.link || `/stores/${merchant.id}`} key={idx} className={styles.storeCard} style={{ opacity: merchant.is_closed ? 0.85 : 1 }}>
+                <div className={styles.storeImageWrapper} style={{ position: 'relative', overflow: 'hidden' }}>
+                  {merchant.is_closed && (
+                    <div style={{
+                      position: 'absolute',
+                      top: 14,
+                      right: -30,
+                      background: '#dc2626',
+                      color: '#fff',
+                      fontSize: '9px',
+                      fontWeight: 900,
+                      letterSpacing: '0.1em',
+                      padding: '4px 30px',
+                      transform: 'rotate(40deg)',
+                      textTransform: 'uppercase',
+                      boxShadow: '0 2px 8px rgba(220,38,38,0.3)',
+                      zIndex: 10,
+                    }}>
+                      CLOSED
+                    </div>
+                  )}
+                  <img 
+                    src={merchant.logo || '/promo-entertaining.png'} 
+                    alt={merchant.name} 
+                    className={styles.storeImage}
+                    style={{ filter: merchant.is_closed ? 'grayscale(100%)' : 'none' }}
+                  />
+                  {!merchant.is_closed && (
+                    <div className={styles.storeOverlay}>OPEN</div>
+                  )}
                 </div>
-                <div className={styles.storeInfo}>
-                  <h4 className={styles.storeName}>{merchant.name}</h4>
-                  <p className={styles.storeMeta}>⭐ 4.6 • 30-45 min</p>
+                <div className={styles.storeInfo} style={{ background: merchant.is_closed ? '#f8f9fa' : 'transparent' }}>
+                  <h4 className={styles.storeName} style={{ color: merchant.is_closed ? '#64748b' : 'inherit' }}>{merchant.name}</h4>
+                  <p className={styles.storeMeta} style={{ color: merchant.is_closed ? '#94a3b8' : 'inherit' }}>⭐ 4.6 • 30-45 min</p>
+                  {merchant.is_closed && (
+                    <div style={{
+                      marginTop: 8,
+                      background: '#fff8f0',
+                      border: '1px solid #fed7aa',
+                      borderRadius: 6,
+                      padding: '6px 8px',
+                      fontSize: '10px',
+                      color: '#c2410c',
+                      fontWeight: 600,
+                      textAlign: 'center'
+                    }}>
+                      📦 Fulfill when open
+                    </div>
+                  )}
                 </div>
               </Link>
             ))}

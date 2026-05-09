@@ -132,6 +132,7 @@ export interface MarketplaceSeller {
   image: string;
   logo?: string;
   link: string;
+  is_closed?: boolean;
 }
 
 export async function fetchSellers(): Promise<MarketplaceSeller[]> {
@@ -167,13 +168,35 @@ export async function fetchSellers(): Promise<MarketplaceSeller[]> {
          const sellerName = seller.business_name || 'Store';
          // Prefer vendor_profiles logo (uploaded via business portal), fallback to sellers table
          const logo = logoMap.get(sellerName) || seller.logo_url || undefined;
+         
+         // Calculate if closed based on SAST timezone
+         let is_closed = false;
+         if (seller.opening_time && seller.closing_time) {
+           const now = new Date();
+           const options = { timeZone: 'Africa/Johannesburg', hour: '2-digit', minute: '2-digit', hour12: false } as const;
+           // timeString will be "HH:MM" (e.g. "08:30")
+           let timeString = now.toLocaleTimeString('en-US', options);
+           // Handle the 24:xx edge case in some Node environments
+           if (timeString.startsWith('24:')) {
+             timeString = '00:' + timeString.split(':')[1];
+           }
+           
+           const openHM = seller.opening_time.substring(0, 5);
+           const closeHM = seller.closing_time.substring(0, 5);
+           
+           if (timeString < openHM || timeString > closeHM) {
+             is_closed = true;
+           }
+         }
+
          return {
            id: seller.id,
            name: sellerName,
            subtitle: 'VERIFIED MERCHANT',
            image: seller.logo_url || '',
            logo,
-           link: `/stores/${seller.id}`
+           link: `/stores/${seller.id}`,
+           is_closed
          };
        });
     }
@@ -207,13 +230,34 @@ export async function fetchStoreById(storeId: string): Promise<MarketplaceSeller
       if (vp?.logo_url) logo = vp.logo_url;
     } catch { /* vendor_profiles lookup is optional */ }
     
+    // Calculate if closed based on SAST timezone
+    let is_closed = false;
+    if (data.opening_time && data.closing_time) {
+      const now = new Date();
+      const options = { timeZone: 'Africa/Johannesburg', hour: '2-digit', minute: '2-digit', hour12: false } as const;
+      // timeString will be "HH:MM" (e.g. "08:30")
+      let timeString = now.toLocaleTimeString('en-US', options);
+      // Handle the 24:xx edge case in some Node environments
+      if (timeString.startsWith('24:')) {
+        timeString = '00:' + timeString.split(':')[1];
+      }
+      
+      const openHM = data.opening_time.substring(0, 5);
+      const closeHM = data.closing_time.substring(0, 5);
+      
+      if (timeString < openHM || timeString > closeHM) {
+        is_closed = true;
+      }
+    }
+
     return {
       id: data.id,
       name: storeName,
       subtitle: 'VERIFIED MERCHANT',
       image: data.logo_url || '',
       logo,
-      link: `/stores/${data.id}`
+      link: `/stores/${data.id}`,
+      is_closed
     };
   } catch (err) {
     return null;

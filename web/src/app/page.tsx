@@ -103,19 +103,61 @@ export default async function Home() {
 
             <div className={styles.ccGrid}>
               {displayMerchants.map((merchant, idx) => (
-                <Link href={merchant.link} key={idx} className={styles.ccCard}>
+                <Link href={merchant.link} key={idx} className={styles.ccCard} style={{ opacity: merchant.is_closed ? 0.85 : 1 }}>
+                  {merchant.is_closed && (
+                    <div style={{
+                      position: 'absolute',
+                      top: 24,
+                      right: -34,
+                      background: '#dc2626',
+                      color: '#fff',
+                      fontSize: '11px',
+                      fontWeight: 900,
+                      letterSpacing: '0.1em',
+                      padding: '6px 44px',
+                      transform: 'rotate(40deg)',
+                      textTransform: 'uppercase',
+                      boxShadow: '0 2px 8px rgba(220,38,38,0.3)',
+                      zIndex: 10,
+                    }}>
+                      CLOSED
+                    </div>
+                  )}
                   <div className={styles.ccImage}>
-                    <img src={merchant.logo || FALLBACK_COVERS[idx % FALLBACK_COVERS.length]} alt={merchant.name} />
+                    <img 
+                      src={merchant.logo || FALLBACK_COVERS[idx % FALLBACK_COVERS.length]} 
+                      alt={merchant.name} 
+                      style={{ filter: merchant.is_closed ? 'grayscale(100%)' : 'none' }}
+                    />
                     <div className={styles.ccOverlay} />
-                    <div className={styles.ccStatus}>OPEN</div>
+                    {!merchant.is_closed && (
+                      <div className={styles.ccStatus}>OPEN</div>
+                    )}
                   </div>
-                  <div className={styles.ccContent}>
-                    <h3 className={styles.ccName}>{merchant.name}</h3>
+                  <div className={styles.ccContent} style={{ background: merchant.is_closed ? '#f8f9fa' : '#fff' }}>
+                    <h3 className={styles.ccName} style={{ color: merchant.is_closed ? '#64748b' : '#0f172a' }}>{merchant.name}</h3>
                     <p className={styles.ccDesc}>⭐ 4.6 • 30-45 min</p>
                     <p className={styles.ccDelivery}>Free delivery over R500</p>
-                    <div className={styles.ccFooter}>
-                       <span className={styles.ccButton}>View Store</span>
-                    </div>
+                    
+                    {merchant.is_closed ? (
+                      <div style={{
+                        marginTop: 16,
+                        background: '#fff8f0',
+                        border: '1px solid #fed7aa',
+                        borderRadius: 8,
+                        padding: '10px 12px',
+                        fontSize: '12px',
+                        color: '#c2410c',
+                        fontWeight: 600,
+                        textAlign: 'center'
+                      }}>
+                        📦 Orders placed now will be fulfilled when we open
+                      </div>
+                    ) : (
+                      <div className={styles.ccFooter}>
+                         <span className={styles.ccButton}>View Store</span>
+                      </div>
+                    )}
                   </div>
                 </Link>
               ))}

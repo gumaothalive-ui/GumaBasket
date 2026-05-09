@@ -35,6 +35,7 @@ export default async function SuppliersPage() {
     // Randomize slightly around Cape Town center
     lat: -33.924 + (Math.random() * 0.06 - 0.03),
     lng: 18.44 + (Math.random() * 0.06 - 0.03),
+    is_closed: seller.is_closed,
   }));
 
   const displayStores = dynamicStores.length > 0 ? [...dynamicStores, ...CASH_AND_CARRIES] : CASH_AND_CARRIES;

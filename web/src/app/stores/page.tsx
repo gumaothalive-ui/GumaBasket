@@ -47,6 +47,7 @@ export default async function StoresPage() {
                 subtitle={store.subtitle}
                 logo={store.logo}
                 idx={idx}
+                is_closed={store.is_closed}
               />
             ))}
           </div>
