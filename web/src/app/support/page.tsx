@@ -8,7 +8,7 @@ const FAQS = [
   { q: 'Can I return a product?', a: 'Yes! If you\'re not 100% happy with a fresh item, contact us within 24 hours and we\'ll replace it or issue a full refund — no questions asked.' },
   { q: 'How do I track my order?', a: 'After placing your order you\'ll receive an SMS and email with a live tracking link. You can also check your account dashboard.' },
   { q: 'Is my payment information safe?', a: 'Absolutely. All payments go through PayFast — a South African PCI-DSS compliant gateway. We never store card details.' },
-  { q: 'How do I become a vendor?', a: 'Visit business.dailymarket.co.za to sign up as a vendor. Approval takes 24 hours and you can start listing products immediately.' },
+  { q: 'How do I become a vendor?', a: 'Visit business.GUMA BASKET.co.za to sign up as a vendor. Approval takes 24 hours and you can start listing products immediately.' },
 ];
 
 export default function SupportPage() {
@@ -61,7 +61,7 @@ export default function SupportPage() {
                 <div>
                   <strong>Email</strong>
                   <p>We reply within 2 hours</p>
-                  <a href="mailto:support@dailymarket.co.za">support@dailymarket.co.za</a>
+                  <a href="mailto:support@GUMA BASKET.co.za">support@GUMA BASKET.co.za</a>
                 </div>
               </div>
             </div>

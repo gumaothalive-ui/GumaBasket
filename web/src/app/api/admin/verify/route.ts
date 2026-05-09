@@ -32,18 +32,18 @@ export async function POST(req: NextRequest) {
 
         // Get total/email for the order
         const { data: orderDetails } = await supabase.from('orders').select('total_amount, user_id, shipping_address').eq('id', orderId).single();
-        const email = orderDetails?.shipping_address?.email || 'customer@dailymarket.co.za';
+        const email = orderDetails?.shipping_address?.email || 'customer@GUMA BASKET.co.za';
 
         await transporter.sendMail({
-          from: `"DailyMarket " <${process.env.EMAIL_USER}>`,
+          from: `"GUMA BASKET " <${process.env.EMAIL_USER}>`,
           to: email,
-          subject: 'Payment Verified - DailyMarket Order',
+          subject: 'Payment Verified - GUMA BASKET Order',
           html: `
             <h2>Payment Verified!</h2>
             <p>Your EFT payment for Order <strong>${orderId.slice(0, 8).toUpperCase()}</strong> has been successfully verified.</p>
             <p>Amount Paid: R ${orderDetails?.total_amount || '0.00'}</p>
             <p>Your order is now being processed and will be shipped soon.</p>
-            <p>Thank you for shopping with DailyMarket!</p>
+            <p>Thank you for shopping with GUMA BASKET!</p>
           `
         });
       }

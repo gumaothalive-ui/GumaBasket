@@ -55,16 +55,18 @@ export function ConsumerMagicAdd() {
         </div>
         <input 
           type="text" 
-          placeholder='Search products, vendors, categories...' 
+          placeholder='SEARCH...' 
           value={input}
           onChange={(e) => setInput(e.target.value)}
           onKeyDown={(e) => e.key === 'Enter' && handleMagicAdd()}
           className={styles.magicInput}
+          suppressHydrationWarning
         />
         <button 
           onClick={handleMagicAdd} 
           disabled={isProcessing || !input.trim()}
           className={styles.magicBtn}
+          suppressHydrationWarning
         >
           {isProcessing ? '⟳' : 'SEARCH'}
         </button>

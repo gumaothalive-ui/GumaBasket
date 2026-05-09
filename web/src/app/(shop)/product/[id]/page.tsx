@@ -8,11 +8,13 @@ import styles from './page.module.css';
 export async function generateMetadata({ params }: { params: Promise<{ id: string }> }) {
   const { id } = await params;
   const product = await fetchProductById(id);
-  if (!product) return { title: 'Product Not Found | DailyMarket' };
+  if (!product) return { title: 'Product Not Found | Guma Basket' };
+  
+  const displayPrice = product.premium_price || product.price || 0;
   
   return {
-    title: `${product.title} | DailyMarket`,
-    description: `Buy ${product.title} online for R${product.price.toFixed(2)}. Best quality, fast delivery from DailyMarket.`,
+    title: `${product.title} | Guma Basket`,
+    description: `Buy ${product.title} online for R${displayPrice.toFixed(2)}. Best quality, fast delivery from Guma Basket.`,
     openGraph: {
       images: [product.image_url || 'https://images.unsplash.com/photo-1518843875459-f738682238a6?w=600&h=600&fit=crop'],
     }
@@ -55,7 +57,7 @@ export default async function ProductDetailPage({ params }: { params: Promise<{ 
         {/* Info Section */}
         <div className={styles.productInfo}>
           <header className={styles.infoHeader}>
-            <div className={styles.brand}>{product.vendor_name || 'DAILYMARKET'}</div>
+            <div className={styles.brand}>{product.vendor_name || 'GUMA BASKET'}</div>
             <h1 className={styles.title}>{product.title}</h1>
             <div className={styles.ratingRow}>
               <div className={styles.stars}>
@@ -96,12 +98,12 @@ export default async function ProductDetailPage({ params }: { params: Promise<{ 
 
           <div className={styles.description}>
             <h3>Product Overview</h3>
-            <p>{product.description || 'Quality selection from DailyMarket verified sellers.'}</p>
+            <p>{product.description || 'Quality selection from Guma Basket verified sellers.'}</p>
           </div>
 
           <div className={styles.detailsList}>
             <div className={styles.detailItem}>
-              <strong>Vendor:</strong> {product.vendor_name || 'DailyMarket Partner'}
+              <strong>Vendor:</strong> {product.vendor_name || 'Guma Basket Partner'}
             </div>
           </div>
         </div>

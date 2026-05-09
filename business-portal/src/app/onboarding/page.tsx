@@ -89,6 +89,12 @@ function OnboardingContent() {
 
     // ─── Upload image via our server-side API route ────────────────────────
     let imageUrl = '';
+    if (!imageFile || imageFile.size === 0) {
+      setResult('error:An image is required to list a product.');
+      setIsSubmitting(false);
+      return;
+    }
+
     if (imageFile && imageFile.size > 0) {
       setUploadProgress('Uploading image...');
 
@@ -173,7 +179,7 @@ function OnboardingContent() {
             { href: '/products', icon: '🛍️', label: 'Storefront Inventory', active: false },
             { href: '/orders', icon: '📦', label: 'Customer Orders', active: false },
             { href: '/onboarding', icon: '➕', label: 'List New Product', active: true },
-            { href: '/profile', icon: '🏦', label: 'Payout Settings', active: false },
+            { href: '/profile', icon: '🏪', label: 'Store Profile & Settings', active: false },
           ].map(item => (
             <Link key={item.href} href={item.href} style={{ display: 'flex', alignItems: 'center', gap: 12, padding: '12px 16px', borderRadius: 10, textDecoration: 'none', fontSize: '14px', fontWeight: item.active ? 800 : 500, background: item.active ? '#f1f5f9' : 'transparent', color: item.active ? '#0f172a' : '#64748b', border: item.active ? '1px solid #cbd5e1' : '1px solid transparent', marginBottom: 6 }}>
               <span style={{ fontSize: 18, opacity: item.active ? 1 : 0.7 }}>{item.icon}</span> {item.label}
@@ -340,8 +346,8 @@ function OnboardingContent() {
           <span>List Item</span>
         </Link>
         <Link href={`/profile`} className="mobile-nav-item">
-          <span className="mobile-nav-icon">🏦</span>
-          <span>Payouts</span>
+          <span className="mobile-nav-icon">🏪</span>
+          <span>Profile</span>
         </Link>
       </nav>
     </main>

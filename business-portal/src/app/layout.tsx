@@ -8,9 +8,11 @@ const inter = Inter({
 });
 
 export const metadata: Metadata = {
-  title: "DailyMarket Business | Elite Vendor Portal",
+  title: "GUMA BASKET BUSINESS | Elite Vendor Portal",
   description: "South Africa's premium digital food marketplace for elite vendors.",
 };
+
+import SplashScreen from "@/components/SplashScreen";
 
 export default function RootLayout({
   children,
@@ -20,6 +22,7 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body className={inter.className}>
+        <SplashScreen />
         {children}
       </body>
     </html>

@@ -1,7 +1,7 @@
 /**
- * DailyMarket: Marketplace Service
+ * GUMA BASKET: Marketplace Service
  * 
- * This service manages the product feed for DailyMarket.
+ * This service manages the product feed for GUMA BASKET.
  * It is now strictly pulling from the application's own Supabase database
  * to ensure only real products added by the user/merchants are displayed.
  */
@@ -23,6 +23,8 @@ export interface MarketplaceProduct {
   vendor_name: string;
   rating: number;
   reviewCount: number;
+  is_on_sale: boolean;
+  original_price?: number;
 }
 
 /**
@@ -71,11 +73,13 @@ export async function fetchSAProducts(page = 1, pageSize = 400): Promise<Marketp
           premium_price: finalPrice,
           unit: p.unit || 'Each',
           stock_quantity: Number(p.stock_quantity) || 0,
-          image_url: p.image_url || 'https://images.unsplash.com/photo-1542838132-92c53300491e?w=800&q=80',
+          image_url: p.image_url || '',
           supplier_id: p.supplier_id || 'local',
-          vendor_name: p.vendor_name || 'DailyMarket Merchant',
+          vendor_name: p.vendor_name || 'GUMA BASKET Merchant',
           rating: Number(p.rating) || 4.5,
-          reviewCount: Number(p.reviewCount) || 12
+          reviewCount: Number(p.reviewCount) || 12,
+          is_on_sale: Boolean(p.is_on_sale),
+          original_price: p.original_price ? Number(p.original_price) : undefined,
         };
       });
     }
@@ -167,7 +171,7 @@ export async function fetchSellers(): Promise<MarketplaceSeller[]> {
            id: seller.id,
            name: sellerName,
            subtitle: 'VERIFIED MERCHANT',
-           image: 'https://images.unsplash.com/photo-1542838132-92c53300491e?w=800&q=80',
+           image: seller.logo_url || '',
            logo,
            link: `/stores/${seller.id}`
          };
@@ -207,7 +211,7 @@ export async function fetchStoreById(storeId: string): Promise<MarketplaceSeller
       id: data.id,
       name: storeName,
       subtitle: 'VERIFIED MERCHANT',
-      image: 'https://images.unsplash.com/photo-1542838132-92c53300491e?w=800&q=80',
+      image: data.logo_url || '',
       logo,
       link: `/stores/${data.id}`
     };
@@ -242,9 +246,9 @@ export async function fetchProductsByStoreId(storeId: string): Promise<Marketpla
           premium_price: calculatedPremium > 50 ? calculatedPremium + 5 : calculatedPremium,
           unit: p.unit || 'Each',
           stock_quantity: Number(p.stock_quantity) || 0,
-          image_url: p.image_url || 'https://images.unsplash.com/photo-1542838132-92c53300491e?w=800&q=80',
+          image_url: p.image_url || '',
           supplier_id: p.supplier_id || 'local',
-          vendor_name: p.vendor_name || 'DailyMarket Merchant',
+          vendor_name: p.vendor_name || 'GUMA BASKET Merchant',
           rating: Number(p.rating) || 4.5,
           reviewCount: Number(p.reviewCount) || 12
         };

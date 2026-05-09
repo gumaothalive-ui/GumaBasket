@@ -43,7 +43,7 @@ export function ProductCard({
       id,
       title,
       price,
-      imageUrl: imageUrl || 'https://images.unsplash.com/photo-1542838132-92c53300491e?w=400&h=400&fit=crop',
+      imageUrl: imageUrl || '',
       vendorName
     });
     setAdded(true);
@@ -51,7 +51,7 @@ export function ProductCard({
   };
 
   const safeRating = Math.min(Math.max(Math.round(rating || 4), 1), 5);
-  const safeImage = imageUrl || 'https://images.unsplash.com/photo-1542838132-92c53300491e?w=800&h=800&q=80';
+  const safeImage = imageUrl || '';
 
   return (
     <div className={styles.premiumCard}>
@@ -63,7 +63,7 @@ export function ProductCard({
             className={styles.image} 
             loading="lazy"
             onError={(e) => {
-              (e.target as HTMLImageElement).src = 'https://images.unsplash.com/photo-1542838132-92c53300491e?w=800&h=800&q=80';
+              (e.target as HTMLImageElement).src = '/logo.png';
             }}
           />
           {badge && (

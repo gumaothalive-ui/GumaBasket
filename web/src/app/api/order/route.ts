@@ -1,7 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server';
 import crypto from 'crypto';
 import { supabase } from '@/lib/supabase';
-import { sendNotification } from '@/services/notificationService';
+import { sendNotification, sendWhatsApp } from '@/services/notificationService';
 
 // Maps static supplier_id keys → seller business_name stored in DB
 // This ensures hardcoded catalog products always route to the correct vendor
@@ -69,7 +69,7 @@ export async function POST(req: NextRequest) {
 
     // Group for seller portal (still pending)
     const groupedByVendor = cart.reduce((acc: any, item: any) => {
-      const resolvedVendor = item.vendorName || SUPPLIER_TO_VENDOR[item.supplier_id || ''] || 'DailyMarket';
+      const resolvedVendor = item.vendorName || SUPPLIER_TO_VENDOR[item.supplier_id || ''] || 'GUMA BASKET';
       if (!acc[resolvedVendor]) {
         acc[resolvedVendor] = { vendor_name: resolvedVendor, items: [], total_amount: 0, customer_amount: 0, total_qty: 0 };
       }
@@ -97,7 +97,10 @@ export async function POST(req: NextRequest) {
     const merchantId = process.env.PAYFAST_MERCHANT_ID || '10000100';
     const merchantKey = process.env.PAYFAST_MERCHANT_KEY || '46f0cd694581a';
     const passphrase = process.env.PAYFAST_PASSPHRASE || '';
-    const baseUrl = process.env.NEXT_PUBLIC_APP_URL || 'http://localhost:3000';
+    
+    // Dynamically grab the exact origin the user is on (e.g. http://localhost:3001)
+    const origin = req.headers.get('origin');
+    const baseUrl = origin || process.env.NEXT_PUBLIC_APP_URL || 'http://localhost:3000';
 
     const payfastArgs: Record<string, string> = {
       merchant_id: merchantId,
@@ -106,10 +109,10 @@ export async function POST(req: NextRequest) {
       cancel_url: `${baseUrl}/checkout?cancelled=true`,
       notify_url: `${baseUrl}/api/payfast-webhook`,
       name_first: user?.user_metadata?.full_name?.split(' ')[0] || 'Guest',
-      email_address: user?.email || 'guest@dailymarket.com',
+      email_address: user?.email || 'guest@GUMA BASKET.com',
       m_payment_id: orderId,
       amount: parseFloat(subtotal).toFixed(2),
-      item_name: `DailyMarket Order ${orderRef}`
+      item_name: `GUMA BASKET Order ${orderRef}`
     };
 
     let pfnvs = '';
@@ -136,14 +139,16 @@ export async function POST(req: NextRequest) {
       console.log(`[Order API] ⚠️ Localhost detected. Spoofing successful payment...`);
       
       // Auto-approve the order since we skipped the Payfast webhook
+      // For local testing of the Uber app, we auto-set seller_orders to 'ready' 
+      // so it instantly pings the driver dashboard without needing manual vendor approval.
       await supabase.from('orders').update({ status: 'preparing' }).eq('id', orderId);
-      await supabase.from('seller_orders').update({ status: 'preparing' }).eq('order_ref', orderRef);
+      await supabase.from('seller_orders').update({ status: 'ready' }).eq('order_ref', orderRef);
 
       // Send real confirmation email
       if (user?.email) {
         const itemNames    = cart.map((i: any) => `${i.title} x${i.quantity}`).join(', ');
         const customerName = user?.user_metadata?.full_name?.split(' ')[0] || 'there';
-        await sendNotification(user.email, 'email', `✅ DailyMarket Order #${orderRef} Confirmed`, '', {
+        await sendNotification(user.email, 'email', `✅ GUMA BASKET Order #${orderRef} Confirmed`, '', {
           orderRef,
           customerName,
           items: itemNames,
@@ -156,24 +161,55 @@ export async function POST(req: NextRequest) {
       // Send SMS to customer's phone number from checkout form
       if (shipping?.phone) {
         const itemNames  = cart.map((i: any) => `${i.title} x${i.quantity}`).join(', ');
-        // Normalize SA numbers: 082... → +2782... | already +27... stays as is
         let phone = shipping.phone.replace(/\s+/g, '').replace(/-/g, '');
         if (phone.startsWith('0')) phone = '+27' + phone.slice(1);
         else if (!phone.startsWith('+')) phone = '+27' + phone;
 
-        // Strict E.164 international format checking
         if (/^\+[1-9]\d{6,14}$/.test(phone)) {
           const smsMessage =
-            `DailyMarket: Order #${orderRef} confirmed! 🛒\n` +
-            `Items: ${itemNames}\n` +
+            `GUMA BASKET: Order #${orderRef} confirmed! 🛒\n` +
+            `Items: ${cart.map((i: any) => `${i.title} x${i.quantity}`).join(', ')}\n` +
             `Total: R${parseFloat(subtotal).toFixed(2)}`;
-
           await sendNotification('', 'sms', '', smsMessage, { phone });
         } else {
           console.warn(`[SMS] Invalid phone number skipped. Input was: ${shipping.phone}`);
         }
       }
 
+      // 🔔 Notify each vendor by SMS about the new order
+      const uniqueVendors = [...new Set(sellerOrders.map((o: any) => o.vendor_name))];
+      for (const vendorName of uniqueVendors) {
+        const { data: sellerData } = await supabase
+          .from('sellers')
+          .select('email, phone')
+          .eq('business_name', vendorName)
+          .single();
+
+        const vendorItems = sellerOrders
+          .filter((o: any) => o.vendor_name === vendorName)
+          .map((o: any) => o.product_title)
+          .join(', ');
+
+        if (sellerData?.phone) {
+          let sellerPhone = sellerData.phone.replace(/\s+/g, '').replace(/-/g, '');
+          if (sellerPhone.startsWith('0')) sellerPhone = '+27' + sellerPhone.slice(1);
+          else if (!sellerPhone.startsWith('+')) sellerPhone = '+27' + sellerPhone;
+
+          if (/^\+[1-9]\d{6,14}$/.test(sellerPhone)) {
+            await sendNotification('', 'sms', '', 
+              `🛒 NEW ORDER #${orderRef} on GUMA BASKET!\nItems: ${vendorItems}\nTotal: R${parseFloat(subtotal).toFixed(2)}\nCheck your portal now!`,
+              { phone: sellerPhone }
+            );
+            // Also send WhatsApp notification
+            await sendWhatsApp(sellerPhone,
+              `🛒 *NEW ORDER #${orderRef}* — GUMA BASKET\n\n` +
+              `📦 *Items:* ${vendorItems}\n` +
+              `💰 *Total:* R${parseFloat(subtotal).toFixed(2)}\n\n` +
+              `👉 Check your portal: http://localhost:3001/orders`
+            );
+          }
+        }
+      }
 
       return NextResponse.json({
         success: true,

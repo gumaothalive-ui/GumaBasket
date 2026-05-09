@@ -26,8 +26,8 @@ const DEMO_STORES = [
     password: 'password123'
   },
   {
-    business_name: 'Daily Market Wholesale',
-    email: 'wholesale@dailymarket.co.za',
+    business_name: 'Guma Basket Wholesale',
+    email: 'wholesale@gumabasket.co.za',
     password: 'password123'
   }
 ];
@@ -76,7 +76,7 @@ const DEMO_PRODUCTS = [
     base_price: 450.00,
     unit: '5kg',
     stock_quantity: 15,
-    vendor_name: 'Daily Market Wholesale'
+    vendor_name: 'Guma Basket Wholesale'
   },
   {
     title: 'Bulk Potatoes 10kg',
@@ -85,7 +85,7 @@ const DEMO_PRODUCTS = [
     base_price: 90.00,
     unit: '10kg',
     stock_quantity: 200,
-    vendor_name: 'Daily Market Wholesale'
+    vendor_name: 'Guma Basket Wholesale'
   }
 ];
 

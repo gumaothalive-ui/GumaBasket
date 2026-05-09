@@ -1,8 +1,8 @@
 import type { Metadata } from 'next';
 
 export const metadata: Metadata = {
-  title: 'Sustainability | DailyMarket',
-  description: 'Our commitment to sustainable farming, eco-friendly packaging, and zero food waste across DailyMarket\'s supply chain.',
+  title: 'Sustainability | GUMA BASKET',
+  description: 'Our commitment to sustainable farming, eco-friendly packaging, and zero food waste across GUMA BASKET\'s supply chain.',
 };
 
 const PILLARS = [
@@ -19,7 +19,7 @@ export default function SustainabilityPage() {
         <div style={{ maxWidth: 680, margin: '0 auto' }}>
           <div style={{ display: 'inline-block', background: 'rgba(74,222,128,0.15)', color: '#4ade80', fontWeight: 800, fontSize: '0.75rem', letterSpacing: '0.12em', textTransform: 'uppercase', padding: '6px 16px', borderRadius: '30px', marginBottom: '24px', border: '1px solid rgba(74,222,128,0.3)' }}>🌍 Planet-First Commerce</div>
           <h1 style={{ fontSize: 'clamp(2.2rem, 5vw, 3.5rem)', fontWeight: 900, letterSpacing: '-0.04em', lineHeight: 1.1, marginBottom: '20px' }}>Good for You. Good for the Planet.</h1>
-          <p style={{ fontSize: '1.1rem', color: '#86efac', lineHeight: 1.7 }}>Sustainability isn't a buzzword at DailyMarket — it's baked into every decision we make, from supplier selection to your doorstep.</p>
+          <p style={{ fontSize: '1.1rem', color: '#86efac', lineHeight: 1.7 }}>Sustainability isn't a buzzword at GUMA BASKET — it's baked into every decision we make, from supplier selection to your doorstep.</p>
         </div>
       </section>
 
@@ -39,7 +39,7 @@ export default function SustainabilityPage() {
       <section style={{ padding: '60px 20px', maxWidth: 800, margin: '0 auto', textAlign: 'center' }}>
         <h2 style={{ fontSize: '1.8rem', fontWeight: 900, marginBottom: 16, letterSpacing: '-0.03em' }}>Our Promise to You</h2>
         <p style={{ color: '#64748b', lineHeight: 1.8, fontSize: '1.05rem' }}>
-          We believe sustainable commerce and affordability can coexist. That's why we absorb the cost of eco-friendly packaging, choosing not to pass it on to customers. When you shop with DailyMarket, you're voting for a better South Africa — one fresher delivery at a time.
+          We believe sustainable commerce and affordability can coexist. That's why we absorb the cost of eco-friendly packaging, choosing not to pass it on to customers. When you shop with GUMA BASKET, you're voting for a better South Africa — one fresher delivery at a time.
         </p>
       </section>
     </main>

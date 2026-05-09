@@ -18,11 +18,7 @@ export default async function LandingPage() {
       {/* Nav */}
       <nav className="px-mobile-16" style={{ background: '#fff', borderBottom: '2px solid #0f172a', padding: '0 40px', display: 'flex', alignItems: 'center', justifyContent: 'space-between', height: 64 }}>
         <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
-          <div style={{ background: '#0f172a', color: '#fff', fontWeight: 900, fontSize: '20px', padding: '4px 10px', borderRadius: 6, letterSpacing: '-0.5px' }}>DM</div>
-          <div>
-            <div style={{ fontWeight: 800, fontSize: '16px', color: '#1a1a1a', lineHeight: 1, letterSpacing: '-0.3px' }}>DailyMarket</div>
-            <div style={{ fontSize: '10px', color: '#0f172a', fontWeight: 700, letterSpacing: '0.08em', textTransform: 'uppercase' }}>Seller Center</div>
-          </div>
+          <img src="/logo.png" alt="Guma Basket" style={{ height: '48px', width: 'auto' }} />
         </div>
         <div style={{ display: 'flex', gap: 10, alignItems: 'center' }}>
           <Link href="/login" style={{ color: '#555', textDecoration: 'none', fontSize: '14px', fontWeight: 600, padding: '8px 16px', borderRadius: 6, border: '1.5px solid #e8e8e8' }}>Log In</Link>
@@ -104,7 +100,7 @@ export default async function LandingPage() {
 
       {/* Footer */}
       <footer style={{ background: '#1a1a1a', color: '#777', fontSize: '13px', padding: '24px 40px', textAlign: 'center' }}>
-        © 2024 DailyMarket Seller Center. All rights reserved.
+        © 2024 GUMA BASKET Seller Center. All rights reserved.
       </footer>
     </main>
   );

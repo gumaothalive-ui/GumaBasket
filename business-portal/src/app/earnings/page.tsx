@@ -12,8 +12,9 @@ import { Suspense } from 'react';
 const NAV = [
   { href: '/products',  icon: '▤', label: 'Products'    },
   { href: '/earnings',  icon: '↗', label: 'Earnings', active: true },
+  { href: '/advertising', icon: '📢', label: 'Advertising' },
   { href: '/onboarding',icon: '+', label: 'New product' },
-  { href: '/profile',   icon: '🏦', label: 'Payouts'    },
+  { href: '/profile',   icon: '🏪', label: 'Store Profile & Settings'    },
 ];
 
 function fmt(n: number) {
@@ -69,10 +70,7 @@ function EarningsContent() {
       {/* ── NAV ── */}
       <div style={{ background: '#fff', borderBottom: '1px solid #EAEAEA', padding: '0 32px', display: 'flex', alignItems: 'center', justifyContent: 'space-between', height: 60, position: 'sticky', top: 0, zIndex: 100 }}>
         <Link href="/" style={{ display: 'flex', alignItems: 'center', gap: 10, textDecoration: 'none' }}>
-          <div style={{ width: 30, height: 30, background: '#111', borderRadius: 7, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="white" strokeWidth="2.5"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>
-          </div>
-          <span style={{ fontWeight: 800, fontSize: '14px', color: '#111' }}>DailyMarket <span style={{ color: '#aaa', fontWeight: 500 }}>Seller</span></span>
+          <img src="/logo.png" alt="Guma Basket" style={{ height: '36px', width: 'auto' }} />
         </Link>
         {vendorName && (
           <div style={{ display: 'flex', alignItems: 'center', gap: 12, background: '#F5F5F5', padding: '6px 14px', borderRadius: 20, border: '1px solid #EAEAEA' }}>
@@ -203,7 +201,7 @@ function EarningsContent() {
                   </div>
                 </div>
                 {(() => {
-                  const maxVal = Math.max(...weekly.map(w => w.total), 1);
+                  const maxVal = Math.max(...weekly.map(w => w.earnings), 1);
                   const chartHeight = 140;
                   const barW = 40;
                   const gap = 24;
@@ -212,7 +210,7 @@ function EarningsContent() {
                     <div style={{ overflowX: 'auto' }}>
                       <svg width={Math.max(totalW, 400)} height={chartHeight + 40} style={{ display: 'block' }}>
                         {weekly.map((w, i) => {
-                          const h = Math.max((w.total / maxVal) * chartHeight, 4);
+                          const h = Math.max((w.earnings / maxVal) * chartHeight, 4);
                           const x = i * (barW + gap);
                           const y = chartHeight - h;
                           return (
@@ -221,7 +219,7 @@ function EarningsContent() {
                               <rect x={x} y={y} width={barW} height={h} rx={6} fill="#111" opacity={0.85 + (i / weekly.length) * 0.15} />
                               {/* Value label */}
                               <text x={x + barW / 2} y={y - 6} textAnchor="middle" fontSize="10" fontWeight="700" fill="#333">
-                                R{w.total.toFixed(0)}
+                                R{w.earnings.toFixed(0)}
                               </text>
                               {/* Week label */}
                               <text x={x + barW / 2} y={chartHeight + 18} textAnchor="middle" fontSize="10" fill="#999">
@@ -229,7 +227,7 @@ function EarningsContent() {
                               </text>
                               {/* Order count */}
                               <text x={x + barW / 2} y={chartHeight + 30} textAnchor="middle" fontSize="9" fill="#bbb">
-                                {w.orderCount} orders
+                                {w.orders} orders
                               </text>
                             </g>
                           );

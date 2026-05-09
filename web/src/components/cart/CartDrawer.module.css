@@ -185,4 +185,8 @@
   .drawer {
     width: 100%;
   }
+
+  .footer {
+    padding-bottom: calc(2rem + 70px); /* clears the bottom nav bar */
+  }
 }

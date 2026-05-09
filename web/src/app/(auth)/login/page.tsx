@@ -59,7 +59,7 @@ function LoginForm() {
             <p className={styles.subtitle}>
               {redirectTo === '/checkout'
                 ? '🔒 Sign in to complete your purchase'
-                : 'Sign in to your DailyMarket account'}
+                : 'Sign in to your GUMA BASKET account'}
             </p>
 
             {/* Checkout reminder banner */}
@@ -152,7 +152,7 @@ function LoginForm() {
               Premium Quality & Freshness.
             </h2>
             <p style={{ fontSize: '1.25rem', opacity: 0.9, lineHeight: 1.6, fontWeight: 500 }}>
-              Join the DailyMarket community for exclusive access to hand-picked seasonal produce, artisanal goods, and elite delivery services.
+              Join the GUMA BASKET community for exclusive access to hand-picked seasonal produce, artisanal goods, and elite delivery services.
             </p>
           </div>
         </div>

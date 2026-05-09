@@ -4,7 +4,7 @@
  * Strategy:
  * 1. Open Food Facts (world.openfoodfacts.org) → Product names, descriptions, categories
  * 2. Open Prices (prices.openfoodfacts.org) → REAL supermarket prices in EUR
- * 3. Convert EUR → ZAR (~19x rate), then add DailyMarket's 15% markup
+ * 3. Convert EUR → ZAR (~19x rate), then add GUMA BASKET's 15% markup
  * 4. Replace user-submitted images with curated, premium Unsplash photography
  *
  * No API key required. Both APIs are free and open.
@@ -12,7 +12,7 @@
 
 // EUR to ZAR exchange rate (approximate, close to real rate)
 const EUR_TO_ZAR = 19.5;
-// DailyMarket 15% margin on top of supplier price
+// GUMA BASKET 15% margin on top of supplier price
 const MARKUP = 1.15;
 
 // Curated premium product images per category
@@ -99,7 +99,7 @@ export interface OFFProduct {
   description: string;
   category: string;
   base_price: number;      // Real supplier price in ZAR (from supermarket)
-  premium_price: number;   // DailyMarket price = base_price × 1.15
+  premium_price: number;   // GUMA BASKET price = base_price × 1.15
   unit: string;
   stock_quantity: number;
   image_url: string;
@@ -130,7 +130,7 @@ export async function fetchProductsByCategory(storeCategory: string, limit = 6):
       `https://prices.openfoodfacts.org/api/v1/prices?category_tag=${encodeURIComponent(priceCategory)}&currency=EUR&size=${limit * 5}&order_by=-date`,
       {
         next: { revalidate: 3600 },
-        headers: { 'User-Agent': 'DailyMarket/1.0 (contact@dailymarket.co.za)' }
+        headers: { 'User-Agent': 'GUMA BASKET/1.0 (contact@GUMA BASKET.co.za)' }
       }
     );
 
@@ -156,7 +156,7 @@ export async function fetchProductsByCategory(storeCategory: string, limit = 6):
 
       // Convert EUR → ZAR
       const zarBasePrice = r(eurPrice * EUR_TO_ZAR);
-      // Apply 15% DailyMarket markup
+      // Apply 15% GUMA BASKET markup
       const zarMarkupPrice = r(zarBasePrice * MARKUP);
 
       const storeName = item.location?.osm_name || 'International Supplier';

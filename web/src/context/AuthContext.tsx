@@ -56,7 +56,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
       if (event === 'SIGNED_OUT') {
         setUser(null);
         if (typeof window !== 'undefined') {
-          localStorage.removeItem('dailymarket_cart');
+          localStorage.removeItem('GUMA BASKET_cart');
         }
       } else if (event === 'TOKEN_REFRESHED') {
         setUser(session?.user ?? null);
@@ -75,7 +75,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     }
     setUser(null);
     if (typeof window !== 'undefined') {
-      localStorage.removeItem('dailymarket_cart');
+      localStorage.removeItem('GUMA BASKET_cart');
     }
   };
 

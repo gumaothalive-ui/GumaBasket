@@ -16,7 +16,7 @@ L.Icon.Default.mergeOptions({
 
 // Modern minimalist light icons
 const storeIcon = L.divIcon({
-  html: `<div style="background: white; border: 3px solid #05a357; border-radius: 50%; width: 36px; height: 36px; display: flex; align-items: center; justify-content: center; font-size: 18px; box-shadow: 0 4px 12px rgba(0,0,0,0.15);">🛍️</div>`,
+  html: `<div style="background: white; border: 3px solid #05a357; border-radius: 50%; width: 36px; height: 36px; display: flex; align-items: center; justify-content: center; font-size: 18px; box-shadow: 0 4px 12px rgba(0,0,0,0.15);">🏬</div>`,
   className: '',
   iconSize: [36, 36],
   iconAnchor: [18, 18],
@@ -104,12 +104,14 @@ export default function LiveMap({
   isActive, 
   onProgress,
   customerLocation,
-  storeLocation
+  storeLocation,
+  orderRef
 }: { 
   isActive: boolean;
   onProgress?: (data: { pct: number, mins: number }) => void;
   customerLocation?: [number, number];
   storeLocation?: [number, number];
+  orderRef?: string;
 }) {
   const actualStart = storeLocation || START_PT;
   const actualEnd = customerLocation || END_PT;
@@ -119,111 +121,202 @@ export default function LiveMap({
   const [driverHeading, setDriverHeading] = useState(135);
   const [shouldRecenter, setShouldRecenter] = useState(0);
   const [isAutoFollowing, setIsAutoFollowing] = useState(true);
+  const [hasRealDriver, setHasRealDriver] = useState(false);
   
   // To render sliced route line
   const [currentSegment, setCurrentSegment] = useState(0);
 
-  // Fetch true street route via OSRM Open Routing API
+  // Fetch true street route via Valhalla & OSRM Open Routing API
   useEffect(() => {
     const fetchRoute = async () => {
+      // Primary: Valhalla (Maximum precision, no simplification)
       try {
-        const locs = `${actualStart[1]},${actualStart[0]};${actualEnd[1]},${actualEnd[0]}`;
-        const res = await fetch(`https://router.project-osrm.org/route/v1/driving/${locs}?overview=full&geometries=geojson&alternatives=false`);
+        const res = await fetch('https://valhalla1.openstreetmap.de/route', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            locations: [ { lat: actualStart[0], lon: actualStart[1] }, { lat: actualEnd[0], lon: actualEnd[1] } ],
+            costing: 'auto',
+            directions_options: { units: 'kilometers' }
+          })
+        });
         const data = await res.json();
-        
-        if (data.code === 'Ok' && data.routes.length > 0) {
-          const coords = data.routes[0].geometry.coordinates.map((c: number[]) => [c[1], c[0]]);
+        if (data.trip?.legs?.length > 0) {
+          const shape = data.trip.legs[0].shape;
+          const coords: [number, number][] = [];
+          let index = 0, lat = 0, lng = 0;
+          while (index < shape.length) {
+            let b, shift = 0, result = 0;
+            do { b = shape.charCodeAt(index++) - 63; result |= (b & 0x1f) << shift; shift += 5; } while (b >= 0x20);
+            lat += (result & 1) ? ~(result >> 1) : (result >> 1);
+            shift = 0; result = 0;
+            do { b = shape.charCodeAt(index++) - 63; result |= (b & 0x1f) << shift; shift += 5; } while (b >= 0x20);
+            lng += (result & 1) ? ~(result >> 1) : (result >> 1);
+            coords.push([lat / 1e6, lng / 1e6]);
+          }
           setRouteLine(coords);
           setDriverPosition(coords[0]);
-        } else {
-          setRouteLine([actualStart, actualEnd]); // Fallback straight line
+          return;
         }
       } catch (err) {
-        console.error("OSRM Error:", err);
-        setRouteLine([actualStart, actualEnd]);
+        console.warn("Valhalla Error:", err);
       }
+
+      // Fallback 1: OSM DE
+      try {
+        const locs = `${actualStart[1]},${actualStart[0]};${actualEnd[1]},${actualEnd[0]}`;
+        let res = await fetch(`https://routing.openstreetmap.de/routed-car/route/v1/driving/${locs}?overview=full&geometries=geojson`);
+        let data = await res.json();
+        
+        if (data.code === 'Ok' && data.routes?.length > 0) {
+          const coords = data.routes[0].geometry.coordinates.map((c: number[]) => [c[1], c[0]] as [number, number]);
+          setRouteLine(coords);
+          setDriverPosition(coords[0]);
+          return;
+        }
+      } catch (err) {
+        console.warn("OSRM DE failed, trying OSRM Demo...");
+      }
+
+      // Fallback 2: OSRM Demo
+      try {
+        const locs = `${actualStart[1]},${actualStart[0]};${actualEnd[1]},${actualEnd[0]}`;
+        let res = await fetch(`https://router.project-osrm.org/route/v1/driving/${locs}?overview=full&geometries=geojson`);
+        let data = await res.json();
+        
+        if (data.code === 'Ok' && data.routes?.length > 0) {
+          const coords = data.routes[0].geometry.coordinates.map((c: number[]) => [c[1], c[0]] as [number, number]);
+          setRouteLine(coords);
+          setDriverPosition(coords[0]);
+          return;
+        }
+      } catch (err) {
+        console.warn("OSRM Demo failed...");
+      }
+      
+      // If ALL fail, we have to draw something, but at least we tried 3 engines.
+      setRouteLine([actualStart, actualEnd]);
     };
     fetchRoute();
   }, [actualStart[0], actualStart[1], actualEnd[0], actualEnd[1]]);
 
-  // Smoothed real-street tracing animation
-  useEffect(() => {
-    if (!isActive || routeLine.length === 0) return;
+  function calcDistMeters(p1: [number, number], p2: [number, number]): number {
+    const R = 6371e3;
+    const lat1 = p1[0] * Math.PI/180, lat2 = p2[0] * Math.PI/180;
+    const dLat = (p2[0]-p1[0]) * Math.PI/180, dLon = (p2[1]-p1[1]) * Math.PI/180;
+    const a = Math.sin(dLat/2)**2 + Math.cos(lat1) * Math.cos(lat2) * Math.sin(dLon/2)**2;
+    return R * 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1-a));
+  }
 
-    let segmentIndex = 0;
-    let segProgress = 0;
-    
-    let lastFetchedPos = [...actualStart];
-    
-    // 1. Fetch REAL location from drivers table (every 5 seconds)
+  function snapToRoute(pt: [number, number], route: [number, number][]): [number, number] {
+    if (route.length < 2) return pt;
+    let minDist = Infinity;
+    let snapped: [number, number] = pt;
+
+    for (let i = 0; i < route.length - 1; i++) {
+      const A = route[i];
+      const B = route[i + 1];
+      
+      const dx = B[0] - A[0];
+      const dy = B[1] - A[1];
+      const len2 = dx * dx + dy * dy;
+      
+      let t = 0;
+      if (len2 !== 0) {
+        t = ((pt[0] - A[0]) * dx + (pt[1] - A[1]) * dy) / len2;
+      }
+      
+      t = Math.max(0, Math.min(1, t)); // Clamp to segment
+      
+      const projX = A[0] + t * dx;
+      const projY = A[1] + t * dy;
+      
+      const dist2 = (pt[0] - projX) ** 2 + (pt[1] - projY) ** 2;
+      
+      if (dist2 < minDist) {
+        minDist = dist2;
+        snapped = [projX, projY];
+      }
+    }
+    return snapped;
+  }
+
+  // Real GPS tracking loop
+  useEffect(() => {
+    if (!isActive || !orderRef) {
+      setHasRealDriver(false);
+      return;
+    }
+
+    let prevPos = [...actualStart] as [number, number];
+    const initialDist = calcDistMeters(actualStart, actualEnd);
+
+    // Fetch REAL location from drivers table for this specific order
     const fetchInterval = setInterval(async () => {
       try {
-        const { data } = await supabase
+        let { data, error } = await supabase
           .from('drivers')
           .select('lat, lng')
-          .eq('first_name', 'David')
+          .eq('current_order_ref', orderRef)
+          .order('last_ping', { ascending: false })
           .limit(1)
           .single();
           
+        // Fallback: If this order was accepted before the strict linking code was added,
+        // or the driver disconnected, just grab the most recently active driver for the demo.
+        if (error || !data) {
+          const fallback = await supabase
+            .from('drivers')
+            .select('lat, lng')
+            .order('last_ping', { ascending: false })
+            .limit(1)
+            .single();
+          data = fallback.data;
+        }
+          
         if (data?.lat && data?.lng) {
-           lastFetchedPos = [data.lat, data.lng];
+          setHasRealDriver(true);
+          let rawPos: [number, number] = [data.lat, data.lng];
+          
+          // Snap GPS directly to the OSRM route centerline to prevent drift
+          const newPos: [number, number] = routeLine.length > 0 ? snapToRoute(rawPos, routeLine) : rawPos;
+          
+          // Calculate heading based on snapped position to stay parallel to road
+          const lat1 = prevPos[0] * Math.PI / 180;
+          const lat2 = newPos[0] * Math.PI / 180;
+          const dLon = (newPos[1] - prevPos[1]) * Math.PI / 180;
+          const y = Math.sin(dLon) * Math.cos(lat2);
+          const x = Math.cos(lat1) * Math.sin(lat2) - Math.sin(lat1) * Math.cos(lat2) * Math.cos(dLon);
+          let brng = (Math.atan2(y, x) * 180 / Math.PI + 360) % 360;
+          
+          // Only update heading if moved sufficiently
+          if (calcDistMeters(prevPos, newPos) > 3) {
+            setDriverHeading(brng);
+          }
+
+          setDriverPosition(newPos);
+          prevPos = newPos;
+
+          // Calculate ETA
+          const distRemaining = calcDistMeters(newPos, actualEnd);
+          const pct = Math.min(1, Math.max(0, 1 - (distRemaining / initialDist)));
+          const minsRemaining = Math.max(0, Math.round(distRemaining / 400)); // ~24km/h average city speed
+          
+          if (onProgress) {
+            onProgress({ pct, mins: minsRemaining });
+          }
+        } else {
+          // If the query returns no data (driver went offline or hasn't updated yet)
+          setHasRealDriver(false);
         }
       } catch (err) {
-        // Silently fail if db not set up
+        console.warn("Real tracking error", err);
+        setHasRealDriver(false);
       }
-    }, 5000);
+    }, 3000);
     
-    // 2. Smooth visual animation loop (every 80ms)
-    // We update every 80ms for buttery smooth motion. 
-    const animInterval = setInterval(() => {
-      
-      // Auto progress simulation if Supabase hasn't moved us
-      segProgress += 0.06; // Move along the current segment
-      
-      if (segProgress >= 1) {
-        segmentIndex++;
-        segProgress = 0;
-      }
-
-      if (segmentIndex >= routeLine.length - 1) {
-        if (!lastFetchedPos) setDriverPosition(routeLine[routeLine.length - 1]);
-        clearInterval(animInterval);
-        clearInterval(fetchInterval);
-        return;
-      }
-
-      const p1 = routeLine[segmentIndex];
-      const p2 = routeLine[segmentIndex + 1];
-
-      // Linear interpolation on real roads
-      const lat = p1[0] + (p2[0] - p1[0]) * segProgress;
-      const lng = p1[1] + (p2[1] - p1[1]) * segProgress;
-      
-      // Compute accurate smooth vehicle heading using great circle math
-      const lat1 = p1[0] * Math.PI / 180;
-      const lat2 = p2[0] * Math.PI / 180;
-      const dLon = (p2[1] - p1[1]) * Math.PI / 180;
-      const y = Math.sin(dLon) * Math.cos(lat2);
-      const x = Math.cos(lat1) * Math.sin(lat2) - Math.sin(lat1) * Math.cos(lat2) * Math.cos(dLon);
-      const brng = (Math.atan2(y, x) * 180 / Math.PI + 360) % 360;
-      
-      const totalSegs = routeLine.length - 1;
-      const pct = (segmentIndex + segProgress) / totalSegs;
-      const minsRemaining = Math.max(0, Math.round((1 - pct) * 15));
-      if (onProgress) {
-        onProgress({ pct, mins: minsRemaining });
-      }
-
-      setDriverHeading(brng);
-      setDriverPosition([lat, lng]);
-      setCurrentSegment(segmentIndex);
-    }, 80);
-
-    return () => {
-      clearInterval(fetchInterval);
-      clearInterval(animInterval);
-    };
-  }, [isActive, routeLine]);
+    return () => clearInterval(fetchInterval);
+  }, [isActive, orderRef, actualStart[0], actualStart[1], actualEnd[0], actualEnd[1]]);
 
   return (
     <div style={{ height: '100vh', width: '100vw', zIndex: 1, position: 'absolute', top: 0, left: 0, pointerEvents: 'none' }}>
@@ -237,50 +330,57 @@ export default function LiveMap({
         <DriverTracker driverPos={driverPosition} isAutoFollowing={isAutoFollowing} setAutoFollowing={setIsAutoFollowing} />
 
         
-        {/* We use highly detailed roadmap tiles to show all malls, businesses, and street names perfectly */}
+        {/* We use highly detailed Google Maps roadmap tiles to show all malls, businesses, and street names perfectly */}
         <TileLayer
           url="https://mt1.google.com/vt/lyrs=m&x={x}&y={y}&z={z}"
+          maxZoom={21}
         />
         
-        {/* Route Border (Google Maps uses a darker blue border) */}
+        {/* Route Border */}
         {routeLine.length > 0 && (
           <Polyline 
             positions={routeLine} 
             color="#2563eb" 
-            weight={8} 
+            weight={10} 
             opacity={0.9}
             lineCap="round"
             lineJoin="round"
+            smoothFactor={0}
+            noClip={true}
           />
         )}
 
         {/* Completed Route (Faded grey path) */}
-        {routeLine.length > 0 && (
+        {routeLine.length > 0 && hasRealDriver && (
           <Polyline 
             positions={[...routeLine.slice(0, currentSegment + 1), driverPosition]} 
             color="#9ca3af" 
-            weight={5} 
+            weight={6} 
             opacity={1}
             lineCap="round"
             lineJoin="round"
+            smoothFactor={0}
+            noClip={true}
           />
         )}
 
-        {/* Remaining Route Highlight (Crisp Google Maps light blue internal line) */}
+        {/* Remaining Route Highlight */}
         {routeLine.length > 0 && (
           <Polyline 
-            positions={[driverPosition, ...routeLine.slice(currentSegment + 1)]} 
+            positions={hasRealDriver ? [driverPosition, ...routeLine.slice(currentSegment + 1)] : routeLine} 
             color="#60a5fa" 
-            weight={5} 
+            weight={6} 
             opacity={1}
             lineCap="round"
             lineJoin="round"
+            smoothFactor={0}
+            noClip={true}
           />
         )}
 
         {/* Store Marker */}
         <Marker position={actualStart} icon={storeIcon} zIndexOffset={10}>
-          <Popup>The Vendor (Pickup)</Popup>
+          <Popup>Cash and Carry (Pickup)</Popup>
         </Marker>
 
         {/* Home Marker */}
@@ -289,9 +389,11 @@ export default function LiveMap({
         </Marker>
 
         {/* Animated Driver Marker firmly planted on route geometry */}
-        <Marker position={driverPosition} icon={getCarIcon(driverHeading)} zIndexOffset={100}>
-          <Popup>Driver is arriving soon</Popup>
-        </Marker>
+        {hasRealDriver && (
+          <Marker position={driverPosition} icon={getCarIcon(driverHeading)} zIndexOffset={100}>
+            <Popup>Driver is arriving soon</Popup>
+          </Marker>
+        )}
 
       </MapContainer>
 

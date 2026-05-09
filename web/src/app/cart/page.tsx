@@ -46,7 +46,7 @@ export default function CartPage() {
                   <Link href={`/product/${item.id}`}><h3>{item.title}</h3></Link>
                   <button onClick={() => removeFromCart(item.id)} className={styles.removeBtn}>REMOVE</button>
                 </div>
-                <p className={styles.vendor}>{item.vendorName || 'DailyMarket Supplier'}</p>
+                <p className={styles.vendor}>{item.vendorName || 'GUMA BASKET Supplier'}</p>
                 <div className={styles.itemFooter}>
                   <div className={styles.quantityControls}>
                     <button onClick={() => updateQuantity(item.id, item.quantity - 1)}>-</button>

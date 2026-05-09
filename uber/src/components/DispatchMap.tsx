@@ -1,43 +1,58 @@
 'use client';
 
-import React, { useEffect, useRef } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import L from 'leaflet';
 import 'leaflet/dist/leaflet.css';
 
 delete (L.Icon.Default.prototype as L.Icon.Default & { _getIconUrl: unknown })._getIconUrl;
 L.Icon.Default.mergeOptions({
   iconRetinaUrl: 'https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.7.1/images/marker-icon-2x.png',
-  iconUrl: 'https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.7.1/images/marker-icon.png',
-  shadowUrl: 'https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.7.1/images/marker-shadow.png',
+  iconUrl:        'https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.7.1/images/marker-icon.png',
+  shadowUrl:      'https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.7.1/images/marker-shadow.png',
 });
 
+// ── Map icons ────────────────────────────────────────────────────────────────
+// No manual alignment offset used to prevent diagonal drift
+
 const storeIcon = L.divIcon({
-  html: `<div style="background:black;border:3px solid white;border-radius:50%;width:36px;height:36px;display:flex;align-items:center;justify-content:center;font-size:16px;box-shadow:0 4px 12px rgba(0,0,0,0.3);color:white;">🏬</div>`,
-  className: '', iconSize: [36, 36], iconAnchor: [18, 18],
+  html: `<div style="display:flex;align-items:center;background:white;color:black;padding:6px 14px;border-radius:30px;font-weight:700;font-size:12px;white-space:nowrap;box-shadow:0 6px 16px rgba(0,0,0,0.15);border:2px solid #000;">
+    <span style="margin-right:6px">📦</span> PICKUP
+  </div>`,
+  className: '', iconSize: [120, 36], iconAnchor: [60, 36],
 });
 
 const homeIcon = L.divIcon({
-  html: `<div style="background:white;border:3px solid black;border-radius:50%;width:36px;height:36px;display:flex;align-items:center;justify-content:center;box-shadow:0 4px 12px rgba(0,0,0,0.15);font-size:16px;">📍</div>`,
-  className: '', iconSize: [36, 36], iconAnchor: [18, 18],
-});
-
-const driverIcon = L.divIcon({
-  html: `<div id="driver-arrow-inner" style="transform:rotate(135deg);width:44px;height:44px;display:flex;align-items:center;justify-content:center;filter:drop-shadow(0 6px 8px rgba(0,0,0,0.4));">
-    <svg viewBox="0 0 100 100" width="36" height="36">
-      <path d="M 50 5 L 95 90 L 50 75 L 5 90 Z" fill="#4285F4" stroke="#ffffff" stroke-width="4" stroke-linejoin="round"/>
-    </svg>
+  html: `<div style="display:flex;align-items:center;background:#05A357;color:white;padding:6px 14px;border-radius:30px;font-weight:700;font-size:12px;white-space:nowrap;box-shadow:0 6px 16px rgba(5,163,87,0.25);">
+    <span style="margin-right:6px">📍</span> DROPOFF
   </div>`,
-  className: '', iconSize: [44, 44], iconAnchor: [22, 22],
+  className: '', iconSize: [120, 36], iconAnchor: [60, 36],
 });
 
-// ── Fallback Cape Town demo coords ─────────────────────────────────────────
-const DEMO_DRIVER:   [number, number] = [-33.931210, 18.428312];
-const DEMO_STORE:    [number, number] = [-33.917957, 18.417252]; // Unity C&C
-const DEMO_CUSTOMER: [number, number] = [-33.926615, 18.413233]; // Sea Point
+// Google Maps-style 3D navigation arrow
+const driverIcon = L.divIcon({
+  html: `<div class="driver-car-wrap" style="width:54px;height:54px;display:flex;align-items:center;justify-content:center;transition:transform 0.1s linear;">
+  <svg viewBox="0 0 54 54" width="54" height="54" xmlns="http://www.w3.org/2000/svg" style="filter: drop-shadow(0 4px 6px rgba(0,0,0,0.3));">
+    <defs>
+      <linearGradient id="arrowGrad" x1="0%" y1="0%" x2="0%" y2="100%">
+        <stop offset="0%" style="stop-color:#4285F4;stop-opacity:1" />
+        <stop offset="100%" style="stop-color:#1a73e8;stop-opacity:1" />
+      </linearGradient>
+    </defs>
+    <!-- White base for contrast -->
+    <circle cx="27" cy="27" r="22" fill="white"/>
+    <!-- Blue arrow -->
+    <path d="M27 8 L42 44 L27 36 L12 44 Z" fill="url(#arrowGrad)"/>
+    <!-- Internal detail/shading for 3D look -->
+    <path d="M27 8 L34 30 L27 36 L20 30 Z" fill="white" opacity="0.2"/>
+  </svg>
+</div>`,
+  className: '', iconSize: [54, 54], iconAnchor: [27, 27],
+});
 
+// ── Geometry helpers ──────────────────────────────────────────────────────────
 function calcBearing(p1: [number, number], p2: [number, number]): number {
   const lat1 = p1[0] * Math.PI / 180, lat2 = p2[0] * Math.PI / 180;
-  const dLon  = (p2[1] - p1[1]) * Math.PI / 180;
+  const dLon = (p2[1] - p1[1]) * Math.PI / 180;
   const y = Math.sin(dLon) * Math.cos(lat2);
   const x = Math.cos(lat1) * Math.sin(lat2) - Math.sin(lat1) * Math.cos(lat2) * Math.cos(dLon);
   return (Math.atan2(y, x) * 180 / Math.PI + 360) % 360;
@@ -45,14 +60,23 @@ function calcBearing(p1: [number, number], p2: [number, number]): number {
 
 function calcDistMeters(p1: [number, number], p2: [number, number]): number {
   const R = 6371e3;
-  const lat1 = p1[0] * Math.PI/180, lat2 = p2[0] * Math.PI/180;
-  const dLat = (p2[0]-p1[0]) * Math.PI/180, dLon = (p2[1]-p1[1]) * Math.PI/180;
-  const a = Math.sin(dLat/2)**2 + Math.cos(lat1) * Math.cos(lat2) * Math.sin(dLon/2)**2;
-  return R * 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1-a));
+  const lat1 = p1[0] * Math.PI / 180, lat2 = p2[0] * Math.PI / 180;
+  const dLat = (p2[0] - p1[0]) * Math.PI / 180, dLon = (p2[1] - p1[1]) * Math.PI / 180;
+  const a = Math.sin(dLat / 2) ** 2 + Math.cos(lat1) * Math.cos(lat2) * Math.sin(dLon / 2) ** 2;
+  return R * 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
 }
 
-const SIM_SPEED_M_PER_S = 18; // ~65 km/h
+// Straight-line fallback when OSRM is unavailable
+function interpolateLine(from: [number, number], to: [number, number], steps = 100): [number, number][] {
+  return Array.from({ length: steps + 1 }, (_, i) => {
+    const t = i / steps;
+    return [from[0] + (to[0] - from[0]) * t, from[1] + (to[1] - from[1]) * t] as [number, number];
+  });
+}
 
+const SIM_SPEED_M_PER_S = 14; // ~50 km/h — realistic city speed
+
+// ── OSRM types ────────────────────────────────────────────────────────────────
 interface OSRMStep {
   maneuver: { location: [number, number]; type: string; modifier?: string };
   name: string;
@@ -72,14 +96,123 @@ function mapStepsToPolyline(coords: [number, number][], steps: OSRMStep[]): OSRM
   });
 }
 
+// ── Turn instruction builder ──────────────────────────────────────────────────
+function buildTurnInstruction(step: OSRMStep): string {
+  const { type, modifier } = step.maneuver;
+  const street = step.name?.trim() || '';
+  const on     = street ? ` onto ${street}` : '';
+  const along  = street ? ` along ${street}` : '';
+  switch (type) {
+    case 'depart':       return `Head ${modifier || 'forward'}${along}`;
+    case 'arrive':       return `You have arrived at your destination`;
+    case 'continue':     return `Continue straight${along}`;
+    case 'merge':        return `Merge${on}`;
+    case 'end of road':
+      if (modifier === 'left')  return `At the end of the road, turn left${on}`;
+      if (modifier === 'right') return `At the end of the road, turn right${on}`;
+      return `At the end of the road, continue${on}`;
+    case 'fork':
+      if (modifier?.includes('left'))  return `Keep left at the fork${on}`;
+      if (modifier?.includes('right')) return `Keep right at the fork${on}`;
+      return `Stay on the road at the fork`;
+    case 'roundabout':
+    case 'rotary':       return `At the roundabout, take the exit${on}`;
+    case 'turn':
+    case 'new name':
+      if (modifier === 'left')         return `Turn left${on}`;
+      if (modifier === 'right')        return `Turn right${on}`;
+      if (modifier === 'slight left')  return `Keep slight left${on}`;
+      if (modifier === 'slight right') return `Keep slight right${on}`;
+      if (modifier === 'sharp left')   return `Take a sharp left${on}`;
+      if (modifier === 'sharp right')  return `Take a sharp right${on}`;
+      if (modifier === 'uturn')        return `Make a U-turn`;
+      if (modifier === 'straight')     return `Continue straight${on}`;
+      return street ? `Continue on ${street}` : '';
+    default:             return street ? `Continue on ${street}` : '';
+  }
+}
+
+// ── Fetch road route (OSRM first for Turn-by-Turn steps) ─────
+async function fetchOSRMRoute(
+  from: [number, number],
+  to: [number, number]
+): Promise<{ coords: [number, number][]; steps: OSRMStep[] }> {
+  const SERVERS = [
+    'https://routing.openstreetmap.de/routed-car',
+    'https://router.project-osrm.org',
+  ];
+  const path = `${from[1]},${from[0]};${to[1]},${to[0]}`;
+  const qs   = '?overview=full&geometries=geojson&steps=true';
+
+  for (const server of SERVERS) {
+    try {
+      const res  = await fetch(`${server}/route/v1/driving/${path}${qs}`, { signal: AbortSignal.timeout(6000) });
+      const data = await res.json();
+      if (data.code === 'Ok' && data.routes?.length) {
+        const coords: [number, number][] = data.routes[0].geometry.coordinates.map(
+          (c: number[]) => [c[1], c[0]] as [number, number]
+        );
+        const steps = mapStepsToPolyline(coords, data.routes[0].legs[0].steps || []);
+        console.info(`✅ OSRM route from ${server}: ${coords.length} points`);
+        return { coords, steps };
+      }
+    } catch (e) {
+      console.warn(`OSRM ${server} failed:`, e);
+    }
+  }
+
+  // Fallback: Valhalla
+  try {
+    const res = await fetch('https://valhalla1.openstreetmap.de/route', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        locations: [ { lat: from[0], lon: from[1] }, { lat: to[0], lon: to[1] } ],
+        costing: 'auto',
+        directions_options: { units: 'kilometers' }
+      }),
+      signal: AbortSignal.timeout(6000)
+    });
+    const data = await res.json();
+    if (data.trip && data.trip.legs && data.trip.legs.length > 0) {
+      const shape = data.trip.legs[0].shape;
+      const coords: [number, number][] = [];
+      let index = 0, lat = 0, lng = 0;
+      while (index < shape.length) {
+        let b, shift = 0, result = 0;
+        do { b = shape.charCodeAt(index++) - 63; result |= (b & 0x1f) << shift; shift += 5; } while (b >= 0x20);
+        lat += (result & 1) ? ~(result >> 1) : (result >> 1);
+        shift = 0; result = 0;
+        do { b = shape.charCodeAt(index++) - 63; result |= (b & 0x1f) << shift; shift += 5; } while (b >= 0x20);
+        lng += (result & 1) ? ~(result >> 1) : (result >> 1);
+        coords.push([lat / 1e6, lng / 1e6] as [number, number]);
+      }
+      console.info(`✅ Valhalla fallback route: ${coords.length} points`);
+      return { coords, steps: [] }; 
+    }
+  } catch (e) {
+    console.warn(`Valhalla fallback failed:`, e);
+  }
+
+  console.warn('⚠️ All routing failed — using straight-line last resort');
+  return { coords: interpolateLine(from, to, 120), steps: [] };
+}
+
+// ── Props ─────────────────────────────────────────────────────────────────────
 interface Props {
   tripState: string;
-  storeCoords?: [number, number];    // real geocoded store
-  customerCoords?: [number, number]; // real geocoded customer
-  driverCoords?: [number, number];   // real GPS driver start
+  storeCoords?: [number, number];
+  customerCoords?: [number, number];
+  driverCoords?: [number, number];
   storeName?: string;
   onArrival?: (dest: string) => void;
   onTurn?: (msg: string) => void;
+  onUpdate?: (data: { 
+    distanceRem: number; 
+    timeRem: number; 
+    nextStepDist?: number; 
+    nextStepInstruction?: string 
+  }) => void;
 }
 
 export default function DispatchMap({
@@ -87,28 +220,31 @@ export default function DispatchMap({
   storeCoords,
   customerCoords,
   driverCoords,
-  storeName = 'Unity C&C',
+  storeName = 'Unit Cash & Carry',
   onArrival,
   onTurn,
+  onUpdate,
 }: Props) {
   const containerRef = useRef<HTMLDivElement>(null);
 
-  // Use real coords if provided, otherwise demo fallback
-  const DRIVER_ORIGIN = driverCoords   || DEMO_DRIVER;
-  const START_PT      = storeCoords    || DEMO_STORE;
-  const END_PT        = customerCoords || DEMO_CUSTOMER;
+  const START_PT = storeCoords;
+  const END_PT   = customerCoords;
+  // Driver origin: Sydenham, Gqeberha — ~3 km from Unit Cash & Carry, Korsten
+  const DRIVER_ORIGIN: [number, number] = driverCoords || [-33.9345, 25.5960];
 
   const mapRef          = useRef<L.Map | null>(null);
   const driverMarkerRef = useRef<L.Marker | null>(null);
-  const outerLineRef    = useRef<L.Polyline | null>(null);
-  const innerLineRef    = useRef<L.Polyline | null>(null);
-  const greyLineRef     = useRef<L.Polyline | null>(null);
+  const routeLineRef    = useRef<L.Polyline | null>(null);   // active blue route (center)
+  const routeCasingRef  = useRef<L.Polyline | null>(null);   // active blue route (casing)
+  const greyLineRef     = useRef<L.Polyline | null>(null);   // upcoming grey route
   const rafRef          = useRef<number | null>(null);
 
   const onArrivalRef = useRef(onArrival);
   const onTurnRef    = useRef(onTurn);
+  const onUpdateRef  = useRef(onUpdate);
   useEffect(() => { onArrivalRef.current = onArrival; }, [onArrival]);
   useEffect(() => { onTurnRef.current    = onTurn;    }, [onTurn]);
+  useEffect(() => { onUpdateRef.current  = onUpdate;  }, [onUpdate]);
 
   const routesRef = useRef({
     toStore:       [] as [number, number][],
@@ -117,255 +253,378 @@ export default function DispatchMap({
     customerSteps: [] as OSRMStep[],
   });
 
-  const stepIndexRef   = useRef(0);
   const spokenStepsRef = useRef(new Set<string>());
+  const [routesLoaded, setRoutesLoaded] = useState(false);
 
-  // ── Init map — runs once per mount (parent changes key to re-mount with real coords) ──
+  // ── Init map — once per mount (parent changes key on new trip) ────────────
   useEffect(() => {
     if (!containerRef.current || mapRef.current) return;
 
     const map = L.map(containerRef.current, {
-      center: DRIVER_ORIGIN, zoom: 16,
-      zoomControl: false, attributionControl: false,
+      center: DRIVER_ORIGIN,
+      zoom: 15,
+      zoomControl: true, // Re-enabled as requested
+      attributionControl: false,
+      renderer: L.canvas(), // High performance for high-density polylines
     });
 
-    L.tileLayer('https://mt1.google.com/vt/lyrs=m&x={x}&y={y}&z={z}').addTo(map);
+    // High-detail Google Maps Roadmap tiles (includes buildings, streets, and labels)
+    L.tileLayer('https://{s}.google.com/vt/lyrs=m&x={x}&y={y}&z={z}', {
+      subdomains: ['mt0', 'mt1', 'mt2', 'mt3'],
+      maxZoom: 21,
+      crossOrigin: true,
+      attribution: '&copy; Google Maps'
+    }).addTo(map);
 
-    L.marker(START_PT, { icon: storeIcon, zIndexOffset: 10 }).addTo(map).bindPopup(storeName);
-    L.marker(END_PT,   { icon: homeIcon,  zIndexOffset: 10 }).addTo(map).bindPopup('Customer Dropoff');
+    // Driver marker
+    driverMarkerRef.current = L.marker(DRIVER_ORIGIN, { icon: driverIcon, zIndexOffset: 200 }).addTo(map);
 
-    driverMarkerRef.current = L.marker(DRIVER_ORIGIN, { icon: driverIcon, zIndexOffset: 100 }).addTo(map);
+    // Route polylines: Double-layered for Google Maps style "casing"
+    greyLineRef.current  = L.polyline([], { 
+      color: '#9e9e9e', 
+      weight: 6,  
+      opacity: 0.5, 
+      lineCap: 'round', 
+      lineJoin: 'round', 
+      dashArray: '1, 12', 
+      smoothFactor: 0, 
+      noClip: true 
+    }).addTo(map);
 
-    greyLineRef.current  = L.polyline([], { color: '#a1a1a1', weight: 8,  opacity: 0.5, lineCap: 'round', lineJoin: 'round' }).addTo(map);
-    outerLineRef.current = L.polyline([], { color: '#1c55b3', weight: 10, lineCap: 'round', lineJoin: 'round' }).addTo(map);
-    innerLineRef.current = L.polyline([], { color: '#4285F4', weight: 6,  lineCap: 'round', lineJoin: 'round' }).addTo(map);
+    routeCasingRef.current = L.polyline([], {
+      color: '#1a73e8', // Darker blue casing
+      weight: 14,       
+      opacity: 0.9,
+      lineCap: 'round',
+      lineJoin: 'round',
+      smoothFactor: 0,
+      noClip: true,
+      interactive: false
+    }).addTo(map);
+
+    routeLineRef.current = L.polyline([], { 
+      color: '#4285F4', // Google navigation light blue (center)
+      weight: 8,       
+      opacity: 1,    
+      lineCap: 'round', 
+      lineJoin: 'round',
+      smoothFactor: 0, 
+      noClip: true,     
+      interactive: false,
+      className: 'route-pulse-anim' // Custom CSS animation class
+    }).addTo(map);
+
+    // Add animation style once
+    if (!document.getElementById('map-animations')) {
+      const style = document.createElement('style');
+      style.id = 'map-animations';
+      style.innerHTML = `
+        @keyframes routeFlow {
+          from { stroke-dashoffset: 24; }
+          to { stroke-dashoffset: 0; }
+        }
+        .route-pulse-anim {
+          stroke-dasharray: 12, 12;
+          animation: routeFlow 1s linear infinite;
+        }
+      `;
+      document.head.appendChild(style);
+    }
+
+    // ── Dynamic Scaling: Adjust weight based on zoom level ──────────────────
+    const updateWeight = () => {
+      const z = map.getZoom();
+      // Center line scaling
+      const baseWeight = Math.max(3, Math.pow(2, (z - 11) / 2.5) * 5);
+      routeLineRef.current?.setStyle({ weight: baseWeight });
+      // Casing should be slightly thicker than center
+      routeCasingRef.current?.setStyle({ weight: baseWeight * 1.5 });
+      greyLineRef.current?.setStyle({ weight: baseWeight * 0.6 });
+    };
+
+    map.on('zoomend', updateWeight);
+    updateWeight(); // initial call
+
+    // Store marker
+    if (START_PT) {
+      L.marker(START_PT, { icon: storeIcon, zIndexOffset: 10 })
+        .addTo(map)
+        .bindPopup(`<b>${storeName}</b><br/>4 Jackson St, Korsten, Gqeberha`);
+    }
 
     mapRef.current = map;
 
-    // Fit map to show driver + store + customer
-    const bounds = L.latLngBounds([DRIVER_ORIGIN, START_PT, END_PT]);
-    map.fitBounds(bounds, { padding: [40, 40], maxZoom: 16 });
+    // ── Handle resizing: Invalidate map when container changes size ──────────
+    const resizeObserver = new ResizeObserver(() => {
+      map.invalidateSize();
+    });
+    if (containerRef.current) resizeObserver.observe(containerRef.current);
 
-    // Fetch OSRM routes
-    (async () => {
-      try {
-        const locs1 = `${DRIVER_ORIGIN[1]},${DRIVER_ORIGIN[0]};${START_PT[1]},${START_PT[0]}`;
-        const d1 = await (await fetch(`https://router.project-osrm.org/route/v1/driving/${locs1}?overview=full&geometries=geojson&steps=true`)).json();
-        if (d1.code === 'Ok') {
-          const c1: [number,number][] = d1.routes[0].geometry.coordinates.map((c: number[]) => [c[1], c[0]] as [number,number]);
-          routesRef.current.toStore    = c1;
-          routesRef.current.storeSteps = mapStepsToPolyline(c1, d1.routes[0].legs[0].steps || []);
+    if (tripState !== 'idle' && tripState !== 'delivered' && START_PT && END_PT) {
+      // Customer dropoff marker
+      L.marker(END_PT, { icon: homeIcon, zIndexOffset: 10 })
+        .addTo(map)
+        .bindPopup('<b>Customer Dropoff</b>');
+
+      // Fit overview first
+      const bounds = L.latLngBounds([DRIVER_ORIGIN, START_PT, END_PT]);
+      setTimeout(() => {
+        if (mapRef.current) {
+          mapRef.current.invalidateSize();
+          mapRef.current.fitBounds(bounds, { padding: [50, 50], maxZoom: 15 });
+          updateWeight();
+        }
+      }, 400);
+
+      // Fetch both road routes
+      (async () => {
+        const [r1, r2] = await Promise.all([
+          fetchOSRMRoute(DRIVER_ORIGIN, START_PT),
+          fetchOSRMRoute(START_PT, END_PT),
+        ]);
+        routesRef.current.toStore       = r1.coords;
+        routesRef.current.storeSteps    = r1.steps;
+        routesRef.current.toCustomer    = r2.coords;
+        routesRef.current.customerSteps = r2.steps;
+
+        // Snap driver to actual road start
+        if (!driverCoords && r1.coords.length) {
+          driverMarkerRef.current?.setLatLng(r1.coords[0]);
         }
 
-        const locs2 = `${START_PT[1]},${START_PT[0]};${END_PT[1]},${END_PT[0]}`;
-        const d2 = await (await fetch(`https://router.project-osrm.org/route/v1/driving/${locs2}?overview=full&geometries=geojson&steps=true`)).json();
-        if (d2.code === 'Ok') {
-          const c2: [number,number][] = d2.routes[0].geometry.coordinates.map((c: number[]) => [c[1], c[0]] as [number,number]);
-          routesRef.current.toCustomer    = c2;
-          routesRef.current.customerSteps = mapStepsToPolyline(c2, d2.routes[0].legs[0].steps || []);
-        }
+        setRoutesLoaded(true);
+      })();
 
-        // After routes load: set driver to start of first route
-        if (routesRef.current.toStore.length) {
-          driverMarkerRef.current?.setLatLng(routesRef.current.toStore[0]);
+    } else {
+      // Idle: just show driver position
+      setTimeout(() => {
+        if (mapRef.current) {
+          mapRef.current.invalidateSize();
+          mapRef.current.setView(DRIVER_ORIGIN, 16);
         }
-      } catch (e) { console.warn('OSRM route error:', e); }
-    })();
+      }, 300);
+    }
 
     return () => {
       if (rafRef.current) cancelAnimationFrame(rafRef.current);
+      resizeObserver.disconnect();
       map.remove();
       mapRef.current = null;
     };
   // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []); // intentional — parent remounts with key when coords change
+  }, []); // intentional — parent changes key to remount
 
-  // ── Trip state machine ──────────────────────────────────────────────
+  const driverLat = driverCoords?.[0];
+  const driverLng = driverCoords?.[1];
+  const startLat  = START_PT?.[0];
+  const startLng  = START_PT?.[1];
+  const endLat    = END_PT?.[0];
+  const endLng    = END_PT?.[1];
+
+  // ── Simulation loop ───────────────────────────────────────────────────────
   useEffect(() => {
-    const map    = mapRef.current;
-    const routes = routesRef.current;
-    if (!map) return;
+    const map = mapRef.current;
+    if (!map || !driverMarkerRef.current) return;
+    if (rafRef.current) cancelAnimationFrame(rafRef.current);
 
-    if (rafRef.current) { cancelAnimationFrame(rafRef.current); rafRef.current = null; }
+    const routes   = routesRef.current;
+    const routeLine = tripState === 'to_store'
+      ? routes.toStore
+      : tripState === 'to_customer'
+        ? routes.toCustomer
+        : [];
 
-    const clearRoutes = () => {
-      outerLineRef.current?.setLatLngs([]);
-      innerLineRef.current?.setLatLngs([]);
-      greyLineRef.current?.setLatLngs([]);
-    };
-
-    if (tripState === 'idle') {
-      clearRoutes();
-      if (routes.toStore.length) {
-        driverMarkerRef.current?.setLatLng(routes.toStore[0]);
-        map.setView(routes.toStore[0], 16, { animate: false });
-      }
-      return;
-    }
-
-    if (tripState === 'at_store') {
-      stepIndexRef.current = 0;
-      spokenStepsRef.current.clear();
-      clearRoutes();
-      if (routes.toCustomer.length) {
-        greyLineRef.current?.setLatLngs(routes.toCustomer);
-        driverMarkerRef.current?.setLatLng(routes.toCustomer[0]);
-      }
-      return;
-    }
-
-    if (tripState === 'delivered') {
-      clearRoutes();
-      if (routes.toCustomer.length) {
-        driverMarkerRef.current?.setLatLng(routes.toCustomer[routes.toCustomer.length - 1]);
-      }
-      return;
-    }
-
-    const routeLine = tripState === 'to_store' ? routes.toStore    : routes.toCustomer;
-    const steps     = tripState === 'to_store' ? routes.storeSteps : routes.customerSteps;
-    if (routeLine.length === 0) return;
-
-    stepIndexRef.current = 0;
-    spokenStepsRef.current.clear();
-
-    if (tripState === 'to_store' && routes.toCustomer.length) {
-      greyLineRef.current?.setLatLngs(routes.toCustomer);
+    // Update route lines on map
+    if (tripState === 'to_store') {
+      routeLineRef.current?.setLatLngs(routes.toStore);
+      routeCasingRef.current?.setLatLngs(routes.toStore);
+      greyLineRef.current?.setLatLngs(routes.toCustomer);  // upcoming leg (dashed grey)
+    } else if (tripState === 'to_customer') {
+      routeLineRef.current?.setLatLngs(routes.toCustomer);
+      routeCasingRef.current?.setLatLngs(routes.toCustomer);
+      greyLineRef.current?.setLatLngs([]);                  // clear previous leg
     } else {
+      routeLineRef.current?.setLatLngs([]);
+      routeCasingRef.current?.setLatLngs([]);
       greyLineRef.current?.setLatLngs([]);
     }
 
-    let segIdx = 0, segProg = 0, lastTs: number | null = null, panSkip = 0;
+    if (routeLine.length === 0) {
+      // No active route — idle GPS position
+      if (driverCoords) {
+        driverMarkerRef.current.setLatLng(driverCoords);
+        map.setView(driverCoords, 19, { animate: true }); // Zoom in close when idle
+      }
+      return;
+    }
 
-    const tick = (ts: number) => {
-      if (lastTs === null) lastTs = ts;
-      const dt = Math.min(ts - lastTs, 64);
-      lastTs = ts;
+    // ── Instant zoom to driver start position (once per leg) ────────────
+    // Using setView instead of flyTo because the requestAnimationFrame loop's
+    // panTo calls will instantly cancel any ongoing flyTo animation.
+    // This guarantees the map snaps to zoom 19 to see buildings clearly.
+    map.setView(routeLine[0], 19, { animate: false });
 
-      if (segIdx >= routeLine.length - 1) return;
+    // Pre-compute total route length once (not every frame)
+    let totalRouteDist = 0;
+    for (let i = 1; i < routeLine.length; i++) {
+      totalRouteDist += calcDistMeters(routeLine[i - 1], routeLine[i]);
+    }
 
-      const p1 = routeLine[segIdx];
-      const p2 = routeLine[segIdx + 1];
-      const segDist = calcDistMeters(p1, p2) || 1;
-      const metersThisFrame = SIM_SPEED_M_PER_S * (dt / 1000);
-      segProg += metersThisFrame / segDist;
+    let lastTime     = performance.now();
+    let traveledDist = 0;
 
-      while (segProg >= 1 && segIdx < routeLine.length - 1) {
-        segProg -= 1;
-        segIdx++;
-        if (segIdx < routeLine.length - 1) {
-          const nextSegDist = calcDistMeters(routeLine[segIdx], routeLine[segIdx + 1]) || 1;
-          segProg = (segProg * segDist) / nextSegDist;
+    const animate = (time: number) => {
+      const dt = (time - lastTime) / 1000;
+      lastTime  = time;
+      traveledDist += SIM_SPEED_M_PER_S * dt;
+
+      // Driver has reached the end of the route
+      if (traveledDist >= totalRouteDist) {
+        const dest = routeLine[routeLine.length - 1];
+        driverMarkerRef.current?.setLatLng(dest);
+        map.panTo(dest, { animate: false });            // don't force zoom on arrival
+        if (tripState === 'to_store')         onArrivalRef.current?.('store');
+        else if (tripState === 'to_customer') onArrivalRef.current?.('customer');
+        return; // Stop the loop
+      }
+
+      // Find where the driver is along the route
+      let accumulated = 0;
+      let currentPos: [number, number] = routeLine[0];
+      let bearing = 0;
+      let currentSegmentIdx = 0;
+
+      for (let i = 0; i < routeLine.length - 1; i++) {
+        const p1   = routeLine[i];
+        const p2   = routeLine[i + 1];
+        const segDist = calcDistMeters(p1, p2);
+
+        if (accumulated + segDist >= traveledDist) {
+          const ratio = (traveledDist - accumulated) / segDist;
+          currentPos = [
+            p1[0] + (p2[0] - p1[0]) * ratio,
+            p1[1] + (p2[1] - p1[1]) * ratio,
+          ];
+          currentSegmentIdx = i;
+          // Calculate perfect visual angle using screen projection (fixes Web Mercator distortion)
+          const pt1 = map.project(L.latLng(p1[0], p1[1]), map.getZoom());
+          const pt2 = map.project(L.latLng(p2[0], p2[1]), map.getZoom());
+          bearing = (Math.atan2(pt2.y - pt1.y, pt2.x - pt1.x) * 180 / Math.PI + 90) % 360;
+          break;
+        }
+        accumulated += segDist;
+      }
+
+      // ── Navigation Telemetry: Send remaining distance/time to parent ──
+      const distRem = Math.max(0, totalRouteDist - traveledDist);
+      const timeRem = Math.max(0, distRem / SIM_SPEED_M_PER_S);
+
+      // ── Next Maneuver logic ───────────────────────────────────────────
+      const activeSteps = tripState === 'to_store'
+        ? routes.storeSteps
+        : tripState === 'to_customer'
+          ? routes.customerSteps
+          : [];
+
+      // Find the upcoming maneuver
+      const nextStep = activeSteps.find(s => s.polylineIdx !== undefined && s.polylineIdx > currentSegmentIdx);
+      let nextStepDist: number | undefined;
+      let nextStepInstruction: string | undefined;
+
+      if (nextStep) {
+        // Simple distance from current pos to maneuver location
+        const manLoc = L.latLng(nextStep.maneuver.location[1], nextStep.maneuver.location[0]);
+        nextStepDist = map.distance(currentPos, manLoc);
+        nextStepInstruction = buildTurnInstruction(nextStep);
+      }
+
+      onUpdateRef.current?.({ 
+        distanceRem: distRem, 
+        timeRem, 
+        nextStepDist, 
+        nextStepInstruction 
+      });
+
+      // ── Turn-by-turn Voice ───────────────────────────────────────────
+      if (nextStep && nextStepDist !== undefined && nextStepDist < 150) {
+        const stepId = `${tripState}-${nextStep.polylineIdx}`;
+        if (!spokenStepsRef.current.has(stepId)) {
+          spokenStepsRef.current.add(stepId);
+          onTurnRef.current?.(nextStepInstruction || 'Turn ahead');
         }
       }
 
-      if (segIdx >= routeLine.length - 1) {
-        const last = routeLine[routeLine.length - 1];
-        driverMarkerRef.current?.setLatLng(last);
-        outerLineRef.current?.setLatLngs([]);
-        innerLineRef.current?.setLatLngs([]);
-        if (tripState === 'to_store')    onArrivalRef.current?.('store');
-        if (tripState === 'to_customer') onArrivalRef.current?.('customer');
-        return;
-      }
+      // Update car icon rotation to face direction of travel
+      const wrap = containerRef.current?.querySelector('.driver-car-wrap') as HTMLElement | null;
+      if (wrap) wrap.style.transform = `rotate(${bearing}deg)`;
 
-      const finalP1 = routeLine[segIdx];
-      const finalP2 = routeLine[segIdx + 1];
-      const lat = finalP1[0] + (finalP2[0] - finalP1[0]) * segProg;
-      const lng = finalP1[1] + (finalP2[1] - finalP1[1]) * segProg;
-      const brng = calcBearing(finalP1, finalP2);
+      // Move marker and follow driver — panTo preserves user zoom level
+      driverMarkerRef.current?.setLatLng(currentPos);
+      map.panTo(currentPos, { animate: false });      // smooth because RAF runs at 60fps
 
-      driverMarkerRef.current?.setLatLng([lat, lng]);
-      const arrowEl = document.getElementById('driver-arrow-inner');
-      if (arrowEl) arrowEl.style.transform = `rotate(${brng}deg)`;
-
-      const remaining: [number, number][] = [[lat, lng], ...routeLine.slice(segIdx + 1)];
-      outerLineRef.current?.setLatLngs(remaining);
-      innerLineRef.current?.setLatLngs(remaining);
-
-      panSkip++;
-      if (panSkip >= 4) {
-        map.panTo([lat, lng], { animate: true, duration: 0.2, easeLinearity: 1 });
-        panSkip = 0;
-      }
-
-      // Turn-by-turn
-      const cb = onTurnRef.current;
-      if (cb && steps.length) {
-        for (let i = stepIndexRef.current; i < steps.length; i++) {
-          const step = steps[i];
-          const type = step.maneuver?.type;
-          const pIdx = step.polylineIdx || 0;
-
-          if (segIdx >= pIdx) {
-            spokenStepsRef.current.add(i + ':action');
-            stepIndexRef.current = i + 1;
-            continue;
-          }
-
-          if (type === 'arrive' || !step.name) continue;
-
-          const distToTurn = calcDistMeters([lat, lng], routeLine[pIdx]);
-          const secondsToTurn = distToTurn / SIM_SPEED_M_PER_S;
-          let didSpeak = false;
-
-          if (secondsToTurn > 35 && !spokenStepsRef.current.has(i + ':continue')) {
-            const km = (distToTurn / 1000).toFixed(1);
-            const m = Math.round(distToTurn / 100) * 100;
-            cb(`Continue on ${step.name} for ${distToTurn >= 1000 ? km + ' kilometers' : m + ' meters'}`);
-            spokenStepsRef.current.add(i + ':continue');
-            didSpeak = true;
-          }
-
-          if (secondsToTurn <= 1.5 && !spokenStepsRef.current.has(i + ':action_prompt')) {
-            const mod = step.maneuver?.modifier ?? 'straight';
-            const cleanDir = mod.replace(/-/g, ' ');
-            if (type === 'turn' || type === 'new name' || type === 'on ramp' || type === 'off ramp') {
-              cb(cleanDir === 'straight' ? 'Continue straight' : `Turn ${cleanDir}`);
-            } else if (type === 'roundabout' || type === 'rotary') {
-              cb('Take the roundabout exit');
-            } else if (type === 'fork') {
-              cb(`Keep ${cleanDir}`);
-            }
-            spokenStepsRef.current.add(i + ':continue');
-            spokenStepsRef.current.add(i + ':prep');
-            spokenStepsRef.current.add(i + ':action_prompt');
-            didSpeak = true;
-          } else if (secondsToTurn <= 8 && !spokenStepsRef.current.has(i + ':prep')) {
-            const distR = distToTurn >= 1000 ? (distToTurn/1000).toFixed(1) + ' kilometers' : Math.round(distToTurn / 10) * 10 + ' meters';
-            const mod = step.maneuver?.modifier ?? 'straight';
-            const cleanDir = mod.replace(/-/g, ' ');
-            const prefix = distToTurn > 30 ? `In ${distR}, ` : '';
-            if (type === 'depart') {
-              const compass = ['north','northeast','east','southeast','south','southwest','west','northwest'][Math.round(brng / 45) % 8];
-              cb(`${prefix}head ${compass} on ${step.name}`);
-            } else if (type === 'turn' || type === 'new name' || type === 'on ramp' || type === 'off ramp') {
-              cb(cleanDir === 'straight' ? `${prefix}continue straight onto ${step.name}` : `${prefix}turn ${cleanDir} onto ${step.name}`);
-            } else if (type === 'roundabout' || type === 'rotary') {
-              cb(`${prefix}at the roundabout, take the exit onto ${step.name}`);
-            } else if (type === 'fork') {
-              cb(cleanDir === 'straight' ? `${prefix}continue straight at the fork` : `${prefix}keep ${cleanDir} at the fork`);
-            }
-            spokenStepsRef.current.add(i + ':continue');
-            spokenStepsRef.current.add(i + ':prep');
-            didSpeak = true;
-          }
-
-          if (didSpeak) break;
-        }
-      }
-
-      rafRef.current = requestAnimationFrame(tick);
+      rafRef.current = requestAnimationFrame(animate);
     };
 
-    rafRef.current = requestAnimationFrame(tick);
-    return () => { if (rafRef.current) { cancelAnimationFrame(rafRef.current); rafRef.current = null; } };
-  }, [tripState]);
+    rafRef.current = requestAnimationFrame(animate);
+
+    return () => { if (rafRef.current) cancelAnimationFrame(rafRef.current); };
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [driverLat, driverLng, tripState, startLat, startLng, endLat, endLng, routesLoaded]);
 
   return (
-    <div
-      ref={containerRef}
-      style={{ height: '100%', width: '100%', position: 'absolute', top: 0, left: 0 }}
-    />
+    <div 
+      style={{ 
+        height: '100%', 
+        width: '100%', 
+        position: 'absolute', 
+        top: 0, 
+        left: 0,
+        overflow: 'hidden',
+        background: '#e5e7eb',
+        perspective: '1200px' 
+      }}
+    >
+      <div
+        ref={containerRef}
+        style={{ 
+          height: '125%', // Balanced oversize
+          width: '100%', 
+          position: 'absolute', 
+          top: '-12.5%', // Center the oversized map
+          left: 0,
+          transition: 'transform 1.2s cubic-bezier(0.2, 0.8, 0.2, 1)',
+          transform: (tripState === 'to_store' || tripState === 'to_customer') 
+            ? 'rotateX(30deg) translateY(5%) scale(1.12)' 
+            : 'rotateX(0deg) translateY(0) scale(1)'
+        }}
+      />
+      
+      {/* Subtle Horizon Fade — less 'floating', more grounded */}
+      {(tripState === 'to_store' || tripState === 'to_customer') && (
+        <>
+          <div style={{
+            position: 'absolute',
+            top: 0,
+            left: 0,
+            right: 0,
+            height: '35%',
+            background: 'linear-gradient(to bottom, rgba(255,255,255,0.95) 0%, rgba(255,255,255,0) 100%)',
+            pointerEvents: 'none',
+            zIndex: 1000
+          }} />
+          {/* Very faint vignette for focus */}
+          <div style={{
+            position: 'absolute',
+            bottom: 0,
+            left: 0,
+            right: 0,
+            height: '10%',
+            background: 'linear-gradient(to top, rgba(0,0,0,0.03) 0%, rgba(0,0,0,0) 100%)',
+            pointerEvents: 'none',
+            zIndex: 1000
+          }} />
+        </>
+      )}
+    </div>
   );
 }

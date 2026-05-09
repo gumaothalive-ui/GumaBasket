@@ -2,14 +2,15 @@ import type { Metadata } from 'next';
 import Link from 'next/link';
 import dynamic from 'next/dynamic';
 import { fetchSellers } from '@/services/marketplaceService';
+import StoreGrid from './StoreGrid';
 
 const StoresMap = dynamic(() => import('./StoresMap'), {
   loading: () => <div style={{height: '500px', background: '#eaeaea', borderRadius: '24px', display: 'grid', placeItems: 'center'}}>Loading Map...</div>
 });
 
 export const metadata: Metadata = {
-  title: 'Cash & Carries | DailyMarket',
-  description: 'Locate premium Cash and Carries and suppliers on DailyMarket.',
+  title: 'Cash & Carries | GUMA BASKET',
+  description: 'Locate premium Cash and Carries and suppliers on GUMA BASKET.',
 };
 
 const CASH_AND_CARRIES = [
@@ -28,7 +29,7 @@ export default async function SuppliersPage() {
     id: seller.id,
     emoji: '🏪',
     name: seller.name,
-    location: 'DailyMarket Partner',
+    location: 'GUMA BASKET Partner',
     type: 'Wholesale & Cash and Carry',
     joined: new Date().getFullYear().toString(),
     // Randomize slightly around Cape Town center
@@ -44,7 +45,7 @@ export default async function SuppliersPage() {
         <div style={{ maxWidth: 680, margin: '0 auto' }}>
           <div style={{ display: 'inline-block', background: 'rgba(16,185,129,0.15)', color: '#34d399', fontWeight: 800, fontSize: '0.75rem', letterSpacing: '0.12em', textTransform: 'uppercase', padding: '6px 16px', borderRadius: '30px', marginBottom: '24px', border: '1px solid rgba(16,185,129,0.3)' }}>Verified Wholesale Partners</div>
           <h1 style={{ fontSize: 'clamp(2.2rem, 5vw, 3.5rem)', fontWeight: 900, letterSpacing: '-0.04em', lineHeight: 1.1, marginBottom: '20px' }}>Locate Regional Cash & Carries.</h1>
-          <p style={{ fontSize: '1.1rem', color: '#94a3b8', lineHeight: 1.7 }}>Find the largest regional wholesalers, fresh produce markets, and cash & carries partnered with DailyMarket.</p>
+          <p style={{ fontSize: '1.1rem', color: '#94a3b8', lineHeight: 1.7 }}>Find the largest regional wholesalers, fresh produce markets, and cash & carries partnered with GUMA BASKET.</p>
         </div>
       </section>
 
@@ -60,17 +61,7 @@ export default async function SuppliersPage() {
       </section>
 
       <section style={{ padding: '40px 20px 80px', maxWidth: 1200, margin: '0 auto' }}>
-        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(300px, 1fr))', gap: 28 }}>
-          {displayStores.map(s => (
-            <div key={s.id} style={{ border: '1.5px solid #f1f5f9', borderRadius: 20, padding: 32, background: '#fafafa', display: 'flex', flexDirection: 'column' }}>
-              <div style={{ fontSize: 48, marginBottom: 16 }}>{s.emoji}</div>
-              <h2 style={{ fontSize: '1.2rem', fontWeight: 900, marginBottom: 6, color: '#0f172a' }}>{s.name}</h2>
-              <p style={{ fontSize: '0.8rem', fontWeight: 700, color: '#111111', textTransform: 'uppercase', letterSpacing: '0.06em', marginBottom: 12 }}>📍 {s.location}</p>
-              <p style={{ color: '#64748b', fontSize: '0.9rem', lineHeight: 1.6, marginBottom: 16, flex: 1 }}>{s.type}</p>
-              <span style={{ background: '#ecfdf5', color: '#059669', fontSize: '0.75rem', fontWeight: 800, padding: '4px 12px', borderRadius: 30, alignSelf: 'flex-start' }}>✓ Verified Partner</span>
-            </div>
-          ))}
-        </div>
+        <StoreGrid stores={displayStores} />
       </section>
 
       <section style={{ background: '#f8fafc', borderTop: '1px solid #e2e8f0', padding: '80px 20px', textAlign: 'center' }}>

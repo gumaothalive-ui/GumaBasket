@@ -1,20 +1,25 @@
+/* ─────────────────────────────────────────────
+   DEPARTMENT LISTING — Woolworths SA inspired
+   Clean sidebar · Warm cream palette · Forest green accents
+───────────────────────────────────────────── */
+
 .listingLayout {
   display: flex;
-  gap: 2rem;
+  gap: 2.5rem;
   padding-top: 2rem;
-  padding-bottom: 4rem;
+  padding-bottom: 5rem;
 }
 
-/* Sidebar Styles */
+/* ══ SIDEBAR ══════════════════════════════════ */
 .sidebar {
-  width: 250px;
+  width: 220px;
   flex-shrink: 0;
 }
 
 .filterSection {
-  padding-bottom: 1.5rem;
-  border-bottom: 1px solid var(--border-color);
-  margin-bottom: 1.5rem;
+  padding-bottom: 1.25rem;
+  border-bottom: 1px solid var(--border-subtle);
+  margin-bottom: 1.25rem;
 }
 
 .filterHeader {
@@ -24,20 +29,22 @@
 }
 
 .toggleLabel {
-  font-size: 0.8rem;
+  font-size: 0.72rem;
   font-weight: 700;
   text-transform: uppercase;
-  color: var(--primary-text);
-  letter-spacing: 0.5px;
+  letter-spacing: 0.1em;
+  color: #1a1a1a;
 }
 
+/* Toggle switch — green when active */
 .toggleSwitch {
-  width: 40px;
+  width: 38px;
   height: 20px;
-  background-color: var(--hover-border);
+  background-color: #d6d6d6;
   border-radius: 10px;
   position: relative;
   cursor: pointer;
+  transition: background 0.2s;
 }
 
 .toggleSwitch::after {
@@ -47,76 +54,105 @@
   left: 2px;
   width: 16px;
   height: 16px;
-  background-color: white;
+  background: #ffffff;
   border-radius: 50%;
-  transition: transform 0.2s;
+  transition: transform 0.2s ease;
+  box-shadow: 0 1px 3px rgba(0,0,0,0.2);
 }
 
+/* Department filter groups */
 .filterGroup {
   margin-bottom: 1.5rem;
+  border-bottom: 1px solid var(--border-subtle);
+  padding-bottom: 1.5rem;
+}
+
+.filterGroup:last-child {
+  border-bottom: none;
 }
 
 .filterTitle {
-  font-size: 0.8rem;
+  font-size: 0.72rem;
   font-weight: 700;
   text-transform: uppercase;
-  color: var(--primary-text);
+  letter-spacing: 0.1em;
+  color: #1a1a1a;
   margin-bottom: 1rem;
   display: flex;
   justify-content: space-between;
   align-items: center;
   cursor: pointer;
-  letter-spacing: 0.5px;
 }
 
 .minusIcon {
-  font-size: 1.25rem;
+  font-size: 1.1rem;
   line-height: 1;
   font-weight: 300;
+  color: #999;
 }
 
 .filterList {
   display: flex;
   flex-direction: column;
-  gap: 0.75rem;
+  gap: 0rem;
 }
 
 .filterList a {
-  font-size: 0.875rem;
-  color: var(--secondary-text);
+  font-size: 0.82rem;
+  color: #555;
+  padding: 7px 0;
+  border-bottom: 1px solid #f5f4f0;
+  transition: color 0.15s ease;
+  letter-spacing: 0.01em;
+}
+
+.filterList a:last-child {
+  border-bottom: none;
 }
 
 .filterList a:hover {
-  text-decoration: underline;
+  color: #1f4e3d;
 }
 
 .activeLink {
-  color: var(--primary-text) !important;
+  color: #1f4e3d !important;
   font-weight: 600;
-  text-decoration: underline;
 }
 
 .checkboxLabel {
   display: flex;
   align-items: center;
-  gap: 0.75rem;
-  font-size: 0.875rem;
-  color: var(--secondary-text);
-  margin-bottom: 0.75rem;
+  gap: 0.6rem;
+  font-size: 0.82rem;
+  color: #555;
+  padding: 7px 0;
   cursor: pointer;
+  transition: color 0.15s;
+  border-bottom: 1px solid #f5f4f0;
+}
+
+.checkboxLabel:last-child {
+  border-bottom: none;
+}
+
+.checkboxLabel:hover {
+  color: #1f4e3d;
 }
 
 .checkboxLabel input[type="checkbox"] {
-  width: 18px;
-  height: 18px;
-  border: 1px solid var(--border-color);
+  width: 15px;
+  height: 15px;
+  border: 1.5px solid #d6d6d6;
   border-radius: 2px;
   cursor: pointer;
+  accent-color: #1f4e3d;
+  flex-shrink: 0;
 }
 
-/* Main Content Styles */
+/* ══ MAIN CONTENT ══════════════════════════════ */
 .mainContent {
   flex: 1;
+  min-width: 0;
 }
 
 .headerTools {
@@ -124,100 +160,134 @@
   justify-content: space-between;
   align-items: flex-end;
   margin-bottom: 1.5rem;
-  border-bottom: 1px solid var(--border-color);
-  padding-bottom: 1rem;
+  border-bottom: 2px solid #1a1a1a;
+  padding-bottom: 0.75rem;
 }
 
+/* Page title — clean, not heavy uppercase */
 .pageTitle {
-  font-size: 1.5rem;
+  font-size: 1.35rem;
   font-weight: 700;
-  color: var(--primary-text);
+  color: #1a1a1a;
   text-transform: uppercase;
-  margin-bottom: 0.25rem;
+  letter-spacing: 0.06em;
+  margin-bottom: 2px;
+  line-height: 1;
 }
 
 .itemCount {
-  font-size: 0.875rem;
-  color: var(--secondary-text);
+  font-size: 0.78rem;
+  color: #999;
+  letter-spacing: 0.02em;
 }
 
 .toolbar {
   display: flex;
   align-items: center;
-  gap: 1.5rem;
+  gap: 1rem;
 }
 
 .viewToggles {
   display: flex;
-  gap: 0.5rem;
+  gap: 4px;
 }
 
 .viewBtn {
-  color: var(--hover-border);
-  padding: 4px;
+  width: 32px;
+  height: 32px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border: 1px solid #ebebeb;
+  border-radius: 3px;
+  color: #aaa;
+  font-size: 1rem;
+  cursor: pointer;
+  transition: all 0.15s;
+}
+
+.viewBtn:hover {
+  color: #1f4e3d;
+  border-color: #1f4e3d;
 }
 
 .activeView {
-  color: var(--primary-text);
+  color: #1f4e3d !important;
+  border-color: #1f4e3d !important;
 }
 
 .sortSelect {
-  padding: 0.5rem 2rem 0.5rem 1rem;
-  border: 1px solid var(--border-color);
-  border-radius: 4px;
-  font-size: 0.875rem;
-  color: var(--primary-text);
-  background-color: var(--surface);
+  padding: 0.45rem 2.2rem 0.45rem 0.9rem;
+  border: 1px solid #d6d6d6;
+  border-radius: 3px;
+  font-size: 0.75rem;
+  font-weight: 600;
+  letter-spacing: 0.05em;
+  color: #1a1a1a;
+  background-color: #ffffff;
   cursor: pointer;
   appearance: none;
-  background-image: url("data:image/svg+xml;charset=UTF-8,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='currentColor' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3e%3cpolyline points='6 9 12 15 18 9'%3e%3c/polyline%3e%3c/svg%3e");
+  background-image: url("data:image/svg+xml;charset=UTF-8,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%231a1a1a' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3e%3cpolyline points='6 9 12 15 18 9'%3e%3c/polyline%3e%3c/svg%3e");
   background-repeat: no-repeat;
-  background-position: right 0.75rem center;
-  background-size: 1em;
+  background-position: right 0.6rem center;
+  background-size: 0.9em;
   font-family: inherit;
+  text-transform: uppercase;
+  transition: border-color 0.15s;
 }
 
-.categoryPills {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 0.5rem;
-  margin-bottom: 2rem;
-  justify-content: center;
+.sortSelect:focus {
+  outline: none;
+  border-color: #1f4e3d;
 }
 
-.pill {
-  padding: 0.5rem 1.5rem;
-  border: 1px solid var(--border-color);
-  border-radius: 20px;
-  font-size: 0.875rem;
-  color: var(--primary-text);
-  background: var(--surface);
-  transition: all var(--transition-fast);
-}
-
-.pill:hover {
-  border-color: var(--primary-text);
-}
-
+/* ══ PRODUCT GRID ══════════════════════════════ */
 .gridContainer {
   display: grid;
   grid-template-columns: repeat(4, 1fr);
-  gap: 1.5rem;
+  gap: 1px;              /* 1px gap = seamless grid with borders touching */
+  background: #ebebeb;  /* the gap colour becomes the border */
+  border: 1px solid #ebebeb;
+}
+
+/* Give each card a white bg so the #ebebeb gaps look like borders */
+.gridContainer > * {
+  background: #ffffff;
+}
+
+/* ══ EMPTY STATE ══════════════════════════════ */
+.emptyState {
+  padding: 5rem 2rem;
+  text-align: center;
+  background: #f7f6f2;
+  border: 1px dashed #d6d6d6;
+  border-radius: 4px;
+}
+
+/* ══ RESPONSIVE ════════════════════════════════ */
+@media (max-width: 1200px) {
+  .gridContainer {
+    grid-template-columns: repeat(3, 1fr);
+  }
 }
 
 @media (max-width: 1024px) {
   .gridContainer {
     grid-template-columns: repeat(3, 1fr);
   }
+  .sidebar {
+    width: 195px;
+  }
 }
 
 @media (max-width: 768px) {
   .listingLayout {
     flex-direction: column;
+    gap: 1rem;
   }
   .sidebar {
     width: 100%;
-    display: none; /* In a real app, this would be hidden behind a 'Filter' button */
+    display: none;
   }
   .gridContainer {
     grid-template-columns: repeat(3, 1fr);
@@ -225,7 +295,7 @@
   .headerTools {
     flex-direction: column;
     align-items: flex-start;
-    gap: 1rem;
+    gap: 0.75rem;
   }
   .toolbar {
     width: 100%;
@@ -233,10 +303,9 @@
   }
 }
 
-@media (max-width: 600px) {
+@media (max-width: 520px) {
   .gridContainer {
     grid-template-columns: repeat(2, 1fr);
-    gap: 0.75rem;
   }
   .listingLayout {
     padding-top: 1rem;

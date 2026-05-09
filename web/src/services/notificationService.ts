@@ -47,6 +47,47 @@ async function sendSMS(to: string, message: string) {
   }
 }
 
+// ── WhatsApp via Twilio ────────────────────────────────────────────────────
+export async function sendWhatsApp(to: string, message: string) {
+  const accountSid = process.env.TWILIO_ACCOUNT_SID;
+  const authToken  = process.env.TWILIO_AUTH_TOKEN;
+  const from       = process.env.TWILIO_WHATSAPP_FROM || '+14155238886';
+
+  if (!accountSid || !authToken) {
+    console.warn('[WhatsApp] Twilio credentials not configured.');
+    return;
+  }
+
+  // Normalize SA number → E.164
+  let toNum = to.replace(/\s+/g, '').replace(/-/g, '');
+  if (toNum.startsWith('0')) toNum = '+27' + toNum.slice(1);
+  else if (!toNum.startsWith('+')) toNum = '+27' + toNum;
+
+  const url  = `https://api.twilio.com/2010-04-01/Accounts/${accountSid}/Messages.json`;
+  const body = new URLSearchParams({
+    From: `whatsapp:${from}`,
+    To:   `whatsapp:${toNum}`,
+    Body: message,
+  });
+
+  const res = await fetch(url, {
+    method:  'POST',
+    headers: {
+      Authorization:  'Basic ' + Buffer.from(`${accountSid}:${authToken}`).toString('base64'),
+      'Content-Type': 'application/x-www-form-urlencoded',
+    },
+    body: body.toString(),
+  });
+
+  const json = await res.json();
+  if (!res.ok) {
+    console.error('[WhatsApp] Twilio error:', json.code, json.message);
+  } else {
+    console.log(`[WhatsApp] ✅ Sent to ${toNum}: SID ${json.sid}`);
+  }
+}
+
+
 // ── Order confirmation email HTML ─────────────────────────────────────────
 function buildOrderEmailHTML(orderRef: string, customerName: string, items: string, total: string, appUrl: string) {
   return `
@@ -60,7 +101,7 @@ function buildOrderEmailHTML(orderRef: string, customerName: string, items: stri
         
         <!-- Header -->
         <tr><td style="background:linear-gradient(135deg,#0f172a 0%,#1e293b 100%);padding:40px 48px;text-align:center;">
-          <h1 style="color:#fff;font-size:28px;font-weight:900;margin:0;letter-spacing:-0.5px;">DailyMarket</h1>
+          <h1 style="color:#fff;font-size:28px;font-weight:900;margin:0;letter-spacing:-0.5px;">GUMA BASKET</h1>
           <p style="color:rgba(255,255,255,0.5);font-size:13px;margin:6px 0 0;">Fresh groceries delivered to your door</p>
         </td></tr>
 
@@ -105,7 +146,7 @@ function buildOrderEmailHTML(orderRef: string, customerName: string, items: stri
 
         <!-- Footer -->
         <tr><td style="background:#f8fafc;border-top:1px solid #e2e8f0;padding:24px 48px;text-align:center;">
-          <p style="color:#94a3b8;font-size:12px;margin:0;">© 2025 DailyMarket · Fresh groceries delivered</p>
+          <p style="color:#94a3b8;font-size:12px;margin:0;">© 2025 GUMA BASKET · Fresh groceries delivered</p>
         </td></tr>
 
       </table>
@@ -160,7 +201,7 @@ export async function sendNotification(
         : `<p>${message}</p>`;
 
       await transporter.sendMail({
-        from: `"DailyMarket 🛒" <${process.env.EMAIL_USER}>`,
+        from: `"GUMA BASKET 🛒" <${process.env.EMAIL_USER}>`,
         to,
         subject,
         html,

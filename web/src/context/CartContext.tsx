@@ -26,15 +26,19 @@ interface CartContextType {
 
 const CartContext = createContext<CartContextType | undefined>(undefined);
 
+const CART_STORAGE_KEY = 'gumabasket_cart';
+
 export function CartProvider({ children }: { children: React.ReactNode }) {
   const [cart, setCart] = useState<CartItem[]>([]);
 
-  // Load cart from localStorage on init
+  // Load cart from localStorage on init (migrate old key if present)
   useEffect(() => {
-    const savedCart = localStorage.getItem('dailymarket_cart');
-    if (savedCart) {
+    const saved = localStorage.getItem(CART_STORAGE_KEY)
+      || localStorage.getItem('GUMA BASKET_cart'); // migrate old key
+    if (saved) {
       try {
-        setCart(JSON.parse(savedCart));
+        setCart(JSON.parse(saved));
+        localStorage.removeItem('GUMA BASKET_cart'); // clean up old key
       } catch (e) {
         console.error('Failed to parse cart', e);
       }
@@ -46,15 +50,16 @@ export function CartProvider({ children }: { children: React.ReactNode }) {
 
   // Sync with localStorage — always, even when empty (so clearCart() persists)
   useEffect(() => {
-    localStorage.setItem('dailymarket_cart', JSON.stringify(cart));
+    localStorage.setItem(CART_STORAGE_KEY, JSON.stringify(cart));
   }, [cart]);
 
   const addToCart = (product: any) => {
+    const addedQty = product.quantity && product.quantity > 0 ? product.quantity : 1;
     setCart(prev => {
       const existing = prev.find(item => item.id === product.id);
       if (existing) {
-        return prev.map(item => 
-          item.id === product.id ? { ...item, quantity: item.quantity + 1 } : item
+        return prev.map(item =>
+          item.id === product.id ? { ...item, quantity: item.quantity + addedQty } : item
         );
       }
       return [...prev, {
@@ -62,7 +67,7 @@ export function CartProvider({ children }: { children: React.ReactNode }) {
         title: product.title,
         price: product.price,
         imageUrl: product.imageUrl,
-        quantity: 1,
+        quantity: addedQty,
         vendorName: product.vendorName
       }];
     });
@@ -79,7 +84,7 @@ export function CartProvider({ children }: { children: React.ReactNode }) {
       removeFromCart(productId);
       return;
     }
-    setCart(prev => prev.map(item => 
+    setCart(prev => prev.map(item =>
       item.id === productId ? { ...item, quantity } : item
     ));
   };
@@ -126,7 +131,7 @@ export function useCart(): CartContextType {
     // If called outside of CartProvider (e.g., SSR mismatch), return safe defaults
     // instead of crashing the entire page.
     if (typeof window === 'undefined') return SAFE_DEFAULT;
-    console.warn('[DailyMarket] useCart called outside of CartProvider — using safe defaults.');
+    console.warn('[GUMA BASKET] useCart called outside of CartProvider — using safe defaults.');
     return SAFE_DEFAULT;
   }
   return context;

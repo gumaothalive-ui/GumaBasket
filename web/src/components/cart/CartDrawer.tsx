@@ -60,7 +60,7 @@ export default function CartDrawer({ isOpen, onClose }: CartDrawerProps) {
               <span>R {subtotal.toFixed(2)}</span>
             </div>
             <p className={styles.taxNote}>Taxes and shipping calculated at checkout</p>
-            <Link href="/cart" className={styles.checkoutBtn} onClick={onClose}>CHECKOUT</Link>
+            <Link href="/checkout" className={styles.checkoutBtn} onClick={onClose}>CHECKOUT</Link>
           </div>
         )}
       </div>

@@ -32,11 +32,7 @@ export default function LoginPage() {
       {/* Header */}
       <div style={{ background: '#fff', borderBottom: '1px solid #e2e8f0', padding: '0 40px', display: 'flex', alignItems: 'center', height: 72, position: 'sticky', top: 0, zIndex: 100 }}>
         <Link href="/" style={{ display: 'flex', alignItems: 'center', gap: 12, textDecoration: 'none' }}>
-          <div style={{ background: '#0f172a', color: '#fff', fontWeight: 900, fontSize: '20px', width: 44, height: 44, display: 'flex', alignItems: 'center', justifyContent: 'center', borderRadius: 10 }}>DM</div>
-          <div>
-            <div style={{ fontWeight: 800, fontSize: '18px', color: '#0f172a', letterSpacing: '-0.5px' }}>DailyMarket</div>
-            <div style={{ fontSize: '10px', color: '#64748b', fontWeight: 700, letterSpacing: '0.12em', textTransform: 'uppercase' }}>SELLER CENTER</div>
-          </div>
+          <img src="/logo.png" alt="Guma Basket" style={{ height: '56px', width: 'auto' }} />
         </Link>
       </div>
 
@@ -46,7 +42,7 @@ export default function LoginPage() {
             WELCOME BACK
           </div>
           <h1 style={{ fontSize: '32px', fontWeight: 900, letterSpacing: '-1.5px', marginBottom: 8, color: '#0f172a' }}>Merchant Sign In</h1>
-          <p style={{ color: '#64748b', fontSize: '15px', marginBottom: 32 }}>Login to manage your DailyMarket storefront.</p>
+          <p style={{ color: '#64748b', fontSize: '15px', marginBottom: 32 }}>Login to manage your GUMA BASKET storefront.</p>
 
           <form onSubmit={handleSubmit} style={{ display: 'flex', flexDirection: 'column', gap: 20 }}>
             <div>
@@ -65,7 +61,7 @@ export default function LoginPage() {
           {message && <div style={{ marginTop: 20, padding: '14px 18px', borderRadius: 10, background: '#fff1f2', border: '1px solid #fecdd3', color: '#e11d48', fontSize: '14px', fontWeight: 500 }}>⚠️ {message}</div>}
 
           <p style={{ color: '#64748b', fontSize: '14px', textAlign: 'center', marginTop: 32, paddingTop: 24, borderTop: '1px dotted #e2e8f0' }}>
-            New to DailyMarket? <Link href="/signup" style={{ color: '#0f172a', textDecoration: 'none', fontWeight: 700 }}>Create an Account</Link>
+            New to GUMA BASKET? <Link href="/signup" style={{ color: '#0f172a', textDecoration: 'none', fontWeight: 700 }}>Create an Account</Link>
           </p>
         </div>
       </div>

@@ -1,6 +1,6 @@
 {
-  "name": "DailyMarket",
-  "short_name": "DailyMarket",
+  "name": "Guma Basket",
+  "short_name": "Guma Basket",
   "description": "Premium Grocery Delivery & Marketplace",
   "start_url": "/",
   "display": "standalone",
@@ -9,15 +9,15 @@
   "orientation": "portrait",
   "icons": [
     {
-      "src": "/icon.svg",
+      "src": "/logo.png",
       "sizes": "192x192",
-      "type": "image/svg+xml",
+      "type": "image/png",
       "purpose": "any maskable"
     },
     {
-      "src": "/icon.svg",
+      "src": "/logo.png",
       "sizes": "512x512",
-      "type": "image/svg+xml"
+      "type": "image/png"
     }
   ]
 }

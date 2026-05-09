@@ -82,7 +82,7 @@ export default async function StorePage({ params }: { params: Promise<{ storeId:
              <div style={{ fontSize: '48px', marginBottom: '16px' }}>🏬</div>
              <h3 style={{ fontSize: '20px', fontWeight: '800', marginBottom: '8px' }}>No products yet</h3>
              <p style={{ color: 'var(--text-muted)', maxWidth: '400px', margin: '0 auto' }}>
-               This store hasn't uploaded any products to their DailyMarket catalog yet. Check back later!
+               This store hasn't uploaded any products to their Guma Basket catalog yet. Check back later!
              </p>
              <Link href="/" style={{ display: 'inline-block', marginTop: '24px', color: 'var(--primary)', fontWeight: '700', textDecoration: 'none' }}>
                 &larr; Back to Marketplace

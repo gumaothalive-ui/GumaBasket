@@ -5,6 +5,17 @@
   align-items: start;
 }
 
+.mainContent {
+  min-width: 0;
+}
+
+.itemsSummary {
+  display: flex;
+  flex-direction: column;
+  gap: 0;
+  margin-bottom: 1rem;
+}
+
 .stepper {
   display: flex;
   gap: 2rem;

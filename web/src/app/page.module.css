@@ -1,7 +1,7 @@
 @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap');
 
 .pageContainer {
-  background-color: #ffffff;
+  background-color: var(--background);
   min-height: 100vh;
   padding-bottom: 100px;
   font-family: 'Inter', sans-serif;
@@ -20,20 +20,21 @@
   width: 100%;
   min-height: 380px;
   padding: 40px 60px;
-  color: #fff;
+  color: var(--brand-white);
   text-decoration: none;
-  background-color: #122116;
-  background-image: linear-gradient(100deg, rgba(14,28,17,0.95) 0%, rgba(14,28,17,0.8) 45%, rgba(14,28,17,0) 80%), url('/hero-edited.png');
+  background-color: var(--primary);
+  background-image: linear-gradient(100deg, rgba(31,78,61,0.95) 0%, rgba(31,78,61,0.7) 45%, rgba(31,78,61,0) 80%), url('/hero-edited.png');
   background-size: cover;
   background-position: right center;
-  border-radius: 16px;
+  border-radius: 20px;
   position: relative;
   overflow: hidden;
+  box-shadow: 0 10px 30px rgba(31, 78, 61, 0.15);
 }
 .heroPill {
   display: inline-block;
-  background: #065f24;
-  color: #fff;
+  background: var(--accent-gold);
+  color: var(--brand-white);
   padding: 6px 14px;
   border-radius: 30px;
   font-size: 11px;
@@ -58,16 +59,17 @@
   margin-bottom: 32px;
 }
 .fwbCta {
-  background: #027a3c;
-  color: #fff;
+  background: var(--brand-white);
+  color: var(--primary);
   padding: 14px 32px;
   border-radius: 30px;
   font-weight: 700;
   font-size: 15px;
-  transition: background 0.2s;
+  transition: all 0.2s;
 }
 .fwbCta:hover {
-  background: #065f24;
+  background: var(--accent-gold);
+  color: var(--brand-white);
 }
 
 /* ── SECTION HEADINGS ── */
@@ -78,25 +80,30 @@
   margin-bottom: 24px;
 }
 .sectionHeadingLeft h2 {
-  font-size: 1.4rem;
+  font-size: 1.6rem;
   font-weight: 800;
-  color: #111;
+  color: var(--text-primary);
   margin: 0 0 6px 0;
   letter-spacing: -0.5px;
 }
 .subtext {
-  font-size: 0.9rem;
+  font-size: 0.95rem;
   font-weight: 500;
-  color: #777;
+  color: var(--text-secondary);
 }
 .viewMoreLink {
   font-size: 0.9rem;
   font-weight: 700;
-  color: #027a3c;
+  color: var(--primary);
   text-decoration: none;
+  background: var(--primary-faded);
+  padding: 8px 16px;
+  border-radius: 20px;
+  transition: all 0.2s;
 }
 .viewMoreLink:hover {
-  text-decoration: underline;
+  background: var(--primary);
+  color: var(--brand-white);
 }
 
 /* ── NEARBY STORES ── */
@@ -109,19 +116,20 @@
   gap: 20px;
 }
 .ccCard {
-  background: #fff;
-  border-radius: 12px;
+  background: var(--brand-white);
+  border-radius: 16px;
   overflow: hidden;
   text-decoration: none;
-  box-shadow: 0 2px 10px rgba(0,0,0,0.06);
-  border: 1px solid #e2e8f0;
+  box-shadow: 0 4px 15px rgba(31, 78, 61, 0.05);
+  border: 1px solid var(--border-subtle);
   transition: transform 0.2s, box-shadow 0.2s;
   display: flex;
   flex-direction: column;
 }
 .ccCard:hover {
   transform: translateY(-4px);
-  box-shadow: 0 8px 24px rgba(0,0,0,0.08);
+  box-shadow: 0 12px 30px rgba(31, 78, 61, 0.1);
+  border-color: var(--primary);
 }
 .ccImage {
   width: 100%;
@@ -139,15 +147,16 @@
   position: absolute;
   top: 12px;
   left: 12px;
-  background: #027a3c;
-  color: #fff;
+  background: var(--primary);
+  color: var(--brand-white);
   font-size: 10px;
   font-weight: 800;
-  padding: 4px 10px;
-  border-radius: 6px;
+  padding: 6px 12px;
+  border-radius: 20px;
   letter-spacing: 0.5px;
   text-transform: uppercase;
   z-index: 2;
+  box-shadow: 0 4px 10px rgba(0,0,0,0.2);
 }
 .ccContent {
   padding: 20px 16px;
@@ -179,18 +188,18 @@
 .ccButton {
   display: block;
   text-align: center;
-  background: #fff;
-  color: #027a3c;
+  background: var(--primary-faded);
+  color: var(--primary);
   font-size: 13px;
   font-weight: 700;
-  padding: 10px 16px;
-  border-radius: 8px;
-  border: 1px solid #ccfbf1;
+  padding: 12px 16px;
+  border-radius: 10px;
+  border: 1px solid transparent;
   transition: all 0.2s;
 }
 .ccCard:hover .ccButton {
-  background: #f0fdf4;
-  border-color: #86efac;
+  background: var(--primary);
+  color: var(--brand-white);
 }
 
 /* ── SHOP BY CATEGORY ── */
@@ -208,20 +217,21 @@
   align-items: center;
   justify-content: flex-start;
   gap: 16px;
-  border-radius: 12px;
+  border-radius: 16px;
   padding: 20px 24px;
   text-decoration: none;
-  background: #f8fafc;
-  border: 1px solid transparent;
+  background: var(--brand-white);
+  border: 1px solid var(--border-subtle);
   transition: all 0.2s ease;
+  box-shadow: 0 4px 10px rgba(0,0,0,0.02);
 }
 .departmentBox:hover {
-  background: #fff;
-  border-color: #e2e8f0;
-  box-shadow: 0 4px 14px rgba(0,0,0,0.05);
+  transform: translateY(-2px);
+  border-color: var(--primary);
+  box-shadow: 0 8px 20px rgba(31, 78, 61, 0.08);
 }
 .deptIcon {
-  color: #027a3c;
+  color: var(--accent-gold);
   display: flex;
   align-items: center;
   justify-content: center;
@@ -248,18 +258,19 @@
 .horizontalProductCard {
   display: flex;
   align-items: center;
-  background: #f8fafc;
-  border-radius: 12px;
+  background: var(--brand-white);
+  border-radius: 16px;
   padding: 16px;
   text-decoration: none;
-  transition: background 0.2s, box-shadow 0.2s;
+  transition: all 0.2s ease;
   position: relative;
-  border: 1px solid transparent;
+  border: 1px solid var(--border-subtle);
+  box-shadow: 0 4px 10px rgba(0,0,0,0.02);
 }
 .horizontalProductCard:hover {
-  background: #fff;
-  border-color: #e2e8f0;
-  box-shadow: 0 4px 14px rgba(0,0,0,0.05);
+  transform: translateY(-2px);
+  border-color: var(--primary);
+  box-shadow: 0 8px 20px rgba(31, 78, 61, 0.08);
 }
 .hpImage {
   width: 80px;
@@ -292,10 +303,10 @@
   color: #0f172a;
 }
 .hpAddBtn {
-  width: 32px;
-  height: 32px;
+  width: 36px;
+  height: 36px;
   border-radius: 50%;
-  background: #027a3c;
+  background: var(--primary);
   color: white;
   font-size: 20px;
   font-weight: 600;
@@ -306,9 +317,11 @@
   position: absolute;
   bottom: 16px;
   right: 16px;
-  transition: transform 0.2s;
+  transition: all 0.2s;
+  box-shadow: 0 4px 10px rgba(31, 78, 61, 0.2);
 }
 .hpAddBtn:hover {
+  background: var(--accent-gold);
   transform: scale(1.1);
 }
 

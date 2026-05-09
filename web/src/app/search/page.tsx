@@ -234,7 +234,7 @@ function SearchPageContent() {
                   {/* Info */}
                   <div style={{ padding: '14px 16px 16px' }}>
                     <div style={{ fontSize: 11, fontWeight: 700, color: '#94a3b8', textTransform: 'uppercase', marginBottom: 4, letterSpacing: '0.04em' }}>
-                      {p.vendor_name || 'DailyMarket'}
+                      {p.vendor_name || 'GUMA BASKET'}
                     </div>
                     <h3 style={{ fontSize: 15, fontWeight: 800, margin: '0 0 10px', lineHeight: 1.3, color: '#0f172a' }}>
                       {p.title}

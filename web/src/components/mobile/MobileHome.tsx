@@ -1,16 +1,30 @@
 'use client';
 
-import React from 'react';
+import React, { useState } from 'react';
 import Link from 'next/link';
 import { useCart } from '@/context/CartContext';
 import styles from './MobileHome.module.css';
 
 interface MobileHomeProps {
   products: any[];
+  sellers?: any[];
 }
 
-export function MobileHome({ products }: MobileHomeProps) {
+const CATEGORY_TABS = [
+  { label: 'All', value: null },
+  { label: '🏷️ Deals', value: 'deals' },
+  { label: 'Produce', value: 'fruit-veg' },
+  { label: 'Butchery', value: 'meat-poultry' },
+  { label: 'Dairy', value: 'dairy' },
+  { label: 'Pantry', value: 'pantry' },
+  { label: 'Bakery', value: 'bakery' },
+  { label: 'Drinks', value: 'beverages' },
+  { label: 'Frozen', value: 'frozen' },
+];
+
+export function MobileHome({ products, sellers = [] }: MobileHomeProps) {
   const { addToCart } = useCart();
+  const [activeTab, setActiveTab] = useState<string | null>(null);
 
   const handleQuickAdd = (e: React.MouseEvent, p: any) => {
     e.preventDefault();
@@ -25,9 +39,15 @@ export function MobileHome({ products }: MobileHomeProps) {
     });
   };
 
-  // Show first 4 as popular, next 4 as recent
-  const popularProducts = products.slice(0, 4);
-  const recentWatched = products.slice(4, 8);
+  // Filter by active tab category, then split into sections
+  const isDealTab = activeTab === 'deals';
+  const filtered = isDealTab
+    ? products.filter(p => p.is_on_sale)
+    : activeTab
+      ? products.filter(p => p.category?.toLowerCase().includes(activeTab))
+      : products;
+  const popularProducts = filtered.slice(0, 4);
+  const recentWatched = filtered.slice(4, 8);
 
   return (
     <div className={styles.mobileContainer}>
@@ -38,7 +58,7 @@ export function MobileHome({ products }: MobileHomeProps) {
           <div className={styles.locationBlock}>
             <span className={styles.deliveryTo}>Delivery To</span>
             <span className={styles.locationName}>
-              📍 Cape Town, South Africa
+              📍 Nelson Mandela Bay, South Africa
               <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M6 9l6 6 6-6"/></svg>
             </span>
           </div>
@@ -59,7 +79,7 @@ export function MobileHome({ products }: MobileHomeProps) {
           <div className={styles.bannerDecor}></div>
           <div className={styles.bannerContent}>
             <h2 className={styles.bannerTitle}>Shop Everything<br/>Online</h2>
-            <button className={styles.bannerBtn}>Start Shopping</button>
+            <Link href="/shop" className={styles.bannerBtn}>Start Shopping</Link>
           </div>
           <img src="/Design/mobile_banner.png" alt="Shopping" className={styles.bannerImage} />
         </div>
@@ -67,11 +87,40 @@ export function MobileHome({ products }: MobileHomeProps) {
 
       {/* TABS */}
       <div className={styles.categoryTabs}>
-        <div className={`${styles.tabPill} ${styles.active}`}>All</div>
-        <div className={styles.tabPill}>Fish</div>
-        <div className={styles.tabPill}>Fruits</div>
-        <div className={styles.tabPill}>Veg</div>
+        {CATEGORY_TABS.map(tab => (
+          <div
+            key={tab.label}
+            className={`${styles.tabPill} ${activeTab === tab.value && !(tab.value === null && activeTab !== null) ? styles.active : ''} ${tab.value === null && activeTab === null ? styles.active : ''}`}
+            onClick={() => setActiveTab(tab.value)}
+          >
+            {tab.label}
+          </div>
+        ))}
       </div>
+
+      {/* STORES / CASH & CARRY */}
+      {sellers.length > 0 && (
+        <div className={styles.sectionBlock}>
+          <div className={styles.sectionHeader}>
+            <h3 className={styles.sectionTitle}>Stores Near You</h3>
+            <Link href="/stores" className={styles.viewAllBtn}>See All &gt;</Link>
+          </div>
+          <div className={styles.storesScroll}>
+            {sellers.map((merchant, idx) => (
+              <Link href={merchant.link || `/stores/${merchant.id}`} key={idx} className={styles.storeCard}>
+                <div className={styles.storeImageWrapper}>
+                  <img src={merchant.logo || '/promo-entertaining.png'} alt={merchant.name} className={styles.storeImage} />
+                  <div className={styles.storeOverlay}>OPEN</div>
+                </div>
+                <div className={styles.storeInfo}>
+                  <h4 className={styles.storeName}>{merchant.name}</h4>
+                  <p className={styles.storeMeta}>⭐ 4.6 • 30-45 min</p>
+                </div>
+              </Link>
+            ))}
+          </div>
+        </div>
+      )}
 
       {/* POPULAR PRODUCTS */}
       <div className={styles.sectionBlock}>
@@ -97,7 +146,9 @@ export function MobileHome({ products }: MobileHomeProps) {
                 <div className={styles.priceRow}>
                   <div style={{ display: 'flex', gap: 6, alignItems: 'baseline' }}>
                     <span className={styles.currentPrice}>R{p.premium_price?.toFixed(2)}</span>
-                    <span className={styles.oldPrice}>R{(p.premium_price * 1.2).toFixed(2)}</span>
+                    {p.base_price > 0 && p.base_price < p.premium_price && (
+                      <span className={styles.oldPrice}>R{Number(p.base_price).toFixed(2)}</span>
+                    )}
                   </div>
                   <button onClick={(e) => handleQuickAdd(e, p)} className={styles.quickAddBtn}>
                     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5"><path d="M12 5v14M5 12h14"/></svg>

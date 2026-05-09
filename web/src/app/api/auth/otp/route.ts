@@ -33,23 +33,26 @@ export async function POST(req: NextRequest) {
     if (dbError) throw new Error(`Database persistence failed: ${dbError.message}`);
 
     // 3. Setup Nodemailer explicitly pulling from the .env.local variables the user provided
+    if (!process.env.EMAIL_USER || !process.env.EMAIL_PASS) {
+      throw new Error('EMAIL_USER and EMAIL_PASS environment variables are required.');
+    }
     const transporter = nodemailer.createTransport({
       host: 'smtp.gmail.com',
       port: 587,
-      secure: false, 
+      secure: false,
       auth: {
-        user: process.env.EMAIL_USER || 'dailymarket380@gmail.com',
-        pass: process.env.EMAIL_PASS || 'pxog cqgl zqsk trfs',
+        user: process.env.EMAIL_USER,
+        pass: process.env.EMAIL_PASS,
       },
     });
 
     const mailOptions = {
-      from: '"DailyMarket Elite" <' + (process.env.EMAIL_USER || 'dailymarket380@gmail.com') + '>',
+      from: `"GUMA BASKET Elite" <${process.env.EMAIL_USER}>`,
       to: email,
-      subject: 'Your DailyMarket Login Code',
+      subject: 'Your GUMA BASKET Login Code',
       html: `
         <div style="font-family: Arial, sans-serif; text-align: center; padding: 40px; background-color: #fcfcfc;">
-          <h1 style="color: #000; font-weight: 900; letter-spacing: 2px;">DAILYMARKET ELITE</h1>
+          <h1 style="color: #000; font-weight: 900; letter-spacing: 2px;">GUMA BASKET ELITE</h1>
           <p style="color: #666; font-size: 16px; margin-top: 20px;">Use the following premium passcode to access your account instantly:</p>
           <div style="margin: 40px auto; padding: 20px; background-color: #10b981; color: #fff; font-size: 36px; font-weight: 900; letter-spacing: 8px; width: fit-content; border-radius: 8px; box-shadow: 0 4px 15px rgba(16, 185, 129, 0.3);">
             ${otpCode}

@@ -24,10 +24,13 @@ export default function DriverAuth() {
   const markUploaded = (key: string) => setUploaded(u => ({ ...u, [key]: true }));
 
   const [errorMsg, setErrorMsg] = useState('');
+  const [isSubmitting, setIsSubmitting] = useState(false);
 
   const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!loginData.email) return;
+    setIsSubmitting(true);
+    setErrorMsg('');
     try {
       const { driverLogin } = await import('./actions');
       const res = await driverLogin(loginData.email);
@@ -38,11 +41,21 @@ export default function DriverAuth() {
       }
     } catch {
       setErrorMsg('Login failed');
+    } finally {
+      setIsSubmitting(false);
     }
   };
 
   const handleSignupNext = () => setSignupStep(s => (s + 1) as SignupStep);
   const handleSignupBack = () => setSignupStep(s => (s - 1) as SignupStep);
+
+  const handleSubmitApplication = () => {
+    setIsSubmitting(true);
+    setTimeout(() => {
+      setIsSubmitting(false);
+      setSignupStep(4);
+    }, 2000);
+  };
 
   const stepLabels = ['Account', 'Identity', 'Vehicle', 'Done'];
 
@@ -90,6 +103,7 @@ export default function DriverAuth() {
             <div className={styles.stepCard}>
               <h2>Sign in to your account</h2>
               <p>Enter your credentials to access the dispatch dashboard.</p>
+              {errorMsg && <div className={styles.errorMsg}>{errorMsg}</div>}
               <form onSubmit={handleLogin}>
                 <div className={styles.inputGroup}>
                   <label>Email Address</label>
@@ -114,7 +128,9 @@ export default function DriverAuth() {
                 <div className={styles.forgotRow}>
                   <a href="#" className={styles.forgotLink}>Forgot password?</a>
                 </div>
-                <button type="submit" className={styles.primaryBtn}>Sign In →</button>
+                <button type="submit" className={styles.primaryBtn} disabled={isSubmitting}>
+                  {isSubmitting ? 'Signing in...' : 'Sign In →'}
+                </button>
               </form>
               <div className={styles.switchPrompt}>
                 Don&apos;t have an account?{' '}
@@ -240,7 +256,9 @@ export default function DriverAuth() {
                   </div>
                   <div className={styles.btnRow}>
                     <button className={styles.backBtn} onClick={handleSignupBack}>Back</button>
-                    <button className={styles.primaryBtn} onClick={handleSignupNext}>Submit Application →</button>
+                    <button className={styles.primaryBtn} onClick={handleSubmitApplication} disabled={isSubmitting}>
+                      {isSubmitting ? 'Submitting...' : 'Submit Application →'}
+                    </button>
                   </div>
                 </>
               )}

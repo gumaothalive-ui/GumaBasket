@@ -44,21 +44,21 @@
 
 /* Variants */
 .primary {
-  background-color: #000000;
+  background-color: #1f4e3d; /* Forest green */
   color: #ffffff;
-  border: 2px solid #000000;
+  border: 1px solid #1f4e3d;
   transition: transform 0.15s ease, box-shadow 0.15s ease, background-color 0.15s ease;
 }
 
 .primary:hover:not(:disabled) {
-  background-color: #222222;
-  border-color: #222222;
+  background-color: #174035;
+  border-color: #174035;
   transform: translateY(-1px);
-  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.18);
+  box-shadow: 0 4px 14px rgba(31, 78, 61, 0.25);
 }
 
 .primary:active:not(:disabled) {
-  transform: scale(0.97);
+  transform: scale(0.98);
   box-shadow: none;
 }
 

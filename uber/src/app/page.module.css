@@ -1,13 +1,12 @@
 .dashboardLayout {
   display: flex;
-  height: 100vh; /* Full app height like a real desktop application */
+  height: 100vh;
   overflow: hidden;
   font-family: 'Inter', system-ui, -apple-system, sans-serif;
-  background-color: #F6F6F6; /* Uber off-white */
-  color: #000000; /* Uber true black */
+  background-color: #F6F6F6;
+  color: #000000;
 }
 
-/* Sidebar Navigation */
 .sidebar {
   width: 280px;
   background-color: #FFFFFF;
@@ -70,7 +69,6 @@
   background-color: #F6F6F6;
 }
 
-/* Main Content Area */
 .mainArea {
   flex: 1;
   display: flex;
@@ -78,7 +76,6 @@
   height: 100%;
 }
 
-/* Header */
 .topHeader {
   height: 80px;
   background-color: #FFFFFF;
@@ -127,14 +124,12 @@
   cursor: pointer;
 }
 
-/* Content Split: Map and Info */
 .contentSplit {
   display: flex;
   flex: 1;
   overflow: hidden;
 }
 
-/* Map Area (Center) */
 .mapSection {
   flex: 1;
   position: relative;
@@ -142,18 +137,6 @@
   overflow: hidden;
 }
 
-.mapImg {
-  position: absolute;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  object-fit: cover;
-  opacity: 0.4;
-  filter: grayscale(100%) contrast(1.2); /* Gives that stark map feel */
-}
-
-/* Uber Map UI Elements */
 .mapOverlay {
   position: relative;
   z-index: 10;
@@ -162,7 +145,6 @@
   pointer-events: none;
 }
 
-/* Floating Status Pill */
 .statusPill {
   background: #FFFFFF;
   border-radius: 30px;
@@ -177,7 +159,7 @@
 .liveIndicator {
   width: 12px;
   height: 12px;
-  background-color: #05A357; /* Uber Green */
+  background-color: #05A357;
   border-radius: 50%;
   box-shadow: 0 0 0 4px rgba(5, 163, 87, 0.2);
   animation: pulse 2s infinite;
@@ -194,7 +176,6 @@
   font-size: 15px;
 }
 
-/* Panel Right */
 .sidePanel {
   width: 440px;
   background-color: #FFFFFF;
@@ -204,10 +185,9 @@
   overflow-y: auto;
 }
 
-/* Uber Panel Section */
 .panelSection {
   padding: 24px;
-  border-bottom: 8px solid #F6F6F6; /* Thick Uber-style separators */
+  border-bottom: 8px solid #F6F6F6;
 }
 
 .panelHeader {
@@ -223,7 +203,6 @@
   letter-spacing: -0.02em;
 }
 
-/* Activity Items */
 .activityCard {
   background: #FFFFFF;
   padding: 16px;
@@ -232,11 +211,6 @@
   margin-bottom: 12px;
   cursor: pointer;
   transition: transform 0.1s, box-shadow 0.1s;
-}
-
-.activityCard:hover {
-  transform: translateY(-2px);
-  box-shadow: 0 8px 24px rgba(0,0,0,0.08);
 }
 
 .activityTop {
@@ -258,11 +232,6 @@
   border-radius: 20px;
   font-size: 12px;
   font-weight: 600;
-}
-
-.uberBadge.green {
-  background: #E6F3E6;
-  color: #05A357; /* Uber Green */
 }
 
 .uberBadge.dark {
@@ -295,7 +264,7 @@
 }
 
 .addressRow.dropoff::before {
-  border-radius: 50%; /* Circle for destination, square for pickup */
+  border-radius: 50%;
   background: #05A357;
 }
 
@@ -311,146 +280,84 @@
   margin-top: 2px;
 }
 
-/* Fleet List */
-.fleetRow {
-  display: flex;
-  align-items: center;
-  gap: 16px;
-  padding: 12px 0;
-  border-bottom: 1px solid #EEEEEE;
-}
-
-.fleetRow:last-child {
-  border-bottom: none;
-}
-
-.fleetAvatar {
-  width: 48px;
-  height: 48px;
-  background: #E2E2E2;
-  border-radius: 50%;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  font-size: 18px;
-  font-weight: 600;
+.radarCard {
+  background: #1A1A1A;
+  color: #FFFFFF;
+  border-radius: 12px;
+  padding: 24px;
   position: relative;
+  overflow: hidden;
+  box-shadow: 0 10px 30px rgba(0,0,0,0.15);
+  animation: radarSlide 0.5s cubic-bezier(0.16, 1, 0.3, 1);
 }
 
-.fleetOnline {
+@keyframes radarSlide {
+  from { opacity: 0; transform: translateY(20px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+.radarPulse {
   position: absolute;
-  bottom: 0;
-  right: 0;
-  width: 14px;
-  height: 14px;
-  background: #05A357;
-  border: 2px solid white;
-  border-radius: 50%;
+  top: 0; left: 0; right: 0; height: 4px;
+  background: linear-gradient(90deg, #10b981 0%, #34d399 50%, #10b981 100%);
+  background-size: 200% 100%;
+  animation: pulseBar 2s linear infinite;
 }
 
-.fleetDetails {
-  flex: 1;
+@keyframes pulseBar {
+  0% { background-position: 100% 0; }
+  100% { background-position: -100% 0; }
 }
 
-.fleetName {
-  font-size: 16px;
-  font-weight: 600;
-}
-
-.fleetVehicle {
-  font-size: 13px;
-  color: #545454;
-  margin-top: 2px;
-}
-
-.fleetMetric {
-  text-align: right;
-  font-size: 14px;
-  font-weight: 600;
-}
-
-.fleetSub {
-  font-size: 12px;
-  color: #545454;
-}
-
-/* Map Markers Overlay Simulation */
-.simulatedMarker {
-  position: absolute;
-  color: white;
-  padding: 8px 16px;
-  border-radius: 30px;
-  font-weight: 600;
-  font-size: 14px;
+.radarHeader {
   display: flex;
+  justify-content: space-between;
   align-items: center;
-  gap: 8px;
-  box-shadow: 0 4px 12px rgba(0,0,0,0.2);
-  pointer-events: auto;
-  transition: all 0.5s ease;
+  margin-bottom: 16px;
 }
 
-.simulatedMarker::after {
-  content: '';
-  position: absolute;
-  bottom: -6px;
-  left: 50%;
-  transform: translateX(-50%);
-  width: 0; 
-  height: 0; 
-  border-left: 6px solid transparent;
-  border-right: 6px solid transparent;
+.radarTitle {
+  font-weight: 700;
+  font-size: 14px;
+  color: #34d399;
 }
 
-.markerStore {
-  background: #000000;
-  top: 40%;
-  left: 30%;
-  z-index: 10;
+.radarTime {
+  font-size: 13px;
+  color: #A0A0A0;
 }
-.markerStore::after { border-top: 6px solid #000000; }
 
-.markerCustomer {
-  background: white;
-  color: black;
-  border: 2px solid black;
-  top: 70%;
-  left: 70%;
-  z-index: 10;
+.radarOfferPrice {
+  font-size: 42px;
+  font-weight: 700;
+  letter-spacing: -0.04em;
+  line-height: 1;
+  margin-bottom: 8px;
 }
-.markerCustomer::after { border-top: 6px solid #000000; }
 
-.markerDriver {
+.radarOfferDist {
+  font-size: 15px;
+  color: #E2E2E2;
+  font-weight: 500;
+}
+
+.acceptBtn {
+  width: 100%;
   background: #05A357;
-  border-radius: 8px; /* Square app style for car */
-  padding: 8px;
-  z-index: 20;
-  box-shadow: 0 8px 24px rgba(5, 163, 87, 0.4);
-  /* Default Idle Position */
-  top: 20%;
-  left: 10%;
-  transition: top 3s ease-in-out, left 3s ease-in-out;
-}
-.markerDriver::after { border-top: 6px solid #05A357; }
-
-/* Simulation States */
-.driverToStore {
-  top: calc(40% - 40px); /* Just above store */
-  left: calc(30% - 10px);
+  color: #FFFFFF;
+  border: none;
+  border-radius: 8px;
+  padding: 16px;
+  font-weight: 700;
+  font-size: 18px;
+  cursor: pointer;
+  transition: all 0.2s;
+  box-shadow: 0 4px 12px rgba(5, 163, 87, 0.3);
 }
 
-.driverToCustomer {
-  top: calc(70% - 40px); /* Just above customer */
-  left: calc(70% - 10px);
-}
-
-.pulsingStore {
-  animation: storePulse 1s infinite alternate;
-}
-
-@keyframes storePulse {
-  0% { transform: scale(1); box-shadow: 0 0 0 0 rgba(0,0,0,0.2); }
-  100% { transform: scale(1.05); box-shadow: 0 0 0 10px rgba(0,0,0,0); }
+.acceptBtn:hover {
+  background: #048C4A;
+  transform: scale(1.02);
 }
 
 .logBox {
@@ -481,13 +388,12 @@
   color: #000000;
 }
 
-/* Google Maps Navigation Overlay */
 .navOverlay {
   position: absolute;
   top: 24px;
   left: 50%;
   transform: translateX(-50%);
-  background-color: #0f9d58; /* Google Maps Nav Green */
+  background-color: #0f9d58;
   color: white;
   width: 90%;
   max-width: 500px;
@@ -528,7 +434,6 @@
   letter-spacing: -0.02em;
 }
 
-/* Bottom Nav ETA Panel */
 .navBottom {
   position: absolute;
   bottom: 0;
@@ -558,7 +463,6 @@
   margin-top: 4px;
 }
 
-/* ── Earnings Dashboard ── */
 .earningsDashboard {
   padding: 32px;
   background-color: #F6F6F6;
@@ -580,7 +484,7 @@
   gap: 24px;
 }
 
-.balanceCard, .historyCard, .paymentCard {
+.balanceCard {
   background: white;
   border-radius: 12px;
   padding: 24px;
@@ -619,132 +523,259 @@
   transition: all 0.2s;
 }
 
-.payoutBtn:hover:not(.disabled) {
-  background: #222;
-}
-
 .payoutBtn.disabled {
   background: #E2E2E2;
   color: #A0A0A0;
   cursor: not-allowed;
 }
 
-.historyList {
-  display: flex;
-  flex-direction: column;
+/* ============================================================== */
+/* ==================== MOBILE APP SHELL ======================== */
+/* ============================================================== */
+
+.appShell {
+  position: relative;
+  width: 100%;
+  height: 100vh;
+  height: 100dvh;
+  overflow: hidden;
+  background: #000;
 }
 
-.historyItem {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  padding: 16px 0;
-  border-bottom: 1px solid #F0F0F0;
+.mobileMapWrap {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  z-index: 1;
 }
 
-.historyItem:last-child {
-  border-bottom: none;
-  padding-bottom: 0;
-}
-
-.tripDate {
-  font-size: 14px;
-  font-weight: 600;
-  color: #000;
-  margin-bottom: 4px;
-}
-
-.tripRoute {
-  font-size: 13px;
-  color: #545454;
-}
-
-.tripAmt {
-  font-size: 16px;
-  font-weight: 700;
-  color: #05A357; /* Uber green */
-}
-
-.emptyBank {
-  background: #F8F9FA;
-  border-radius: 8px;
-  padding: 24px;
-  text-align: center;
-  border: 1px dashed #D0D0D0;
-}
-
-.emptyBankText {
-  font-size: 14px;
-  color: #545454;
-  margin-bottom: 16px;
-  line-height: 1.5;
-}
-
-.stripeConnectBtn {
-  background: #635BFF;
-  color: white;
-  border: none;
-  border-radius: 8px;
-  padding: 10px 20px;
-  font-weight: 600;
-  font-size: 14px;
-  cursor: pointer;
-  transition: background 0.2s;
-  box-shadow: 0 4px 6px rgba(99, 91, 255, 0.2);
-}
-
-.stripeConnectBtn:hover {
-  background: #5046e5;
-}
-
-.bankLinked {
-  display: flex;
-  align-items: center;
-  gap: 16px;
-  background: #FFFFFF;
-  border: 1px solid #E2E2E2;
-  padding: 16px;
-  border-radius: 8px;
-}
-
-.bankIcon {
-  width: 40px;
-  height: 40px;
+.mobileMenuBtn {
+  position: absolute;
+  top: max(env(safe-area-inset-top), 20px);
+  left: 20px;
+  width: 48px;
+  height: 48px;
   border-radius: 50%;
-  background: #F0F0F0;
+  background: #fff;
+  border: none;
+  box-shadow: 0 2px 10px rgba(0,0,0,0.2);
+  z-index: 100;
+  font-size: 24px;
   display: flex;
   align-items: center;
   justify-content: center;
-  font-size: 20px;
+  cursor: pointer;
 }
 
-.statusBadgeGreen {
-  background: #E6F4EA;
-  color: #137333;
-  padding: 4px 8px;
-  border-radius: 4px;
-  font-size: 12px;
+.mobileStatusPill {
+  position: absolute;
+  top: max(env(safe-area-inset-top), 20px);
+  left: 50%;
+  transform: translateX(-50%);
+  background: #fff;
+  border-radius: 30px;
+  padding: 12px 24px;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  box-shadow: 0 4px 15px rgba(0,0,0,0.15);
+  z-index: 100;
+}
+
+.mobilePillDot {
+  width: 12px;
+  height: 12px;
+  background: #05A357;
+  border-radius: 50%;
+  box-shadow: 0 0 0 4px rgba(5, 163, 87, 0.2);
+  animation: pulse 2s infinite;
+}
+
+.mobilePillText {
+  font-weight: 700;
+  font-size: 15px;
+  letter-spacing: -0.01em;
+}
+
+.mobileNavBanner {
+  position: absolute;
+  top: calc(max(env(safe-area-inset-top), 20px) + 60px);
+  left: 16px;
+  right: 16px;
+  background: #0f9d58;
+  border-radius: 16px;
+  padding: 16px 20px;
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  box-shadow: 0 8px 24px rgba(0,0,0,0.2);
+  z-index: 100;
+  color: white;
+}
+
+.mobileNavBanner svg {
+  width: 32px;
+  height: 32px;
+  flex-shrink: 0;
+}
+
+.mobileNavText {
+  font-size: 22px;
+  font-weight: 700;
+  line-height: 1.2;
+}
+
+.mobileNavFooter {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  background: white;
+  padding: 16px 24px calc(16px + env(safe-area-inset-bottom));
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  box-shadow: 0 -4px 20px rgba(0,0,0,0.1);
+  z-index: 1001;
+  border-top-left-radius: 20px;
+  border-top-right-radius: 20px;
+}
+
+.navFooterLeft {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.navEtaMain {
+  display: flex;
+  align-items: baseline;
+  gap: 12px;
+}
+
+.navEtaTime {
+  font-size: 26px;
+  font-weight: 800;
+  color: #0f9d58; /* Google Nav Green */
+  letter-spacing: -0.02em;
+}
+
+.navEtaArrival {
+  font-size: 16px;
   font-weight: 600;
+  color: #545454;
 }
 
-/* ── Radar Offer UI ── */
-.radarCard {
-  background: #1A1A1A; /* Uber dark theme for radar */
-  color: #FFFFFF;
-  border-radius: 12px;
-  padding: 24px;
+.navEtaDist {
+  font-size: 15px;
+  font-weight: 500;
+  color: #757575;
+}
+
+.navFooterRight {
+  display: flex;
+  gap: 8px;
+}
+
+.navArriveBtn {
+  background: #0f9d58;
+  color: white;
+  border: none;
+  border-radius: 30px;
+  padding: 10px 20px;
+  font-weight: 700;
+  font-size: 14px;
+  letter-spacing: 0.5px;
+  cursor: pointer;
+  box-shadow: 0 4px 10px rgba(15, 157, 88, 0.3);
+}
+
+.navExitBtn {
+  background: #f44336;
+  color: white;
+  border: none;
+  border-radius: 30px;
+  padding: 10px 20px;
+  font-weight: 700;
+  font-size: 14px;
+  letter-spacing: 0.5px;
+  cursor: pointer;
+  box-shadow: 0 4px 10px rgba(244, 67, 54, 0.3);
+}
+
+/* Bottom Sheet */
+.mobileBottomSheet {
+  position: absolute;
+  bottom: 96px; /* Above tab bar with gap */
+  left: 16px;
+  right: 16px;
+  background: #fff;
+  border-radius: 24px;
+  z-index: 100;
+  box-shadow: 0 8px 32px rgba(0,0,0,0.12);
+  display: flex;
+  flex-direction: column;
+  max-height: 55vh;
+  transition: max-height 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.mobileBottomSheet.minimized {
+  max-height: 40px !important;
+  min-height: 40px !important;
+  overflow: hidden;
+}
+
+.mobileSheetHandleWrap {
+  padding: 16px 0;
+  cursor: pointer;
+  display: flex;
+  justify-content: center;
+}
+
+.mobileSheetHandle {
+  width: 40px;
+  height: 5px;
+  background: #d4d4d4;
+  border-radius: 3px;
+}
+
+.mobileSheetScroll {
+  overflow-y: auto;
+  padding: 12px 20px 20px;
+  flex: 0 1 auto;
+}
+
+/* Waiting Card */
+.mobileScanWait {
+  text-align: center;
+  padding: 40px 20px;
+}
+
+.mobileScanEmoji {
+  font-size: 48px;
+  margin-bottom: 16px;
+}
+
+.mobileScanText {
+  font-size: 18px;
+  font-weight: 600;
+  color: #545454;
+  line-height: 1.4;
+}
+
+/* Offer Card */
+.mobileWaitCard {
+  background: #111;
+  color: #fff;
+  border-radius: 16px;
+  padding: 20px;
   position: relative;
   overflow: hidden;
-  box-shadow: 0 10px 30px rgba(0,0,0,0.15);
-  animation: radarSlide 0.5s cubic-bezier(0.16, 1, 0.3, 1);
 }
 
-@keyframes radarSlide {
-  from { opacity: 0; transform: translateY(20px); }
-  to { opacity: 1; transform: translateY(0); }
-}
-
-.radarPulse {
+.mobileWaitPulseBar {
   position: absolute;
   top: 0; left: 0; right: 0; height: 4px;
   background: linear-gradient(90deg, #10b981 0%, #34d399 50%, #10b981 100%);
@@ -752,158 +783,683 @@
   animation: pulseBar 2s linear infinite;
 }
 
-@keyframes pulseBar {
-  0% { background-position: 100% 0; }
-  100% { background-position: -100% 0; }
+.mobileWaitHeader {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 12px;
 }
 
-.radarHeader {
+.mobileWaitTitle {
+  color: #34d399;
+  font-weight: 700;
+  font-size: 14px;
+  letter-spacing: 1px;
+}
+
+.mobileWaitLive {
+  background: rgba(255,255,255,0.2);
+  padding: 2px 8px;
+  border-radius: 12px;
+  font-size: 11px;
+  font-weight: 600;
+}
+
+.mobileWaitAmount {
+  font-size: 42px;
+  font-weight: 800;
+  letter-spacing: -0.04em;
+  margin-bottom: 4px;
+}
+
+.mobileWaitMeta {
+  color: #a0a0a0;
+  font-size: 15px;
+  font-weight: 500;
+  margin-bottom: 16px;
+}
+
+.mobileItemsList {
+  background: rgba(255,255,255,0.1);
+  border-radius: 8px;
+  padding: 12px;
+  margin-bottom: 16px;
+}
+
+.mobileItemRow {
+  display: flex;
+  justify-content: space-between;
+  font-size: 14px;
+  padding: 4px 0;
+  border-bottom: 1px solid rgba(255,255,255,0.1);
+}
+
+.mobileItemRow:last-child {
+  border-bottom: none;
+}
+
+.mobileAddresses {
+  border-left: 2px dashed #444;
+  margin-left: 8px;
+  padding-left: 16px;
+  margin-bottom: 20px;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.mobileAddrRow {
+  position: relative;
+}
+
+.mobileAddrRow::before {
+  content: '';
+  position: absolute;
+  left: -21px;
+  top: 4px;
+  width: 8px;
+  height: 8px;
+  background: #fff;
+  border-radius: 50%;
+}
+
+.mobileAddrRow.mobileDrop::before {
+  background: #05A357;
+  border-radius: 0; /* Square for dropoff */
+}
+
+.mobileAddrTitle {
+  font-size: 12px;
+  color: #a0a0a0;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  margin-bottom: 2px;
+}
+
+.mobileAddrSub {
+  font-size: 16px;
+  font-weight: 600;
+}
+
+.mobileAcceptBtn {
+  width: 100%;
+  background: #05A357;
+  color: #fff;
+  border: none;
+  padding: 18px;
+  border-radius: 12px;
+  font-size: 18px;
+  font-weight: 700;
+  cursor: pointer;
+  box-shadow: 0 4px 15px rgba(5, 163, 87, 0.3);
+}
+
+/* Active Trip Card */
+.mobileTripCard {
+  background: #fff;
+  border: 1px solid #e0e0e0;
+  border-radius: 16px;
+  padding: 20px;
+  margin-bottom: 16px;
+  box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+}
+
+.mobileTripTop {
   display: flex;
   justify-content: space-between;
   align-items: center;
   margin-bottom: 16px;
 }
 
-.radarTitle {
+.mobileOrderRef {
   font-weight: 700;
+  font-size: 16px;
+}
+
+.mobileBadge {
+  background: #000;
+  color: #fff;
+  padding: 6px 12px;
+  border-radius: 20px;
+  font-size: 12px;
+  font-weight: 600;
+}
+
+.mobileChatBtn {
+  width: 100%;
+  background: #25D366;
+  color: #fff;
+  border: none;
+  padding: 14px;
+  border-radius: 12px;
+  font-size: 16px;
+  font-weight: 700;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 8px;
+  margin-top: 16px;
+}
+
+.mobileLogBox {
+  background: #f8f8f8;
+  border-radius: 12px;
+  padding: 16px;
+}
+
+.mobileLogEntry {
   font-size: 14px;
-  color: #34d399; /* Green title ping */
+  color: #545454;
+  margin-bottom: 8px;
+  display: flex;
+  gap: 12px;
 }
 
-.radarTime {
-  font-size: 13px;
-  color: #A0A0A0;
-}
-
-.radarOfferPrice {
-  font-size: 42px;
+.mobileLogTime {
   font-weight: 700;
-  letter-spacing: -0.04em;
-  line-height: 1;
+  color: #000;
+  font-family: monospace;
+}
+
+/* Tab Bar */
+.mobileTabBar {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  height: 80px;
+  padding-bottom: env(safe-area-inset-bottom);
+  background: #fff;
+  border-top: 1px solid #e0e0e0;
+  display: flex;
+  justify-content: space-around;
+  align-items: center;
+  z-index: 100;
+}
+
+.mobileTabItem {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 4px;
+  background: none;
+  border: none;
+  padding: 8px;
+  color: #a0a0a0;
+}
+
+.mobileTabIcon {
+  font-size: 24px;
+  transition: transform 0.2s;
+}
+
+.mobileTabIcon.mobileActive {
+  transform: scale(1.1);
+  color: #000;
+}
+
+.mobileTabLabel {
+  font-size: 11px;
+  font-weight: 600;
+}
+
+.mobileTabLabel.mobileActive {
+  color: #000;
+}
+
+/* Drawer Menu */
+.drawerOverlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0,0,0,0.5);
+  z-index: 200;
+}
+
+.drawer {
+  position: absolute;
+  top: 0; left: 0; bottom: 0;
+  width: 80%;
+  max-width: 300px;
+  background: #fff;
+  animation: slideIn 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+  display: flex;
+  flex-direction: column;
+}
+
+@keyframes slideIn {
+  from { transform: translateX(-100%); }
+  to { transform: translateX(0); }
+}
+
+.drawerHead {
+  padding: calc(env(safe-area-inset-top) + 20px) 20px 20px;
+  background: #f8f8f8;
+  border-bottom: 1px solid #e0e0e0;
+}
+
+.drawerAvatar {
+  width: 60px;
+  height: 60px;
+  border-radius: 50%;
+  background: #000;
+  color: #fff;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 24px;
+  font-weight: 700;
+  margin-bottom: 12px;
+}
+
+.drawerName {
+  font-size: 20px;
+  font-weight: 700;
+  margin-bottom: 4px;
+}
+
+.drawerStatus {
+  color: #05A357;
+  font-size: 14px;
+  font-weight: 600;
+}
+
+.drawerMenu {
+  flex: 1;
+  padding: 20px 0;
+}
+
+.drawerItem {
+  padding: 16px 24px;
+  font-size: 18px;
+  font-weight: 600;
+  display: flex;
+  align-items: center;
+  gap: 16px;
+}
+
+.drawerItem:active {
+  background: #f0f0f0;
+}
+
+.drawerFooter {
+  padding: 20px;
+  padding-bottom: calc(env(safe-area-inset-bottom) + 20px);
+  border-top: 1px solid #e0e0e0;
+}
+
+.signOutBtn {
+  width: 100%;
+  padding: 16px;
+  background: #f8f8f8;
+  border: 1px solid #e0e0e0;
+  border-radius: 12px;
+  font-size: 16px;
+  font-weight: 700;
+}
+
+/* Chat Overlay */
+.chatOverlay {
+  position: fixed;
+  inset: 0;
+  background: #E5DDD5;
+  z-index: 300;
+  display: flex;
+  flex-direction: column;
+}
+
+.chatHead {
+  background: #075E54;
+  padding: calc(env(safe-area-inset-top) + 12px) 16px 12px;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  color: #fff;
+  box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+}
+
+.chatBack {
+  background: none;
+  border: none;
+  color: #fff;
+  font-size: 24px;
+}
+
+.chatAvatar {
+  width: 40px;
+  height: 40px;
+  background: #dcfce7;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 20px;
+}
+
+.chatName {
+  font-weight: 700;
+  font-size: 16px;
+}
+
+.chatSub {
+  font-size: 12px;
+  color: rgba(255,255,255,0.8);
+}
+
+.callBtn {
+  background: rgba(255,255,255,0.2);
+  border: none;
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  font-size: 20px;
+}
+
+.chatMessages {
+  flex: 1;
+  padding: 16px;
+  overflow-y: auto;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.msgBubble {
+  max-width: 80%;
+  padding: 8px 12px;
+  border-radius: 16px;
+  box-shadow: 0 1px 2px rgba(0,0,0,0.1);
+}
+
+.msgMine {
+  background: #DCF8C6;
+  border-bottom-right-radius: 4px;
+}
+
+.msgTheirs {
+  background: #fff;
+  border-bottom-left-radius: 4px;
+}
+
+.chatInputBar {
+  background: #f0f0f0;
+  padding: 12px 16px calc(env(safe-area-inset-bottom) + 12px);
+  display: flex;
+  gap: 12px;
+}
+
+.chatInput {
+  flex: 1;
+  border: none;
+  border-radius: 24px;
+  padding: 12px 20px;
+  font-size: 16px;
+  box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+}
+
+.sendBtn {
+  width: 44px;
+  height: 44px;
+  border-radius: 50%;
+  background: #075E54;
+  color: #fff;
+  border: none;
+  font-size: 20px;
+}
+
+/* Call Overlay */
+.callOverlay {
+  position: fixed;
+  inset: 0;
+  background: linear-gradient(180deg, #1a2e1a 0%, #0a1a0a 100%);
+  z-index: 400;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: space-between;
+  padding: calc(env(safe-area-inset-top) + 40px) 40px calc(env(safe-area-inset-bottom) + 60px);
+  color: #fff;
+}
+
+.callStatus {
+  color: rgba(255,255,255,0.7);
+  letter-spacing: 1px;
+}
+
+.callCenter {
+  text-align: center;
+}
+
+.callAvatar {
+  width: 140px;
+  height: 140px;
+  border-radius: 50%;
+  background: linear-gradient(135deg, #25D366, #128C7E);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 60px;
+  margin: 0 auto 24px;
+  box-shadow: 0 0 0 12px rgba(37,211,102,0.1);
+  animation: pulse 1.5s ease-in-out infinite;
+}
+
+.callName {
+  font-size: 32px;
+  font-weight: 700;
   margin-bottom: 8px;
 }
 
-.radarOfferDist {
-  font-size: 15px;
-  color: #E2E2E2;
-  font-weight: 500;
+.callSub {
+  color: rgba(255,255,255,0.5);
+  font-size: 16px;
 }
 
-.acceptBtn {
-  width: 100%;
-  background: #05A357; /* Uber green */
-  color: #FFFFFF;
+.callControls {
+  display: flex;
+  gap: 40px;
+}
+
+.callCtrlItem {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
+}
+
+.callCircle {
+  width: 72px;
+  height: 72px;
+  border-radius: 50%;
   border: none;
-  border-radius: 8px;
-  padding: 16px;
+  font-size: 32px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 4px 20px rgba(0,0,0,0.3);
+}
+
+.callCircle.red { background: #dc2626; color: #fff; }
+.callCircle.green { background: #25D366; color: #fff; }
+.callCircle.mute { background: rgba(255,255,255,0.2); color: #fff; }
+.callCircle.muted { background: #fff; color: #000; }
+
+.callCtrlLabel {
+  font-size: 12px;
+  font-weight: 600;
+  color: rgba(255,255,255,0.6);
+}
+
+/* ============================================================== */
+/* === UBER OFFER POPUP MODAL === */
+/* ============================================================== */
+.offerOverlay {
+  position: fixed;
+  inset: 0;
+  z-index: 500;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  padding: 40px 20px;
+  animation: offerFadeIn 0.3s ease-out;
+}
+
+@keyframes offerFadeIn {
+  from { opacity: 0; transform: translateY(20px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+.offerMapBlur {
+  position: absolute;
+  inset: 0;
+  background: rgba(0,0,0,0.6);
+  backdrop-filter: blur(8px);
+  z-index: -1;
+}
+
+.offerHeader {
+  display: flex;
+  justify-content: center;
+  margin-top: 40px;
+}
+
+.offerTimeBox {
+  position: relative;
+  width: 80px;
+  height: 80px;
+}
+
+.circularChart {
+  display: block;
+  margin: 0 auto;
+  max-width: 100%;
+  max-height: 250px;
+}
+
+.circleBg {
+  fill: none;
+  stroke: rgba(255,255,255,0.2);
+  stroke-width: 3.8;
+}
+
+.circle {
+  fill: none;
+  stroke: #25D366;
+  stroke-width: 3.8;
+  stroke-linecap: round;
+  transition: stroke-dasharray 1s linear;
+}
+
+.offerSeconds {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  font-size: 28px;
+  font-weight: 800;
+  color: #fff;
+}
+
+.offerCardMobile {
+  background: #fff;
+  border-radius: 20px;
+  padding: 24px;
+  box-shadow: 0 10px 40px rgba(0,0,0,0.3);
+  margin-bottom: 20px;
+}
+
+.offerType {
+  color: #05A357;
   font-weight: 700;
-  font-size: 18px;
-  cursor: pointer;
-  transition: all 0.2s;
-  box-shadow: 0 4px 12px rgba(5, 163, 87, 0.3);
+  font-size: 14px;
+  margin-bottom: 8px;
+  text-transform: uppercase;
+  letter-spacing: 1px;
 }
 
-.acceptBtn:hover {
-  background: #048C4A;
-  transform: scale(1.02);
+.offerPrice {
+  font-size: 48px;
+  font-weight: 800;
+  letter-spacing: -0.04em;
+  line-height: 1;
+  color: #000;
+  margin-bottom: 8px;
 }
 
-/* ── Mobile Responsive Overrides ── */
-@media (max-width: 900px) {
-  .dashboardLayout {
-    flex-direction: column;
-  }
-  
-  .sidebar {
-    display: none; /* Can implement bottom nav similar to web if desired, for now hide on mobile and rely on bottom panel */
-  }
-
-  .topHeader {
-    height: 60px;
-    padding: 0 16px;
-  }
-
-  .headerTitle {
-    font-size: 16px;
-  }
-
-  .headerActions {
-    gap: 8px;
-  }
-
-  .actionBtnBlack, .actionBtnGrey {
-    padding: 8px 16px;
-    font-size: 13px;
-  }
-
-  .contentSplit {
-    flex-direction: column;
-  }
-
-  .mapSection {
-    flex: 1; /* Map takes remaining height or half */
-    min-height: 40vh;
-  }
-
-  .sidePanel {
-    width: 100%;
-    max-height: 50vh; /* Panel takes bottom 50% */
-    border-left: none;
-    border-top: 1px solid #E2E2E2;
-    border-radius: 20px 20px 0 0;
-    box-shadow: 0 -4px 20px rgba(0,0,0,0.1);
-    z-index: 100;
-    background: #fff;
-  }
-
-  .panelSection {
-    padding: 16px;
-  }
-
-  .statusPill {
-    padding: 8px 16px;
-    font-size: 13px;
-  }
-  
-  .statusText {
-    font-size: 13px;
-  }
-
-  .radarCard {
-    padding: 16px;
-  }
-
-  .radarOfferPrice {
-    font-size: 32px;
-  }
-
-  .navOverlay {
-    width: 95%;
-    padding: 12px 16px;
-  }
-
-  .navInstruction {
-    font-size: 18px;
-  }
-
-  .navIconContainer svg {
-    width: 24px;
-    height: 24px;
-  }
-
-  .navBottom {
-    padding: 16px;
-  }
-
-  .etaText {
-    font-size: 20px;
-  }
-
-  .earningsGrid {
-    grid-template-columns: 1fr;
-  }
-
-  .earningsDashboard {
-    padding: 16px;
-  }
+.offerMetrics {
+  color: #545454;
+  font-size: 16px;
+  font-weight: 600;
+  display: flex;
+  gap: 8px;
+  margin-bottom: 24px;
 }
+
+.offerLocations {
+  display: flex;
+  flex-direction: column;
+  position: relative;
+  margin-bottom: 12px;
+}
+
+.offerLocRow {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin: 8px 0;
+}
+
+.offerLocLine {
+  position: absolute;
+  left: 5px;
+  top: 20px;
+  bottom: 20px;
+  width: 2px;
+  background: #E2E2E2;
+}
+
+.offerDotStore {
+  width: 12px;
+  height: 12px;
+  border-radius: 50%;
+  background: #000;
+  flex-shrink: 0;
+}
+
+.offerDotCust {
+  width: 12px;
+  height: 12px;
+  background: #05A357;
+  flex-shrink: 0;
+}
+
+.offerLocText {
+  font-size: 16px;
+  font-weight: 600;
+  color: #000;
+}
+
+.offerDeclineBtn {
+  width: 60px;
+  height: 60px;
+  border-radius: 50%;
+  border: 1px solid #E2E2E2;
+  background: #fff;
+  color: #000;
+  font-size: 24px;
+  font-weight: 700;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+.offerAcceptBtn {
+  flex: 1;
+  background: #000;
+  color: #fff;
+  border: none;
+  border-radius: 30px;
+  font-size: 20px;
+  font-weight: 700;
+}
+

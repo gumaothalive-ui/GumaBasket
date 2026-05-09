@@ -17,9 +17,11 @@ const supabase = createClient(supabaseUrl, supabaseKey);
 const NAV = [
   { href: '/products',  icon: '▤', label: 'Products' },
   { href: '/orders',    icon: '📦', label: 'Orders',   active: true },
+  { href: '/hours',     icon: '🕐', label: 'Store Hours' },
   { href: '/earnings',  icon: '↗', label: 'Earnings' },
+  { href: '/advertising', icon: '📢', label: 'Advertising' },
   { href: '/onboarding',icon: '+', label: 'New product' },
-  { href: '/profile',   icon: '🏦', label: 'Payouts' },
+  { href: '/profile',   icon: '🏪', label: 'Store Profile & Settings' },
 ];
 
 function fmt(n: number) {
@@ -174,10 +176,7 @@ function OrdersContent() {
       {/* \u2500\u2500 NAV \u2500\u2500 */}
       <div className="dashboard-header">
         <Link href="/" style={{ display: 'flex', alignItems: 'center', gap: 10, textDecoration: 'none' }}>
-          <div style={{ width: 30, height: 30, background: '#111', borderRadius: 7, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="white" strokeWidth="2.5"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>
-          </div>
-          <span className="dashboard-header-brand-text" style={{ fontWeight: 800, fontSize: '14px', color: '#111' }}>DailyMarket <span style={{ color: '#aaa', fontWeight: 500 }}>Seller</span></span>
+          <img src="/logo.png" alt="Guma Basket" style={{ height: '36px', width: 'auto' }} />
         </Link>
         {vendorName && <div className="dashboard-header-brand-text">
           <div style={{ display: 'flex', alignItems: 'center', gap: 12, background: '#F5F5F5', padding: '6px 14px', borderRadius: 20, border: '1px solid #EAEAEA' }}>
@@ -370,8 +369,8 @@ function OrdersContent() {
           <span>List Item</span>
         </Link>
         <Link href={`/profile`} className="mobile-nav-item">
-          <span className="mobile-nav-icon">🏦</span>
-          <span>Payouts</span>
+          <span className="mobile-nav-icon">🏪</span>
+          <span>Profile</span>
         </Link>
       </nav>
     </main>

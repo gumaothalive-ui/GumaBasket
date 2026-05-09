@@ -69,7 +69,7 @@ function RegisterForm() {
             <p className={styles.subtitle}>
               {redirectTo === '/checkout'
                 ? '🔒 One quick step before checkout'
-                : 'Join DailyMarket — free forever'}
+                : 'Join GUMA BASKET — free forever'}
             </p>
 
             {redirectTo === '/checkout' && (

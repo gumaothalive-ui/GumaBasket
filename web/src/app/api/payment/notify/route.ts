@@ -120,12 +120,12 @@ export async function POST(req: NextRequest) {
             port: 587,
             secure: false,
             auth: {
-              user: process.env.EMAIL_USER || 'dailymarket380@gmail.com',
+              user: process.env.EMAIL_USER || 'GUMA BASKET380@gmail.com',
               pass: process.env.EMAIL_PASS || 'pxog cqgl zqsk trfs',
             },
           });
           await transporter.sendMail({
-            from: '"DailyMarket Elite Orders" <' + (process.env.EMAIL_USER || 'dailymarket380@gmail.com') + '>',
+            from: '"GUMA BASKET Elite Orders" <' + (process.env.EMAIL_USER || 'GUMA BASKET380@gmail.com') + '>',
             to: customerEmail,
             subject: `Payment Receipt: Order #${orderId.slice(0, 8)}`,
             html: `

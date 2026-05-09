@@ -1,5 +1,5 @@
 /**
- * DailyMarket Fuzzy Spell Checker
+ * GUMA BASKET Fuzzy Spell Checker
  * Uses Levenshtein distance to find closest matching product names.
  */
 

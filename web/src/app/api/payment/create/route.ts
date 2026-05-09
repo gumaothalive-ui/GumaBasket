@@ -94,7 +94,7 @@ export async function POST(req: NextRequest) {
 
     const itemName = cart.length === 1
       ? cart[0].title
-      : `DailyMarket Order (${cart.length} items)`;
+      : `GUMA BASKET Order (${cart.length} items)`;
 
     const itemDescription = cart
       .map((item: any) => `${item.title} x${item.quantity}`)
@@ -108,8 +108,8 @@ export async function POST(req: NextRequest) {
       cancel_url: `${appUrl}/payment/cancel`,
       notify_url: `${appUrl}/api/payment/notify`,
       name_first: shipping?.firstName || 'Customer',
-      name_last: shipping?.lastName || 'DailyMarket',
-      email_address: user?.email || shipping?.email || 'customer@dailymarket.co.za',
+      name_last: shipping?.lastName || 'GUMA BASKET',
+      email_address: user?.email || shipping?.email || 'customer@GUMA BASKET.co.za',
       m_payment_id: orderId, // Crucial: This links PayFast to our DB Order
       amount: subtotal.toFixed(2),
       item_name: itemName.slice(0, 100),

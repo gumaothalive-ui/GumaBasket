@@ -70,7 +70,7 @@ export default async function Home() {
 
   return (
     <>
-      <MobileHome products={allProducts} />
+      <MobileHome products={allProducts} sellers={displayMerchants} />
 
       <div className={`${styles.pageContainer} ${styles.desktopContainer}`}>
         

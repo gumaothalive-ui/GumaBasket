@@ -4,7 +4,7 @@ import { supabase } from '@/lib/supabase';
 const DEMO_STORES = [
   { business_name: 'United Cash & Carry', email: 'contact@unitedcashcarry.com', password: 'password123' },
   { business_name: 'Devland Cash & Carry', email: 'info@devland.co.za', password: 'password123' },
-  { business_name: 'Daily Market Wholesale', email: 'wholesale@dailymarket.co.za', password: 'password123' }
+  { business_name: 'Guma Basket Wholesale', email: 'wholesale@gumabasket.co.za', password: 'password123' }
 ];
 
 const DEMO_PRODUCTS = [
@@ -12,8 +12,8 @@ const DEMO_PRODUCTS = [
   { title: 'Flour 10kg', description: 'Cake wheat flour bulk bag', category: 'pantry', base_price: 140.00, unit: '10kg', stock_quantity: 30, vendor_name: 'United Cash & Carry' },
   { title: 'Cooking Oil 20L', description: 'Sunflower cooking oil', category: 'pantry', base_price: 360.00, unit: '20L', stock_quantity: 100, vendor_name: 'Devland Cash & Carry' },
   { title: 'Rice 10kg', description: 'Long grain parboiled rice', category: 'pantry', base_price: 120.00, unit: '10kg', stock_quantity: 40, vendor_name: 'Devland Cash & Carry' },
-  { title: 'Premium Beef Mince Bulk 5kg', description: 'High-quality lean beef mince bulk box', category: 'meat-poultry', base_price: 450.00, unit: '5kg', stock_quantity: 15, vendor_name: 'Daily Market Wholesale' },
-  { title: 'Bulk Potatoes 10kg', description: 'Large washed potatoes sack', category: 'fruit-veg', base_price: 90.00, unit: '10kg', stock_quantity: 200, vendor_name: 'Daily Market Wholesale' }
+  { title: 'Premium Beef Mince Bulk 5kg', description: 'High-quality lean beef mince bulk box', category: 'meat-poultry', base_price: 450.00, unit: '5kg', stock_quantity: 15, vendor_name: 'Guma Basket Wholesale' },
+  { title: 'Bulk Potatoes 10kg', description: 'Large washed potatoes sack', category: 'fruit-veg', base_price: 90.00, unit: '10kg', stock_quantity: 200, vendor_name: 'Guma Basket Wholesale' }
 ];
 
 export async function GET() {

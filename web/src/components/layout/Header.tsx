@@ -33,7 +33,7 @@ export default function Header() {
           <div className="container">
             <div className={styles.topBarContent}>
               <Link href="/" className={styles.logo}>
-                DAILY MARKET
+                GUMA BASKET
               </Link>
 
               <div className={styles.searchArea}>
@@ -83,6 +83,7 @@ export default function Header() {
           <div className="container">
             <div className={styles.navLinks}>
               <Link href="/shop">ALL PRODUCTS</Link>
+              <Link href="/deals" style={{ color: '#dc2626', fontWeight: 900 }}>🏷️ DEALS</Link>
               <Link href="/shop?category=fruit-veg">PRODUCE</Link>
               <Link href="/shop?category=meat-poultry">BUTCHERY</Link>
               <Link href="/stores">CASH & CARRIES</Link>

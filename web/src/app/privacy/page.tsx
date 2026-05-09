@@ -1,14 +1,14 @@
 import type { Metadata } from 'next';
 
 export const metadata: Metadata = {
-  title: 'Privacy Policy | DailyMarket',
-  description: 'How DailyMarket collects, uses, and protects your personal information in compliance with the POPIA Act (South Africa).',
+  title: 'Privacy Policy | GUMA BASKET',
+  description: 'How GUMA BASKET collects, uses, and protects your personal information in compliance with the POPIA Act (South Africa).',
 };
 
 const SECTIONS = [
   {
     title: '1. Who We Are',
-    body: 'DailyMarket (Pty) Ltd is a South African registered company operating a premium online fresh produce marketplace. We are committed to protecting your privacy in accordance with the Protection of Personal Information Act (POPIA), 2013.',
+    body: 'GUMA BASKET (Pty) Ltd is a South African registered company operating a premium online fresh produce marketplace. We are committed to protecting your privacy in accordance with the Protection of Personal Information Act (POPIA), 2013.',
   },
   {
     title: '2. What Information We Collect',
@@ -36,7 +36,7 @@ const SECTIONS = [
   },
   {
     title: '8. Contact Our Information Officer',
-    body: 'For any privacy concerns, requests for access, or deletion requests, contact our Information Officer at privacy@dailymarket.co.za. We will respond within 30 days as required by POPIA.',
+    body: 'For any privacy concerns, requests for access, or deletion requests, contact our Information Officer at privacy@GUMA BASKET.co.za. We will respond within 30 days as required by POPIA.',
   },
 ];
 
@@ -46,7 +46,7 @@ export default function PrivacyPage() {
       <div style={{ maxWidth: 760, margin: '0 auto' }}>
         <div style={{ marginBottom: 48 }}>
           <h1 style={{ fontSize: '2.5rem', fontWeight: 900, letterSpacing: '-0.04em', marginBottom: 12 }}>Privacy Policy</h1>
-          <p style={{ color: '#64748b', fontSize: '0.9rem' }}>Last updated: March 2026 · DailyMarket (Pty) Ltd · POPIA Compliant</p>
+          <p style={{ color: '#64748b', fontSize: '0.9rem' }}>Last updated: March 2026 · GUMA BASKET (Pty) Ltd · POPIA Compliant</p>
         </div>
 
         <div style={{ background: '#ecfdf5', border: '1px solid #a7f3d0', borderRadius: 12, padding: '16px 20px', marginBottom: 40 }}>
@@ -65,7 +65,7 @@ export default function PrivacyPage() {
         <div style={{ marginTop: 60, padding: 32, background: '#f8fafc', borderRadius: 16, border: '1px solid #e2e8f0' }}>
           <p style={{ color: '#64748b', fontSize: '0.9rem', lineHeight: 1.7 }}>
             Privacy concerns? Email our Information Officer at{' '}
-            <a href="mailto:privacy@dailymarket.co.za" style={{ color: '#111111', fontWeight: 700 }}>privacy@dailymarket.co.za</a>
+            <a href="mailto:privacy@GUMA BASKET.co.za" style={{ color: '#111111', fontWeight: 700 }}>privacy@GUMA BASKET.co.za</a>
           </p>
         </div>
       </div>

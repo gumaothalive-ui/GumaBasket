@@ -288,7 +288,7 @@ export default function CheckoutPage() {
               </div>
               <div className={styles.inputGroup}>
                 <label>Street Address</label>
-                <input type="text" required spellCheck={true} autoCorrect="on" placeholder="123 Bree Street, Cape Town" value={shipping.address} onChange={e => setShipping(s => ({ ...s, address: e.target.value }))} />
+                <input type="text" required spellCheck={true} autoCorrect="on" placeholder="123 Govan Mbeki Ave, Nelson Mandela Bay" value={shipping.address} onChange={e => setShipping(s => ({ ...s, address: e.target.value }))} />
               </div>
               <div className={styles.formRow}>
                 <div className={styles.inputGroup}>
@@ -393,7 +393,7 @@ export default function CheckoutPage() {
               <div style={{ padding: '16px 0', borderTop: '1px solid #e2e8f0', borderBottom: '1px solid #e2e8f0', margin: '16px 0', display: 'flex', gap: 8 }}>
                 <input 
                   type="text" 
-                  placeholder="Promo Code (Try WELCOME10)" 
+                  placeholder="Enter promo code" 
                   value={promoCode} 
                   onChange={e => setPromoCode(e.target.value)} 
                   style={{ flex: 1, padding: '10px 14px', border: '1px solid #cbd5e1', borderRadius: 8 }} 

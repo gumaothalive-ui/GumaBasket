@@ -21,7 +21,7 @@ export async function GET() {
     'gumaqiqa323@gmail.com',
     'contact@unitedcashcarry.com',
     'info@devland.co.za',
-    'wholesale@dailymarket.co.za'
+    'wholesale@GUMA BASKET.co.za'
   ];
 
   for (const email of emails) {

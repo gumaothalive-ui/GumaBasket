@@ -57,7 +57,7 @@ export async function POST(req: NextRequest) {
           const { data: userData } = await supabase.auth.admin.getUserById(orderData.user_id);
           const email = userData?.user?.email;
           if (email) {
-            await sendNotification(email, 'email', `✅ DailyMarket Order #${orderRef} Confirmed`, '', {
+            await sendNotification(email, 'email', `✅ GUMA BASKET Order #${orderRef} Confirmed`, '', {
               orderRef, customerName: 'Valued Customer', items: 'Your recent order items', itemsList: mappedItems, total, phone
             });
           }
@@ -69,7 +69,7 @@ export async function POST(req: NextRequest) {
           else if (!phone.startsWith('+')) phone = '+27' + phone;
 
           if (/^\+[1-9]\d{6,14}$/.test(phone)) {
-            const smsMessage = `DailyMarket: Order #${orderRef} confirmed! 🛒\nTotal: R${total}`;
+            const smsMessage = `GUMA BASKET: Order #${orderRef} confirmed! 🛒\nTotal: R${total}`;
             await sendNotification('', 'sms', '', smsMessage, { phone });
           } else {
             console.warn(`[SMS] Invalid phone number skipped: ${orderData.shipping_address?.phone}`);

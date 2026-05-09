@@ -106,11 +106,7 @@ function ProductsContent() {
       {/* Top Nav */}
       <div className="dashboard-header">
         <Link href="/" style={{ display: 'flex', alignItems: 'center', gap: 12, textDecoration: 'none' }}>
-           <div style={{ background: 'linear-gradient(135deg, #0f172a 0%, #000000 100%)', color: '#fff', fontWeight: 900, fontSize: '18px', width: 40, height: 40, display: 'flex', alignItems: 'center', justifyContent: 'center', borderRadius: 10, boxShadow: '0 4px 10px rgba(15,23,42,0.2)' }}>DM</div>
-           <div className="dashboard-header-brand-text">
-              <div style={{ fontWeight: 800, fontSize: '16px', color: '#0f172a', letterSpacing: '-0.3px' }}>Seller Center</div>
-              <div style={{ fontSize: '9px', color: '#0f172a', fontWeight: 900, textTransform: 'uppercase', letterSpacing: '0.1em' }}>Premium Merchant</div>
-           </div>
+           <img src="/logo.png" alt="Guma Basket" style={{ height: '48px', width: 'auto' }} />
         </Link>
 
         {vendorName && <TopNavProfile vendorName={vendorName} />}
@@ -123,8 +119,10 @@ function ProductsContent() {
           {[
             { href: '/products', icon: '🛍️', label: 'Storefront Inventory', active: true },
             { href: '/orders', icon: '📦', label: 'Customer Orders', active: false },
+            { href: '/earnings', icon: '📈', label: 'Earnings', active: false },
+            { href: '/advertising', icon: '📢', label: 'Marketing & Ads', active: false },
             { href: '/onboarding', icon: '➕', label: 'List New Product', active: false },
-            { href: '/profile', icon: '🏦', label: 'Payout Settings', active: false },
+            { href: '/profile', icon: '🏪', label: 'Store Profile & Settings', active: false },
           ].map(sidebarBtn)}
           
           <div style={{ marginTop: 'auto', padding: '24px 16px', background: '#f1f5f9', borderRadius: 12, border: '1px solid #cbd5e1' }}>
@@ -204,7 +202,7 @@ function ProductsContent() {
 
                       <div style={{ background: '#f8fafc', borderRadius: 12, padding: '16px', marginBottom: 20 }}>
                          <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'baseline', marginBottom: 4 }}>
-                            <span style={{ fontSize: '11px', fontWeight: 800, color: '#94a3b8', textTransform: 'uppercase' }}>DailyMarket Price</span>
+                            <span style={{ fontSize: '11px', fontWeight: 800, color: '#94a3b8', textTransform: 'uppercase' }}>GUMA BASKET Price</span>
                             <span style={{ fontSize: '20px', fontWeight: 900, color: '#0f172a', letterSpacing: '-1px' }}>R{p.premium_price?.toFixed(2)}</span>
                          </div>
                          <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
@@ -272,8 +270,8 @@ function ProductsContent() {
           <span>List Item</span>
         </Link>
         <Link href={`/profile`} className="mobile-nav-item">
-          <span className="mobile-nav-icon">🏦</span>
-          <span>Payouts</span>
+          <span className="mobile-nav-icon">🏪</span>
+          <span>Profile</span>
         </Link>
       </nav>
     </main>

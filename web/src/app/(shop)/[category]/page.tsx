@@ -1,4 +1,5 @@
-import DepartmentListing from '@/components/ui/DepartmentListing';
+import { DepartmentListingClient } from '@/components/ui/DepartmentListing';
+import { fetchSAProducts } from '@/services/marketplaceService';
 import { notFound } from 'next/navigation';
 
 export const dynamic = 'force-dynamic';
@@ -11,11 +12,27 @@ export default async function CategoryPage({ params }: { params: Promise<{ categ
     return notFound();
   }
 
-  // Basic title case for the heading
+  // Fetch all products server-side, pass to client component for filtering
+  let products: any[] = [];
+  try {
+    const allProducts = await fetchSAProducts(1, 400);
+    products = allProducts
+      .filter(p => p.category === resolvedParams.category)
+      .sort((a, b) => a.premium_price - b.premium_price);
+  } catch (err) {
+    console.error(`[CategoryPage] Error loading ${resolvedParams.category}:`, err);
+  }
+
   const title = resolvedParams.category
     .split('-')
     .map(word => word.charAt(0).toUpperCase() + word.slice(1))
     .join(' ');
 
-  return <DepartmentListing title={title} category={resolvedParams.category} />;
+  return (
+    <DepartmentListingClient
+      title={title}
+      category={resolvedParams.category}
+      products={products}
+    />
+  );
 }

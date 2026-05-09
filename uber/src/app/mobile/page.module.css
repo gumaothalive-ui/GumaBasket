@@ -1,0 +1,753 @@
+/* ── Mobile Shell ── */
+
+
+.shell {
+  position: fixed;
+  inset: 0;
+  display: flex;
+  flex-direction: column;
+  background: #000;
+  font-family: 'Inter', system-ui, -apple-system, sans-serif;
+  overflow: hidden;
+  max-width: 430px;
+  margin: 0 auto;
+}
+
+/* ── Status bar spacer ── */
+.statusBar {
+  height: env(safe-area-inset-top, 44px);
+  background: transparent;
+  flex-shrink: 0;
+}
+
+/* ── Map fills everything ── */
+.mapWrap {
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+}
+
+/* ── Top pill ── */
+.topPill {
+  position: absolute;
+  top: calc(env(safe-area-inset-top, 44px) + 12px);
+  left: 50%;
+  transform: translateX(-50%);
+  background: #fff;
+  border-radius: 30px;
+  padding: 10px 20px;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  box-shadow: 0 4px 20px rgba(0,0,0,0.18);
+  z-index: 50;
+  white-space: nowrap;
+}
+
+.topPillDot {
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  background: #05A357;
+  box-shadow: 0 0 0 3px rgba(5,163,87,0.25);
+  animation: dotPulse 2s infinite;
+  flex-shrink: 0;
+}
+
+@keyframes dotPulse {
+  0%  { box-shadow: 0 0 0 0   rgba(5,163,87,0.4); }
+  70% { box-shadow: 0 0 0 8px rgba(5,163,87,0); }
+  100%{ box-shadow: 0 0 0 0   rgba(5,163,87,0); }
+}
+
+.topPillText {
+  font-size: 13px;
+  font-weight: 700;
+  color: #111;
+}
+
+/* ── Hamburger / profile button top-left ── */
+.topLeft {
+  position: absolute;
+  top: calc(env(safe-area-inset-top, 44px) + 12px);
+  left: 16px;
+  z-index: 50;
+}
+
+.iconBtn {
+  width: 44px;
+  height: 44px;
+  border-radius: 50%;
+  background: #fff;
+  border: none;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 18px;
+  box-shadow: 0 4px 16px rgba(0,0,0,0.15);
+  color: #111;
+  font-weight: 700;
+}
+
+/* ── Nav instruction banner ── */
+.navBanner {
+  position: absolute;
+  top: calc(env(safe-area-inset-top, 44px) + 68px);
+  left: 16px;
+  right: 16px;
+  background: #0f9d58;
+  color: #fff;
+  border-radius: 16px;
+  padding: 14px 18px;
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  box-shadow: 0 8px 24px rgba(0,0,0,0.25);
+  z-index: 50;
+}
+
+.navBanner svg {
+  width: 32px;
+  height: 32px;
+  flex-shrink: 0;
+  stroke: #fff;
+  fill: none;
+  stroke-width: 2.5;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+
+.navBannerText {
+  font-size: 17px;
+  font-weight: 700;
+  line-height: 1.25;
+}
+
+/* ── Bottom sheet ── */
+.sheet {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  background: #fff;
+  border-radius: 24px 24px 0 0;
+  box-shadow: 0 -6px 30px rgba(0,0,0,0.18);
+  z-index: 100;
+  display: flex;
+  flex-direction: column;
+  max-height: 62vh;
+  transition: max-height 0.35s cubic-bezier(0.16,1,0.3,1);
+  padding-bottom: env(safe-area-inset-bottom, 24px);
+}
+
+.sheetHandle {
+  width: 40px;
+  height: 4px;
+  border-radius: 2px;
+  background: #ddd;
+  margin: 12px auto 0;
+  flex-shrink: 0;
+}
+
+.sheetScroll {
+  overflow-y: auto;
+  flex: 1;
+  padding: 16px 20px 8px;
+}
+
+/* ── Waiting state ── */
+.waitCard {
+  background: #1A1A1A;
+  border-radius: 16px;
+  padding: 20px;
+  color: #fff;
+  position: relative;
+  overflow: hidden;
+}
+
+.waitPulseBar {
+  position: absolute;
+  top: 0; left: 0; right: 0;
+  height: 3px;
+  background: linear-gradient(90deg, #10b981, #34d399, #10b981);
+  background-size: 200% 100%;
+  animation: pulseBar 2s linear infinite;
+}
+
+@keyframes pulseBar {
+  0%   { background-position: 100% 0; }
+  100% { background-position: -100% 0; }
+}
+
+.waitHeader {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 14px;
+}
+
+.waitTitle {
+  font-size: 13px;
+  font-weight: 700;
+  color: #34d399;
+}
+
+.waitLive {
+  font-size: 12px;
+  color: #888;
+}
+
+.waitAmount {
+  font-size: 38px;
+  font-weight: 800;
+  letter-spacing: -0.04em;
+  line-height: 1;
+  margin-bottom: 6px;
+}
+
+.waitMeta {
+  font-size: 14px;
+  color: #ccc;
+  margin-bottom: 14px;
+}
+
+.itemsList {
+  background: rgba(255,255,255,0.08);
+  border-radius: 10px;
+  padding: 10px 14px;
+  margin-bottom: 14px;
+}
+
+.itemRow {
+  display: flex;
+  justify-content: space-between;
+  font-size: 13px;
+  padding: 4px 0;
+  border-bottom: 1px solid rgba(255,255,255,0.07);
+  color: #eee;
+}
+
+.itemRow:last-child { border-bottom: none; }
+
+.addresses {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  margin-bottom: 16px;
+  padding-left: 12px;
+  border-left: 2px dashed rgba(255,255,255,0.2);
+}
+
+.addrRow { position: relative; }
+
+.addrRow::before {
+  content: '';
+  position: absolute;
+  left: -17px;
+  top: 6px;
+  width: 8px;
+  height: 8px;
+  background: #fff;
+}
+
+.addrRow.drop::before {
+  border-radius: 50%;
+  background: #05A357;
+}
+
+.addrTitle { font-size: 14px; font-weight: 700; }
+.addrSub   { font-size: 12px; color: #aaa; margin-top: 2px; }
+
+.acceptBtn {
+  width: 100%;
+  background: #05A357;
+  color: #fff;
+  border: none;
+  border-radius: 12px;
+  padding: 16px;
+  font-size: 17px;
+  font-weight: 800;
+  cursor: pointer;
+  box-shadow: 0 4px 16px rgba(5,163,87,0.35);
+  transition: transform 0.1s;
+}
+
+.acceptBtn:active { transform: scale(0.98); }
+
+/* ── Active trip card ── */
+.tripCard {
+  border: 1px solid #eee;
+  border-radius: 16px;
+  padding: 16px;
+  margin-bottom: 12px;
+}
+
+.tripTop {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 12px;
+}
+
+.orderRef { font-size: 13px; font-weight: 600; color: #666; }
+
+.badge {
+  background: #000;
+  color: #fff;
+  border-radius: 20px;
+  padding: 4px 12px;
+  font-size: 12px;
+  font-weight: 700;
+}
+
+.chatBtn {
+  width: 100%;
+  margin-top: 10px;
+  padding: 12px;
+  background: #25D366;
+  border: none;
+  border-radius: 10px;
+  color: #fff;
+  font-size: 15px;
+  font-weight: 700;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+}
+
+/* ── ETA bar ── */
+.etaBar {
+  position: absolute;
+  bottom: calc(env(safe-area-inset-bottom, 0px) + 72px);
+  left: 0; right: 0;
+  background: #fff;
+  padding: 16px 20px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  box-shadow: 0 -4px 20px rgba(0,0,0,0.1);
+  z-index: 99;
+}
+
+.etaMin {
+  font-size: 26px;
+  font-weight: 800;
+  color: #0f9d58;
+}
+
+.etaSub {
+  font-size: 13px;
+  color: #666;
+  font-weight: 500;
+  margin-top: 2px;
+}
+
+.exitBtn {
+  background: #111;
+  color: #fff;
+  border: none;
+  border-radius: 24px;
+  padding: 10px 20px;
+  font-size: 14px;
+  font-weight: 700;
+  cursor: pointer;
+}
+
+/* ── Bottom Tab Bar ── */
+.tabBar {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  height: calc(64px + env(safe-area-inset-bottom, 0px));
+  background: #fff;
+  border-top: 1px solid #eee;
+  display: flex;
+  align-items: flex-start;
+  padding-top: 8px;
+  z-index: 200;
+}
+
+.tabItem {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 4px;
+  cursor: pointer;
+  padding: 0 4px;
+  background: none;
+  border: none;
+}
+
+.tabIcon {
+  font-size: 22px;
+  line-height: 1;
+}
+
+.tabLabel {
+  font-size: 10px;
+  font-weight: 600;
+  color: #aaa;
+}
+
+.tabLabel.active { color: #000; }
+.tabIcon.active  { filter: none; }
+
+/* ── Log box ── */
+.logBox {
+  background: #f6f6f6;
+  border-radius: 10px;
+  padding: 10px 12px;
+  margin-top: 10px;
+  max-height: 120px;
+  overflow-y: auto;
+}
+
+.logEntry {
+  font-size: 12px;
+  color: #555;
+  padding: 3px 0;
+  display: flex;
+  gap: 8px;
+}
+
+.logTime { font-family: monospace; font-weight: 700; color: #000; }
+
+/* ── Earnings ── */
+.earningsPage {
+  padding: 20px;
+}
+
+.balCard {
+  background: #000;
+  color: #fff;
+  border-radius: 20px;
+  padding: 24px;
+  margin-bottom: 16px;
+}
+
+.balLabel { font-size: 13px; color: rgba(255,255,255,0.6); margin-bottom: 8px; }
+.balAmount { font-size: 42px; font-weight: 800; letter-spacing: -0.04em; margin-bottom: 20px; }
+
+.cashBtn {
+  background: #05A357;
+  color: #fff;
+  border: none;
+  border-radius: 10px;
+  padding: 12px 24px;
+  font-size: 15px;
+  font-weight: 700;
+  cursor: pointer;
+}
+
+.tripsCard {
+  background: #fff;
+  border: 1px solid #eee;
+  border-radius: 16px;
+  padding: 16px;
+  margin-bottom: 12px;
+}
+
+.tripsTitle { font-size: 16px; font-weight: 700; margin-bottom: 12px; }
+
+.tripItem {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 12px 0;
+  border-bottom: 1px solid #f0f0f0;
+}
+
+.tripItem:last-child { border-bottom: none; }
+.tripDate { font-size: 13px; font-weight: 600; }
+.tripRoute { font-size: 12px; color: #666; margin-top: 2px; }
+.tripAmt { font-size: 16px; font-weight: 800; color: #05A357; }
+
+/* ── Drawer / side menu ── */
+.drawerOverlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0,0,0,0.5);
+  z-index: 9000;
+  display: flex;
+}
+
+.drawer {
+  width: 300px;
+  background: #fff;
+  height: 100%;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  animation: slideIn 0.25s ease;
+}
+
+@keyframes slideIn {
+  from { transform: translateX(-100%); }
+  to   { transform: translateX(0); }
+}
+
+.drawerHead {
+  background: #000;
+  color: #fff;
+  padding: calc(env(safe-area-inset-top,44px) + 20px) 20px 20px;
+}
+
+.drawerAvatar {
+  width: 56px;
+  height: 56px;
+  border-radius: 50%;
+  background: #05A357;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 22px;
+  font-weight: 800;
+  margin-bottom: 12px;
+}
+
+.drawerName { font-size: 18px; font-weight: 800; }
+.drawerStatus { font-size: 13px; color: #05A357; font-weight: 600; margin-top: 4px; }
+
+.drawerMenu { flex: 1; padding: 16px; display: flex; flex-direction: column; gap: 4px; }
+
+.drawerItem {
+  padding: 14px 12px;
+  border-radius: 10px;
+  font-size: 15px;
+  font-weight: 600;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  color: #111;
+}
+
+.drawerItem:hover { background: #f5f5f5; }
+
+.drawerFooter {
+  padding: 16px;
+  border-top: 1px solid #eee;
+}
+
+.signOutBtn {
+  width: 100%;
+  padding: 12px;
+  border: 1px solid #eee;
+  border-radius: 10px;
+  background: #f6f6f6;
+  font-size: 14px;
+  font-weight: 700;
+  cursor: pointer;
+  color: #111;
+}
+
+/* ── WhatsApp chat overlay ── */
+.chatOverlay {
+  position: fixed;
+  inset: 0;
+  z-index: 99990;
+  display: flex;
+  flex-direction: column;
+}
+
+.chatHead {
+  background: #075E54;
+  padding: calc(env(safe-area-inset-top,44px) + 8px) 16px 12px;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  flex-shrink: 0;
+}
+
+.chatBack {
+  background: none;
+  border: none;
+  color: #fff;
+  font-size: 22px;
+  cursor: pointer;
+  padding: 4px;
+  line-height: 1;
+}
+
+.chatAvatar {
+  width: 38px;
+  height: 38px;
+  border-radius: 50%;
+  background: #dcfce7;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 18px;
+  flex-shrink: 0;
+}
+
+.chatName { color: #fff; font-weight: 700; font-size: 16px; }
+.chatSub  { color: rgba(255,255,255,0.7); font-size: 12px; }
+
+.callBtn {
+  width: 38px;
+  height: 38px;
+  border-radius: 50%;
+  background: rgba(255,255,255,0.15);
+  border: 1px solid rgba(255,255,255,0.3);
+  color: #fff;
+  font-size: 18px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-left: auto;
+  flex-shrink: 0;
+}
+
+.chatMessages {
+  flex: 1;
+  overflow-y: auto;
+  padding: 16px 12px;
+  background: #E5DDD5;
+}
+
+.chatInputBar {
+  background: #f0f0f0;
+  padding: 8px 12px calc(env(safe-area-inset-bottom,16px) + 8px);
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex-shrink: 0;
+}
+
+.chatInput {
+  flex: 1;
+  border: none;
+  outline: none;
+  background: #fff;
+  border-radius: 24px;
+  padding: 10px 16px;
+  font-size: 15px;
+  font-family: inherit;
+}
+
+.sendBtn {
+  width: 42px;
+  height: 42px;
+  border-radius: 50%;
+  border: none;
+  background: #075E54;
+  color: #fff;
+  font-size: 17px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  transition: background 0.2s;
+}
+
+.msgBubble {
+  max-width: 78%;
+  padding: 8px 12px 6px;
+  border-radius: 18px;
+  box-shadow: 0 1px 2px rgba(0,0,0,0.1);
+  margin-bottom: 6px;
+}
+
+.msgMine {
+  background: #DCF8C6;
+  border-radius: 18px 18px 4px 18px;
+  margin-left: auto;
+}
+
+.msgTheirs {
+  background: #fff;
+  border-radius: 18px 18px 18px 4px;
+}
+
+/* ── Call overlay ── */
+.callOverlay {
+  position: fixed;
+  inset: 0;
+  z-index: 999999;
+  background: linear-gradient(180deg, #1a2e1a 0%, #0a1a0a 100%);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: space-between;
+  padding: calc(env(safe-area-inset-top,44px) + 48px) 40px calc(env(safe-area-inset-bottom,24px) + 48px);
+}
+
+.callStatus  { color: rgba(255,255,255,0.6); font-size: 14px; letter-spacing: 1px; text-align: center; }
+.callCenter  { text-align: center; }
+
+.callAvatar {
+  width: 120px;
+  height: 120px;
+  border-radius: 50%;
+  background: linear-gradient(135deg, #25D366, #128C7E);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 3rem;
+  margin: 0 auto 20px;
+  box-shadow: 0 0 0 12px rgba(37,211,102,0.15), 0 0 0 24px rgba(37,211,102,0.07);
+  animation: callRing 1.5s ease-in-out infinite;
+}
+
+@keyframes callRing {
+  0%,100% { transform: scale(1); }
+  50%      { transform: scale(1.04); }
+}
+
+.callName { color: #fff; font-size: 26px; font-weight: 800; margin-bottom: 6px; }
+.callSub  { color: rgba(255,255,255,0.5); font-size: 13px; }
+
+.callControls {
+  display: flex;
+  gap: 48px;
+  align-items: center;
+}
+
+.callCtrlItem { text-align: center; }
+
+.callCircle {
+  width: 68px;
+  height: 68px;
+  border-radius: 50%;
+  border: none;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.8rem;
+  margin-bottom: 8px;
+}
+
+.callCircle.red   { background: #dc2626; box-shadow: 0 4px 20px rgba(220,38,38,0.45); }
+.callCircle.green { background: #25D366; box-shadow: 0 4px 20px rgba(37,211,102,0.45); animation: callRing 1.2s ease-in-out infinite; }
+.callCircle.mute  { background: rgba(255,255,255,0.12); }
+.callCircle.muted { background: rgba(255,255,255,0.9); }
+
+.callCtrlLabel { color: rgba(255,255,255,0.5); font-size: 10px; font-weight: 700; letter-spacing: 0.5px; }
+
+/* ── Scanning ── */
+.scanWait {
+  text-align: center;
+  padding: 24px 0;
+  color: #aaa;
+}
+
+.scanEmoji { font-size: 36px; margin-bottom: 8px; }
+.scanText  { font-size: 14px; line-height: 1.5; }
+
+/* ── Section title ── */
+.sectionTitle {
+  font-size: 16px;
+  font-weight: 800;
+  color: #111;
+  margin-bottom: 12px;
+  letter-spacing: -0.02em;
+}

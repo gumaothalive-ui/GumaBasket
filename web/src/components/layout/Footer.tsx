@@ -25,7 +25,7 @@ export default function Footer() {
 
         <div className={styles.mainGrid}>
           <div className={styles.column}>
-            <div className={styles.logo}>DAILYMARKET</div>
+            <div className={styles.logo}>GUMA BASKET</div>
             <p className={styles.tagline}>Premium marketplace logistics for the South African economy. Simplified, Scaled, Delivered.</p>
           </div>
           
@@ -52,14 +52,14 @@ export default function Footer() {
             <h3>Connect</h3>
             <p>Get elite marketplace updates.</p>
             <form className={styles.newsletter}>
-              <input type="email" placeholder="ENTER EMAIL" />
-              <button type="submit">JOIN</button>
+              <input type="email" placeholder="ENTER EMAIL" suppressHydrationWarning />
+              <button type="submit" suppressHydrationWarning>JOIN</button>
             </form>
           </div>
         </div>
 
         <div className={styles.bottom}>
-          <p>&copy; {new Date().getFullYear()} DAILYMARKET. ALL RIGHTS RESERVED. 🇿🇦</p>
+          <p>&copy; {new Date().getFullYear()} GUMA BASKET. ALL RIGHTS RESERVED. 🇿🇦</p>
           <div className={styles.legal}>
             <Link href="/terms">TERMS</Link>
             <Link href="/privacy">PRIVACY</Link>

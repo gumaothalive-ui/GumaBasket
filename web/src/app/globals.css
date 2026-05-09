@@ -1,34 +1,37 @@
 :root {
-  --background: #ffffff;
-  --foreground: #000000;
+  --background: #faf8f5;
+  --foreground: #1a1a1a;
   
-  --primary: #000000;
-  --primary-hover: #333333;
-  --primary-faded: rgba(0, 0, 0, 0.05);
+  --primary: #1f4e3d;
+  --primary-hover: #174035;
+  --primary-faded: rgba(31, 78, 61, 0.05);
   
   /* Brand Colors */
-  --brand-black: #000000;
+  --brand-black: #1a1a1a;
   --brand-white: #ffffff;
   --brand-grey: #f5f5f5;
 
-  --accent-gold: #c5a059;
+  --accent-gold: #e28743;
   --accent-red: #cc0000;
-  --accent-green: #16a34a;
+  --accent-green: #2e7d32;
   
-  --text-primary: #000000;
+  --text-primary: #1a1a1a;
   --text-secondary: #555555;
   --text-muted: #888888;
   
-  --glass: rgba(255, 255, 255, 0.9);
-  --glass-border: rgba(0, 0, 0, 0.05);
+  --glass: rgba(250, 248, 245, 0.85);
+  --glass-border: rgba(31, 78, 61, 0.08);
   
   --border-subtle: #eaeaea;
+  --border-light: #f0f0f0;
   --border-medium: #d0d0d0;
   
   --nav-height: 100px;
   --container-width: 1440px;
   
   --transition-smooth: 0.5s cubic-bezier(0.16, 1, 0.3, 1);
+  --shadow: 0 8px 32px rgba(0, 0, 0, 0.12);
+  --shadow-sm: 0 2px 8px rgba(0, 0, 0, 0.06);
   --shadow-lg: 0 30px 60px rgba(0,0,0,0.5);
   
   --radius-md: 8px;
@@ -83,10 +86,9 @@ button {
 
 /* Typography Overhaul */
 h1, h2, h3, h4 {
-  font-weight: 900;
-  letter-spacing: -0.05em;
-  line-height: 1;
-  text-transform: uppercase;
+  font-weight: 800;
+  letter-spacing: -0.03em;
+  line-height: 1.2;
 }
 
 section {

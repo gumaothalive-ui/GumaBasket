@@ -5,21 +5,21 @@
   right: 0;
   z-index: 1000;
   transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
-  border-bottom: 1px solid #eaeaea;
-  background-color: #ffffff;
-  color: #000000;
+  border-bottom: 1px solid var(--border-subtle);
+  background-color: var(--glass);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  color: var(--foreground);
 }
 
 .scrolled {
-  background: rgba(255, 255, 255, 0.98);
-  backdrop-filter: blur(12px);
-  -webkit-backdrop-filter: blur(12px);
+  background: var(--glass);
   box-shadow: 0 4px 20px rgba(0,0,0,0.06);
 }
 
 .topBar {
   padding: 16px 0;
-  border-bottom: 1px solid #f5f5f5;
+  border-bottom: 1px solid var(--border-subtle);
 }
 
 .topBarContent {
@@ -34,7 +34,7 @@
   font-weight: 900;
   letter-spacing: -0.05em;
   text-transform: uppercase;
-  color: #000000;
+  color: var(--primary);
 }
 
 .searchArea {
@@ -57,42 +57,42 @@
 }
 
 .accountMenu button {
-  color: #555;
+  color: var(--text-secondary);
   font-weight: 600;
   font-size: 0.8rem;
   white-space: nowrap;
 }
 .accountMenu button:hover {
-  color: #000;
+  color: var(--primary);
 }
 
 .authLink {
-  color: #000;
+  color: var(--primary);
   font-weight: 700;
   font-size: 0.9rem;
   padding: 10px 24px;
   border-radius: 8px;
-  border: 1px solid #eaeaea;
+  border: 1px solid var(--border-subtle);
   transition: all 0.2s ease;
 }
 .authLink:hover {
-  background: #f9f9f9;
-  border-color: #d0d0d0;
+  background: var(--primary-faded);
+  border-color: var(--primary);
 }
 
 .signupLink {
-  background: #000;
-  color: #fff;
+  background: var(--primary);
+  color: var(--brand-white);
   font-weight: 700;
   font-size: 0.9rem;
   padding: 10px 24px;
   border-radius: 8px;
-  border: 1px solid #000;
+  border: 1px solid var(--primary);
   transition: all 0.2s ease;
 }
 .signupLink:hover {
-  background: #333;
-  border-color: #333;
+  background: var(--primary-hover);
+  border-color: var(--primary-hover);
 }
 
 .cartIcon {
@@ -103,24 +103,24 @@
   align-items: center;
   justify-content: center;
   border-radius: 50%;
-  background: #f9f9f9;
-  border: 1px solid #eaeaea;
+  background: var(--background);
+  border: 1px solid var(--border-subtle);
   cursor: pointer;
-  color: #000;
+  color: var(--primary);
   transition: all 0.2s ease;
 }
 .cartIcon:hover {
-  background: #000;
-  color: #fff;
-  border-color: #000;
+  background: var(--primary);
+  color: var(--brand-white);
+  border-color: var(--primary);
 }
 
 .badge {
   position: absolute;
   top: -4px;
   right: -4px;
-  background: #16a34a;
-  color: #fff;
+  background: var(--accent-gold);
+  color: var(--brand-white);
   font-size: 0.7rem;
   font-weight: 800;
   min-width: 20px;
@@ -129,11 +129,11 @@
   align-items: center;
   justify-content: center;
   border-radius: 50%;
-  border: 2px solid #fff;
+  border: 2px solid var(--background);
 }
 
 .cartIcon:hover .badge {
-  border-color: #000;
+  border-color: var(--primary);
 }
 
 .navigation {
@@ -152,13 +152,13 @@
 }
 
 .navLinks a {
-  color: #555;
+  color: var(--text-secondary);
   position: relative;
   transition: color 0.2s ease;
 }
 
 .navLinks a:hover {
-  color: #000;
+  color: var(--primary);
 }
 
 .navLinks a::after {
@@ -168,7 +168,7 @@
   left: 0;
   width: 0%;
   height: 2px;
-  background: #000;
+  background: var(--accent-gold);
   transition: width 0.2s ease;
 }
 

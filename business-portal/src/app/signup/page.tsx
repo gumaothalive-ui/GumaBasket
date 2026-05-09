@@ -132,11 +132,7 @@ export default function SignupPage() {
       {/* Header */}
       <div style={{ background: '#fff', borderBottom: '1px solid #e2e8f0', padding: '0 40px', display: 'flex', alignItems: 'center', height: 72, position: 'sticky', top: 0, zIndex: 100 }}>
         <Link href="/" style={{ display: 'flex', alignItems: 'center', gap: 12, textDecoration: 'none' }}>
-          <div style={{ background: '#0f172a', color: '#fff', fontWeight: 900, fontSize: '20px', width: 44, height: 44, display: 'flex', alignItems: 'center', justifyContent: 'center', borderRadius: 10 }}>DM</div>
-          <div>
-            <div style={{ fontWeight: 800, fontSize: '18px', color: '#0f172a', letterSpacing: '-0.5px' }}>DailyMarket</div>
-            <div style={{ fontSize: '10px', color: '#64748b', fontWeight: 700, letterSpacing: '0.12em', textTransform: 'uppercase' }}>SELLER CENTER</div>
-          </div>
+          <img src="/logo.png" alt="Guma Basket" style={{ height: '56px', width: 'auto' }} />
         </Link>
       </div>
 
@@ -147,7 +143,7 @@ export default function SignupPage() {
             🚀 3 MONTHS FREE — NO CREDIT CARD
           </div>
           <h1 style={{ fontSize: '52px', fontWeight: 900, lineHeight: 1.05, letterSpacing: '-2px', marginBottom: 24, color: '#0f172a' }}>
-            Grow your store with <span style={{ color: '#0f172a', textDecoration: 'underline' }}>DailyMarket</span>
+            Grow your store with <span style={{ color: '#0f172a', textDecoration: 'underline' }}>GUMA BASKET</span>
           </h1>
           <p style={{ color: '#64748b', fontSize: '18px', lineHeight: 1.6, marginBottom: 40, maxWidth: 480 }}>
             Join South Africa&apos;s most elite vendor network. We handle the logistics, you focus on your craft.
