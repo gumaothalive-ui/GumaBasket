@@ -1,6 +1,7 @@
 import Link from 'next/link';
 import { getSession } from './login/actions';
 import { redirect } from 'next/navigation';
+import InstallButton from '@/components/InstallButton';
 
 export default async function LandingPage() {
   const session = await getSession();
@@ -176,6 +177,7 @@ export default async function LandingPage() {
       <footer style={{ background: '#0f172a', color: '#475569', fontSize: '13px', padding: '40px', textAlign: 'center', borderTop: '1px solid rgba(255,255,255,0.05)' }}>
         © 2024 GUMA BASKET · Elite Seller Network
       </footer>
+      <InstallButton />
     </main>
   );
 }
