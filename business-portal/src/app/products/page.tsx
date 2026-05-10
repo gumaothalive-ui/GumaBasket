@@ -16,7 +16,7 @@ type Product = {
   image_url?: string;
 };
 
-const CAT: Record<string, string> = {
+const CAT_LABELS: Record<string, string> = {
   'fruit-veg': '🥦 Fruit & Veg', 
   'meat-poultry': '🥩 Butchery', 
   'bakery': '🍞 Bakery',
@@ -70,6 +70,9 @@ function ProductsContent() {
   useEffect(() => {
     checkAuth();
   }, [checkAuth]);
+
+  // Dynamically find all categories used in the inventory
+  const uniqueCategories = Array.from(new Set(products.map(p => p.category))).sort();
 
   async function handleDelete(id: string) {
     if (!confirm('Remove this product from the marketplace?')) return;
@@ -147,10 +150,10 @@ function ProductsContent() {
             <div className="flex-between-responsive" style={{ marginBottom: 32 }}>
               <div>
                 <h1 style={{ fontSize: '28px', fontWeight: 900, color: '#0f172a', letterSpacing: '-1px' }}>
-                  {selectedCategory ? 'Category Inventory' : 'Your Storefront Inventory'}
+                  {selectedCategory ? (CAT_LABELS[selectedCategory]?.split(' ').slice(1).join(' ') || selectedCategory) : 'Your Storefront Inventory'}
                 </h1>
                 <p style={{ color: '#64748b', fontSize: '15px', marginTop: 4 }}>
-                  {selectedCategory ? `Managing items in ${CAT[selectedCategory]?.split(' ').slice(1).join(' ')}` : 'Manage and track your premium marketplace listings.'}
+                  {selectedCategory ? `Managing items in this classification` : 'Manage and track your premium marketplace listings.'}
                 </p>
               </div>
               {!selectedCategory && (
@@ -175,9 +178,8 @@ function ProductsContent() {
               <div>
                 {!selectedCategory ? (
                   <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(200px, 1fr))', gap: 24 }}>
-                    {Object.keys(CAT).map(catKey => {
+                    {uniqueCategories.map(catKey => {
                       const count = products.filter(p => p.category === catKey).length;
-                      if (count === 0) return null;
                       return (
                         <div 
                           key={catKey} 
@@ -193,9 +195,9 @@ function ProductsContent() {
                             e.currentTarget.style.borderColor = '#f1f5f9';
                           }}
                         >
-                          <div style={{ fontSize: '64px', marginBottom: 20 }}>{(CAT[catKey] || '📦').split(' ')[0]}</div>
+                          <div style={{ fontSize: '64px', marginBottom: 20 }}>{(CAT_LABELS[catKey] || '📦').split(' ')[0]}</div>
                           <div style={{ fontWeight: 900, fontSize: '16px', color: '#0f172a', textTransform: 'uppercase' }}>
-                            {CAT[catKey]?.split(' ').slice(1).join(' ') || catKey}
+                            {CAT_LABELS[catKey]?.split(' ').slice(1).join(' ') || catKey}
                           </div>
                           <div style={{ marginTop: 12, fontSize: '12px', fontWeight: 800, color: '#94a3b8', background: '#f8fafc', padding: '4px 12px', borderRadius: 20, display: 'inline-block' }}>
                             {count} Items
@@ -220,7 +222,7 @@ function ProductsContent() {
                              {p.image_url ? (
                                <img src={p.image_url} alt={p.title} style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
                              ) : (
-                               <div style={{ fontSize: 64, filter: 'drop-shadow(0 4px 12px rgba(0,0,0,0.1))' }}>{(CAT[p.category] || '📦').split(' ')[0]}</div>
+                               <div style={{ fontSize: 64, filter: 'drop-shadow(0 4px 12px rgba(0,0,0,0.1))' }}>{(CAT_LABELS[p.category] || '📦').split(' ')[0]}</div>
                              )}
                           </div>
 
