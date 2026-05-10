@@ -11,7 +11,7 @@ export type SellerOrderRow = {
   quantity: number;
   amount: number;
   customer_amount: number;
-  status: 'pending' | 'completed' | 'cancelled' | 'delivered';
+  status: 'pending' | 'preparing' | 'ready' | 'completed' | 'cancelled' | 'delivered';
   created_at: string;
   completed_at: string | null;
 };

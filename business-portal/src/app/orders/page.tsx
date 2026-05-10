@@ -59,7 +59,7 @@ function OrdersContent() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [isDemo, setIsDemo] = useState(false);
-  const [activeTab, setActiveTab] = useState<'all' | 'pending' | 'completed' | 'cancelled' | 'delivered'>('all');
+  const [activeTab, setActiveTab] = useState<'all' | 'pending' | 'processing' | 'completed' | 'cancelled' | 'delivered'>('all');
   const [checkedItems, setCheckedItems] = useState<Record<string, boolean>>({});
   const [newOrderToast, setNewOrderToast] = useState<string | null>(null);
   const prevOrderCountRef = useRef<number>(0);
@@ -143,7 +143,11 @@ function OrdersContent() {
     });
   }
 
-  const filteredOrders = orders.filter(o => activeTab === 'all' ? true : o.status === activeTab);
+  const filteredOrders = orders.filter(o => {
+    if (activeTab === 'all') return true;
+    if (activeTab === 'processing') return o.status === 'preparing' || o.status === 'ready';
+    return o.status === activeTab;
+  });
   const totalRevenue = orders.filter(o => o.status === 'completed' || o.status === 'delivered').reduce((acc, o) => acc + o.amount, 0);
 
   return (
@@ -194,8 +198,9 @@ function OrdersContent() {
         <aside className="dashboard-sidebar">
           <div style={{ fontSize: '10px', fontWeight: 800, color: '#C0C0C0', letterSpacing: '0.12em', textTransform: 'uppercase', padding: '0 12px', marginBottom: 12 }}>Menu</div>
           {NAV.map(item => {
-            const pendingCount = orders.filter(o => o.status === 'pending').length;
-            const hasNotification = item.label === 'Orders' && pendingCount > 0;
+            const activeStatuses = ['pending', 'preparing', 'ready'];
+            const activeCount = orders.filter(o => activeStatuses.includes(o.status)).length;
+            const hasNotification = item.label === 'Orders' && activeCount > 0;
 
             return (
               <Link key={item.href} href={item.href}
@@ -205,7 +210,7 @@ function OrdersContent() {
                   <span>{item.label}</span>
                   {hasNotification && (
                     <span style={{ background: '#CC0000', color: '#fff', fontSize: '10px', fontWeight: 900, padding: '2px 6px', borderRadius: '10px' }}>
-                      {pendingCount}
+                      {activeCount}
                     </span>
                   )}
                 </div>
@@ -234,7 +239,7 @@ function OrdersContent() {
               <div>
                 <h1 style={{ fontSize: '24px', fontWeight: 900, letterSpacing: '-0.8px', color: '#111', marginBottom: 6 }}>Orders</h1>
                 <p style={{ color: '#aaa', fontSize: '14px' }}>
-                  {loading ? 'Refreshing orders...' : `Managing ${orders.length} lifetime orders.`}
+                  {loading ? 'Refreshing orders...' : `You have ${orders.filter(o => ['pending', 'preparing', 'ready'].includes(o.status)).length} active orders needing attention.`}
                 </p>
               </div>
               <div style={{ background: '#fff', border: '1px solid #EAEAEA', borderRadius: 12, padding: '12px 20px', display: 'flex', flexDirection: 'column', alignItems: 'flex-end' }}>
@@ -247,8 +252,9 @@ function OrdersContent() {
             <div className="filter-tabs" style={{ display: 'flex', gap: 8, flexWrap: 'wrap', marginBottom: 24, borderBottom: '1px solid #EAEAEA', paddingBottom: 16 }}>
               {[
                 { id: 'all', label: 'All orders' },
-                { id: 'pending', label: 'Pending payment' },
-                { id: 'completed', label: 'Completed & Paid' },
+                { id: 'pending', label: 'New' },
+                { id: 'processing', label: 'Processing' },
+                { id: 'completed', label: 'Completed' },
                 { id: 'cancelled', label: 'Cancelled' },
               ].map(tab => (
                 <button key={tab.id} onClick={() => setActiveTab(tab.id as any)}
@@ -262,7 +268,11 @@ function OrdersContent() {
                   }}>
                   {tab.label}
                    <span style={{ marginLeft: 6, opacity: 0.6, fontSize: '12px' }}>
-                     ({orders.filter(o => tab.id === 'all' ? true : o.status === tab.id).length})
+                     ({orders.filter(o => {
+                       if (tab.id === 'all') return true;
+                       if (tab.id === 'processing') return o.status === 'preparing' || o.status === 'ready';
+                       return o.status === tab.id;
+                     }).length})
                    </span>
                 </button>
               ))}
@@ -354,9 +364,9 @@ function OrdersContent() {
         <Link href={`/orders`} className="mobile-nav-item active" style={{ position: 'relative' }}>
           <span className="mobile-nav-icon">📦</span>
           <span>Orders</span>
-          {orders.filter(o => o.status === 'pending').length > 0 && (
+          {orders.filter(o => ['pending', 'preparing', 'ready'].includes(o.status)).length > 0 && (
              <span style={{ position: 'absolute', top: 2, right: '20%', background: '#CC0000', color: '#fff', fontSize: '9px', fontWeight: 900, padding: '1px 5px', borderRadius: 10, border: '2px solid #fff' }}>
-                {orders.filter(o => o.status === 'pending').length}
+                {orders.filter(o => ['pending', 'preparing', 'ready'].includes(o.status)).length}
              </span>
           )}
         </Link>
