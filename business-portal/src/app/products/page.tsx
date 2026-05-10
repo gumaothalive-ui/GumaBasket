@@ -71,7 +71,6 @@ function ProductsContent() {
     checkAuth();
   }, [checkAuth]);
 
-  // Dynamically find all categories used in the inventory
   const uniqueCategories = Array.from(new Set(products.map(p => p.category))).sort();
 
   async function handleDelete(id: string) {
@@ -125,6 +124,7 @@ function ProductsContent() {
             { href: '/advertising', icon: '📢', label: 'Marketing & Ads', active: false },
             { href: '/onboarding', icon: '➕', label: 'List New Product', active: false },
             { href: '/profile', icon: '🏪', label: 'Store Profile & Settings', active: false },
+            { href: '/admin', icon: '🏛️', label: 'Master Analytics', active: false },
           ].map(sidebarBtn)}
         </aside>
 
