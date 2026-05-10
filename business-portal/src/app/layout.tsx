@@ -10,6 +10,13 @@ const inter = Inter({
 export const metadata: Metadata = {
   title: "GUMA BASKET BUSINESS | Elite Vendor Portal",
   description: "South Africa's premium digital food marketplace for elite vendors.",
+  manifest: "/manifest.json",
+  themeColor: "#0f172a",
+  appleWebApp: {
+    capable: true,
+    statusBarStyle: "default",
+    title: "Guma Seller",
+  },
 };
 
 import SplashScreen from "@/components/SplashScreen";

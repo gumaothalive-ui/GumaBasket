@@ -23,13 +23,13 @@ export default function SplashScreen() {
 
     // Set standard timers
     const fadeTimer = setTimeout(() => {
-      setFade(true); // Start fading out after 14.5 seconds
-    }, 14500);
+      setFade(true); // Start fading out after 0.8 seconds
+    }, 800);
 
     const hideTimer = setTimeout(() => {
-      setShow(false); // Fully unmount after 15 seconds
+      setShow(false); // Fully unmount after 1.2 seconds
       sessionStorage.setItem('splashShown', 'true');
-    }, 15000);
+    }, 1200);
 
     return () => {
       clearTimeout(fadeTimer);
@@ -53,7 +53,7 @@ export default function SplashScreen() {
         alignItems: 'center',
         justifyContent: 'center',
         opacity: fade ? 0 : 1,
-        transition: 'opacity 0.5s ease-in-out',
+        transition: 'opacity 0.4s ease-in-out',
         pointerEvents: 'none',
       }}
     >
@@ -63,7 +63,7 @@ export default function SplashScreen() {
           flexDirection: 'column',
           alignItems: 'center',
           gap: '24px',
-          animation: 'pulse 2s infinite ease-in-out'
+          animation: 'pulse 1.5s infinite ease-in-out'
         }}
       >
         <img 
@@ -72,7 +72,7 @@ export default function SplashScreen() {
           style={{ width: '50vw', minWidth: '250px', maxWidth: '450px', height: 'auto', filter: 'drop-shadow(0px 15px 30px rgba(0,0,0,0.15))' }} 
         />
         <div style={{
-          width: '40px',
+          width: '60px',
           height: '4px',
           background: '#f1f5f9',
           borderRadius: '4px',
@@ -86,7 +86,7 @@ export default function SplashScreen() {
             height: '100%',
             background: '#0f172a',
             width: '100%',
-            animation: 'loadingBar 15s linear forwards'
+            animation: 'loadingBar 1.2s linear forwards'
           }} />
         </div>
       </div>
