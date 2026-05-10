@@ -528,6 +528,24 @@ function ProfileContent() {
                 {typeof hoursResult === 'string' && hoursResult.startsWith('error:') && <div style={{ marginTop: 16, padding: '14px', borderRadius: 8, background: '#fff8f8', border: '1px solid #ffdcdc', color: '#e53e3e', fontSize: '14px' }}>⨯ {hoursResult.slice(6)}</div>}
               </div>
             </div>
+            {/* Sign Out Section */}
+            <div style={{ marginTop: 48, padding: '24px', borderTop: '1px solid #e8e8e8', textAlign: 'center' }}>
+              <p style={{ fontSize: '13px', color: '#aaa', marginBottom: 16 }}>Log out of your seller account on this device.</p>
+              <button 
+                onClick={async () => {
+                  if (confirm('Are you sure you want to sign out?')) {
+                    import('../login/actions').then(m => m.logout().then(() => window.location.href = '/login'));
+                  }
+                }}
+                style={{ 
+                  background: '#fff', color: '#ef4444', border: '2px solid #fee2e2', 
+                  borderRadius: 12, padding: '14px 32px', fontWeight: 800, fontSize: '15px', 
+                  cursor: 'pointer', fontFamily: 'inherit', transition: 'all 0.2s' 
+                }}
+              >
+                🚪 Sign Out
+              </button>
+            </div>
           </div>
         </div>
       </div>
