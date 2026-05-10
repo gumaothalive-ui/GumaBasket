@@ -34,3 +34,7 @@ test_email.js
 test_sms.js
 test_sms_url.js
 *.txt
+
+# AI Internal
+brain/
+artifacts/

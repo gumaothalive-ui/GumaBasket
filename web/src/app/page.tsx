@@ -3,6 +3,7 @@ import Link from 'next/link';
 import { ProductCard } from '@/components/ui/ProductCard';
 import { fetchSAProducts, fetchSellers } from '@/services/marketplaceService';
 import { MobileHome } from '@/components/mobile/MobileHome';
+import InstallButton from '@/components/InstallButton';
 import styles from './page.module.css';
 
 // ── CONFIG DRIVEN MERCHANDISING ──
@@ -234,6 +235,7 @@ export default async function Home() {
         </section>
 
       </div>
+      <InstallButton />
     </>
   );
 }
