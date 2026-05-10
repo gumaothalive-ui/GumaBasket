@@ -45,7 +45,6 @@ export default function AdminDashboard() {
 
         const totalRevenue = revenueData?.reduce((sum, o) => sum + (o.total_amount || 0), 0) || 0;
 
-        // Group growth by date
         const growthMap: Record<string, GrowthPoint> = {};
         growthData?.forEach(o => {
           const date = new Date(o.created_at).toLocaleDateString('en-ZA', { day: 'numeric', month: 'short' });
@@ -54,10 +53,7 @@ export default function AdminDashboard() {
           growthMap[date].orders += 1;
         });
 
-        // Top vendors by products
-        const { data: vendorProducts } = await supabase
-          .from('products')
-          .select('vendor_name');
+        const { data: vendorProducts } = await supabase.from('products').select('vendor_name');
         const vendorMap: Record<string, number> = {};
         vendorProducts?.forEach(p => {
           vendorMap[p.vendor_name] = (vendorMap[p.vendor_name] || 0) + 1;
@@ -88,190 +84,190 @@ export default function AdminDashboard() {
   const maxRevenue = stats ? Math.max(...stats.growth.map(g => g.amount), 1) : 1;
 
   const statCards = stats ? [
-    { label: 'Total Users', value: stats.users.toLocaleString(), icon: '👥', color: '#3b82f6', change: '+12%', sub: 'Registered customers' },
-    { label: 'Platform Orders', value: stats.orders.toLocaleString(), icon: '📦', color: '#10b981', change: '+8%', sub: 'All time order volume' },
-    { label: 'Gross Revenue', value: `R${stats.revenue.toLocaleString()}`, icon: '💰', color: '#f59e0b', change: '+24%', sub: 'Total market value' },
-    { label: 'Active Vendors', value: stats.vendors.toLocaleString(), icon: '🏪', color: '#8b5cf6', change: '+3%', sub: 'Registered sellers' },
-    { label: 'Listed Products', value: stats.products.toLocaleString(), icon: '🛒', color: '#ec4899', change: '+15%', sub: 'Active marketplace items' },
-    { label: 'Platform Fee (15%)', value: `R${(stats.revenue * 0.15).toLocaleString()}`, icon: '📈', color: '#14b8a6', change: 'EST.', sub: 'Your estimated earnings' },
+    { label: 'Total Users', value: stats.users.toLocaleString(), icon: '👥', accent: '#3b82f6', bg: '#eff6ff', change: '+12%', sub: 'Registered customers' },
+    { label: 'Platform Orders', value: stats.orders.toLocaleString(), icon: '📦', accent: '#10b981', bg: '#ecfdf5', change: '+8%', sub: 'All time order volume' },
+    { label: 'Gross Revenue', value: `R${stats.revenue.toLocaleString()}`, icon: '💰', accent: '#f59e0b', bg: '#fffbeb', change: '+24%', sub: 'Total market value' },
+    { label: 'Active Vendors', value: stats.vendors.toLocaleString(), icon: '🏪', accent: '#8b5cf6', bg: '#f5f3ff', change: '+3%', sub: 'Registered sellers' },
+    { label: 'Listed Products', value: stats.products.toLocaleString(), icon: '🛒', accent: '#ec4899', bg: '#fdf2f8', change: '+15%', sub: 'Active marketplace items' },
+    { label: 'Your Platform Fee (15%)', value: `R${(stats.revenue * 0.15).toLocaleString()}`, icon: '📈', accent: '#14b8a6', bg: '#f0fdfa', change: 'EST.', sub: 'Estimated earnings' },
   ] : [];
 
   if (loading) return (
-    <div style={{ minHeight: '100vh', background: '#0a0f1e', display: 'flex', alignItems: 'center', justifyContent: 'center', flexDirection: 'column', gap: 24 }}>
-      <div style={{ width: 64, height: 64, border: '3px solid rgba(59,130,246,0.3)', borderTop: '3px solid #3b82f6', borderRadius: '50%', animation: 'spin 1s linear infinite' }} />
-      <p style={{ color: '#64748b', fontFamily: 'system-ui', fontSize: 16, fontWeight: 600 }}>Loading Platform Analytics...</p>
+    <div style={{ minHeight: '100vh', background: '#f8fafc', display: 'flex', alignItems: 'center', justifyContent: 'center', flexDirection: 'column', gap: 20 }}>
+      <div style={{ width: 52, height: 52, border: '3px solid #e2e8f0', borderTop: '3px solid #3b82f6', borderRadius: '50%', animation: 'spin 0.8s linear infinite' }} />
+      <p style={{ color: '#94a3b8', fontFamily: 'system-ui', fontSize: 15, fontWeight: 600 }}>Loading Analytics...</p>
       <style>{`@keyframes spin { to { transform: rotate(360deg); } }`}</style>
     </div>
   );
 
   return (
-    <div style={{ minHeight: '100vh', background: '#0a0f1e', color: '#f8fafc', fontFamily: 'system-ui, -apple-system, sans-serif' }}>
+    <div style={{ minHeight: '100vh', background: '#f8fafc', color: '#0f172a', fontFamily: 'system-ui, -apple-system, sans-serif' }}>
+
       {/* Top Navigation */}
-      <nav style={{ background: 'rgba(15,23,42,0.8)', backdropFilter: 'blur(20px)', borderBottom: '1px solid rgba(255,255,255,0.06)', padding: '0 40px', display: 'flex', alignItems: 'center', justifyContent: 'space-between', height: 70, position: 'sticky', top: 0, zIndex: 100 }}>
-        <div style={{ display: 'flex', alignItems: 'center', gap: 16 }}>
-          <div style={{ width: 44, height: 44, background: 'linear-gradient(135deg, #10b981, #3b82f6)', borderRadius: 12, display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: 22, fontWeight: 900 }}>G</div>
+      <nav style={{ background: '#ffffff', borderBottom: '1px solid #e2e8f0', padding: '0 40px', display: 'flex', alignItems: 'center', justifyContent: 'space-between', height: 68, position: 'sticky', top: 0, zIndex: 100, boxShadow: '0 1px 3px rgba(0,0,0,0.05)' }}>
+        <div style={{ display: 'flex', alignItems: 'center', gap: 14 }}>
+          <div style={{ width: 42, height: 42, background: 'linear-gradient(135deg, #10b981, #3b82f6)', borderRadius: 12, display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: 20, fontWeight: 900, color: '#fff' }}>G</div>
           <div>
-            <div style={{ fontWeight: 900, fontSize: 18, letterSpacing: '-0.5px' }}>Guma Basket</div>
-            <div style={{ fontSize: 11, color: '#64748b', fontWeight: 700, textTransform: 'uppercase', letterSpacing: '1px' }}>Admin Command Center</div>
+            <div style={{ fontWeight: 900, fontSize: 17, letterSpacing: '-0.5px', color: '#0f172a' }}>Guma Basket</div>
+            <div style={{ fontSize: 10, color: '#94a3b8', fontWeight: 800, textTransform: 'uppercase', letterSpacing: '1px' }}>Admin Command Center</div>
           </div>
         </div>
 
-        <div style={{ display: 'flex', gap: 8 }}>
+        <div style={{ display: 'flex', gap: 6 }}>
           {(['overview', 'users', 'orders', 'vendors'] as const).map(tab => (
             <button
               key={tab}
               onClick={() => setActiveTab(tab)}
-              style={{ padding: '8px 18px', borderRadius: 8, border: 'none', cursor: 'pointer', fontWeight: 700, fontSize: 13, textTransform: 'capitalize', background: activeTab === tab ? '#3b82f6' : 'rgba(255,255,255,0.05)', color: activeTab === tab ? '#fff' : '#94a3b8', transition: 'all 0.2s' }}
+              style={{ padding: '8px 18px', borderRadius: 8, border: 'none', cursor: 'pointer', fontWeight: 700, fontSize: 13, textTransform: 'capitalize', background: activeTab === tab ? '#0f172a' : '#f1f5f9', color: activeTab === tab ? '#fff' : '#64748b', transition: 'all 0.2s' }}
             >{tab}</button>
           ))}
         </div>
 
-        <div style={{ display: 'flex', alignItems: 'center', gap: 12 }}>
-          <div style={{ width: 8, height: 8, borderRadius: '50%', background: '#10b981', boxShadow: '0 0 8px #10b981' }} />
-          <span style={{ fontSize: 13, color: '#94a3b8', fontWeight: 600 }}>Live Data</span>
+        <div style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
+          <div style={{ width: 8, height: 8, borderRadius: '50%', background: '#10b981' }} />
+          <span style={{ fontSize: 13, color: '#64748b', fontWeight: 600 }}>Live Data</span>
         </div>
       </nav>
 
-      <main style={{ padding: '48px 40px', maxWidth: 1400, margin: '0 auto' }}>
+      <main style={{ padding: '40px 40px', maxWidth: 1400, margin: '0 auto' }}>
+
         {error && (
-          <div style={{ background: 'rgba(239,68,68,0.1)', border: '1px solid rgba(239,68,68,0.3)', color: '#f87171', padding: '16px 24px', borderRadius: 12, marginBottom: 32, fontSize: 14 }}>
+          <div style={{ background: '#fff1f2', border: '1px solid #fecdd3', color: '#e11d48', padding: '14px 20px', borderRadius: 12, marginBottom: 28, fontSize: 14, fontWeight: 500 }}>
             ⚠️ {error} — Some data may be unavailable.
           </div>
         )}
 
-        {/* Page Title */}
-        <div style={{ marginBottom: 48 }}>
-          <h1 style={{ fontSize: 36, fontWeight: 900, letterSpacing: '-1px', marginBottom: 8 }}>
-            Platform Intelligence
-          </h1>
-          <p style={{ color: '#64748b', fontSize: 16 }}>Real-time visibility into growth, users, and revenue.</p>
+        {/* Header */}
+        <div style={{ marginBottom: 40 }}>
+          <h1 style={{ fontSize: 32, fontWeight: 900, letterSpacing: '-1px', color: '#0f172a', marginBottom: 6 }}>Platform Intelligence</h1>
+          <p style={{ color: '#64748b', fontSize: 15 }}>Real-time visibility into growth, users, and revenue.</p>
         </div>
 
         {/* Stats Grid */}
-        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(260px, 1fr))', gap: 20, marginBottom: 48 }}>
+        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(240px, 1fr))', gap: 16, marginBottom: 40 }}>
           {statCards.map((card, i) => (
             <div
               key={i}
-              style={{ background: 'rgba(255,255,255,0.03)', border: '1px solid rgba(255,255,255,0.06)', borderRadius: 20, padding: '28px 32px', position: 'relative', overflow: 'hidden', transition: 'all 0.3s', cursor: 'default' }}
-              onMouseOver={e => { e.currentTarget.style.background = 'rgba(255,255,255,0.05)'; e.currentTarget.style.transform = 'translateY(-3px)'; }}
-              onMouseOut={e => { e.currentTarget.style.background = 'rgba(255,255,255,0.03)'; e.currentTarget.style.transform = 'translateY(0)'; }}
+              style={{ background: '#ffffff', border: '1px solid #e2e8f0', borderRadius: 18, padding: '24px 28px', position: 'relative', overflow: 'hidden', transition: 'all 0.2s', cursor: 'default', boxShadow: '0 1px 3px rgba(0,0,0,0.04)' }}
+              onMouseOver={e => { e.currentTarget.style.boxShadow = '0 8px 24px rgba(0,0,0,0.08)'; e.currentTarget.style.transform = 'translateY(-3px)'; }}
+              onMouseOut={e => { e.currentTarget.style.boxShadow = '0 1px 3px rgba(0,0,0,0.04)'; e.currentTarget.style.transform = 'translateY(0)'; }}
             >
-              <div style={{ position: 'absolute', top: 0, left: 0, right: 0, height: 3, background: `linear-gradient(90deg, ${card.color}, transparent)`, borderRadius: '20px 20px 0 0' }} />
-              <div style={{ fontSize: 40, position: 'absolute', right: 20, bottom: 10, opacity: 0.07 }}>{card.icon}</div>
-              <div style={{ fontSize: 11, fontWeight: 800, color: '#64748b', textTransform: 'uppercase', letterSpacing: '1px', marginBottom: 16 }}>{card.label}</div>
-              <div style={{ display: 'flex', alignItems: 'baseline', gap: 12, marginBottom: 8 }}>
-                <div style={{ fontSize: 32, fontWeight: 900, letterSpacing: '-1px' }}>{card.value}</div>
-                <span style={{ fontSize: 11, fontWeight: 800, color: card.color, background: `${card.color}20`, padding: '3px 8px', borderRadius: 20 }}>{card.change}</span>
+              <div style={{ position: 'absolute', top: 0, left: 0, right: 0, height: 4, background: card.accent, borderRadius: '18px 18px 0 0' }} />
+              <div style={{ width: 44, height: 44, background: card.bg, borderRadius: 12, display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: 22, marginBottom: 16 }}>{card.icon}</div>
+              <div style={{ fontSize: 11, fontWeight: 800, color: '#94a3b8', textTransform: 'uppercase', letterSpacing: '0.8px', marginBottom: 10 }}>{card.label}</div>
+              <div style={{ display: 'flex', alignItems: 'baseline', gap: 10, marginBottom: 6 }}>
+                <div style={{ fontSize: 28, fontWeight: 900, letterSpacing: '-1px', color: '#0f172a' }}>{card.value}</div>
+                <span style={{ fontSize: 11, fontWeight: 800, color: card.accent, background: card.bg, padding: '3px 8px', borderRadius: 20 }}>{card.change}</span>
               </div>
-              <div style={{ fontSize: 12, color: '#64748b' }}>{card.sub}</div>
+              <div style={{ fontSize: 12, color: '#94a3b8' }}>{card.sub}</div>
             </div>
           ))}
         </div>
 
-        <div style={{ display: 'grid', gridTemplateColumns: '1fr 400px', gap: 24, marginBottom: 32 }}>
+        <div style={{ display: 'grid', gridTemplateColumns: '1fr 380px', gap: 20, marginBottom: 20 }}>
           {/* Revenue Chart */}
-          <div style={{ background: 'rgba(255,255,255,0.02)', border: '1px solid rgba(255,255,255,0.06)', borderRadius: 24, padding: '36px' }}>
-            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', marginBottom: 40 }}>
+          <div style={{ background: '#ffffff', border: '1px solid #e2e8f0', borderRadius: 20, padding: '32px', boxShadow: '0 1px 3px rgba(0,0,0,0.04)' }}>
+            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', marginBottom: 36 }}>
               <div>
-                <h2 style={{ fontWeight: 900, fontSize: 20, marginBottom: 4 }}>Revenue Trajectory</h2>
-                <p style={{ color: '#64748b', fontSize: 14 }}>Daily earnings over the last 30 days</p>
+                <h2 style={{ fontWeight: 900, fontSize: 18, color: '#0f172a', marginBottom: 4 }}>Revenue Trajectory</h2>
+                <p style={{ color: '#94a3b8', fontSize: 13 }}>Daily earnings over the last 30 days</p>
               </div>
-              <div style={{ background: 'rgba(59,130,246,0.1)', border: '1px solid rgba(59,130,246,0.2)', padding: '6px 14px', borderRadius: 8, fontSize: 12, fontWeight: 700, color: '#3b82f6' }}>Last 30 Days</div>
+              <div style={{ background: '#eff6ff', border: '1px solid #bfdbfe', padding: '5px 14px', borderRadius: 8, fontSize: 12, fontWeight: 700, color: '#3b82f6' }}>Last 30 Days</div>
             </div>
 
             {stats && stats.growth.length > 0 ? (
               <>
-                <div style={{ display: 'flex', alignItems: 'flex-end', gap: 6, height: 200, paddingBottom: 4 }}>
+                <div style={{ display: 'flex', alignItems: 'flex-end', gap: 5, height: 180, paddingBottom: 4 }}>
                   {stats.growth.map((g, i) => (
-                    <div key={i} style={{ flex: 1, display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 4, height: '100%', justifyContent: 'flex-end' }}>
+                    <div key={i} style={{ flex: 1, display: 'flex', flexDirection: 'column', alignItems: 'center', height: '100%', justifyContent: 'flex-end' }}>
                       <div
                         title={`${g.date}: R${g.amount.toFixed(0)} (${g.orders} orders)`}
-                        style={{ width: '100%', height: `${Math.max(4, (g.amount / maxRevenue) * 100)}%`, background: `linear-gradient(to top, #3b82f6, #10b981)`, borderRadius: '4px 4px 0 0', opacity: 0.85, transition: 'opacity 0.2s', cursor: 'pointer' }}
-                        onMouseOver={e => e.currentTarget.style.opacity = '1'}
-                        onMouseOut={e => e.currentTarget.style.opacity = '0.85'}
+                        style={{ width: '100%', height: `${Math.max(5, (g.amount / maxRevenue) * 100)}%`, background: 'linear-gradient(to top, #3b82f6, #10b981)', borderRadius: '4px 4px 0 0', opacity: 0.75, transition: 'opacity 0.2s', cursor: 'pointer' }}
+                        onMouseOver={e => { e.currentTarget.style.opacity = '1'; }}
+                        onMouseOut={e => { e.currentTarget.style.opacity = '0.75'; }}
                       />
                     </div>
                   ))}
                 </div>
-                <div style={{ borderTop: '1px solid rgba(255,255,255,0.06)', paddingTop: 12, display: 'flex', justifyContent: 'space-between', fontSize: 11, color: '#475569', fontWeight: 700 }}>
+                <div style={{ borderTop: '1px solid #f1f5f9', paddingTop: 10, display: 'flex', justifyContent: 'space-between', fontSize: 11, color: '#cbd5e1', fontWeight: 700 }}>
                   <span>{stats.growth[0]?.date}</span>
                   <span>TODAY</span>
                 </div>
               </>
             ) : (
-              <div style={{ height: 200, display: 'flex', alignItems: 'center', justifyContent: 'center', color: '#475569', fontSize: 14, fontStyle: 'italic' }}>
-                No order data yet. Revenue chart will appear once orders are placed.
+              <div style={{ height: 180, display: 'flex', alignItems: 'center', justifyContent: 'center', color: '#cbd5e1', fontSize: 14, flexDirection: 'column', gap: 12 }}>
+                <div style={{ fontSize: 40 }}>📊</div>
+                Chart will appear once orders start coming in.
               </div>
             )}
           </div>
 
           {/* Top Vendors */}
-          <div style={{ background: 'rgba(255,255,255,0.02)', border: '1px solid rgba(255,255,255,0.06)', borderRadius: 24, padding: '36px' }}>
-            <h2 style={{ fontWeight: 900, fontSize: 20, marginBottom: 4 }}>Top Vendors</h2>
-            <p style={{ color: '#64748b', fontSize: 14, marginBottom: 32 }}>By number of products listed</p>
+          <div style={{ background: '#ffffff', border: '1px solid #e2e8f0', borderRadius: 20, padding: '32px', boxShadow: '0 1px 3px rgba(0,0,0,0.04)' }}>
+            <h2 style={{ fontWeight: 900, fontSize: 18, color: '#0f172a', marginBottom: 4 }}>Top Vendors</h2>
+            <p style={{ color: '#94a3b8', fontSize: 13, marginBottom: 28 }}>By products listed</p>
             {stats?.topVendors.length ? (
-              <div style={{ display: 'flex', flexDirection: 'column', gap: 16 }}>
+              <div style={{ display: 'flex', flexDirection: 'column', gap: 18 }}>
                 {stats.topVendors.map((v, i) => {
                   const maxCount = stats.topVendors[0]?.count || 1;
                   const colors = ['#3b82f6', '#10b981', '#f59e0b', '#8b5cf6', '#ec4899'];
                   return (
                     <div key={i}>
-                      <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: 6, fontSize: 13 }}>
-                        <span style={{ fontWeight: 700 }}>{v.name}</span>
+                      <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: 7, fontSize: 13 }}>
+                        <span style={{ fontWeight: 700, color: '#0f172a' }}>{v.name}</span>
                         <span style={{ color: '#94a3b8', fontWeight: 600 }}>{v.count} items</span>
                       </div>
-                      <div style={{ height: 6, background: 'rgba(255,255,255,0.05)', borderRadius: 10 }}>
-                        <div style={{ height: '100%', width: `${(v.count / maxCount) * 100}%`, background: colors[i % colors.length], borderRadius: 10, transition: 'width 1s ease' }} />
+                      <div style={{ height: 7, background: '#f1f5f9', borderRadius: 10 }}>
+                        <div style={{ height: '100%', width: `${(v.count / maxCount) * 100}%`, background: colors[i % colors.length], borderRadius: 10 }} />
                       </div>
                     </div>
                   );
                 })}
               </div>
             ) : (
-              <div style={{ color: '#475569', fontSize: 14, fontStyle: 'italic' }}>No vendor data yet.</div>
+              <div style={{ color: '#cbd5e1', fontSize: 14, textAlign: 'center', paddingTop: 40 }}>No vendor data yet.</div>
             )}
           </div>
         </div>
 
         {/* Recent Orders */}
-        <div style={{ background: 'rgba(255,255,255,0.02)', border: '1px solid rgba(255,255,255,0.06)', borderRadius: 24, padding: '36px' }}>
-          <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 32 }}>
+        <div style={{ background: '#ffffff', border: '1px solid #e2e8f0', borderRadius: 20, padding: '32px', boxShadow: '0 1px 3px rgba(0,0,0,0.04)' }}>
+          <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 28 }}>
             <div>
-              <h2 style={{ fontWeight: 900, fontSize: 20, marginBottom: 4 }}>Recent Orders</h2>
-              <p style={{ color: '#64748b', fontSize: 14 }}>Latest platform activity across all stores</p>
+              <h2 style={{ fontWeight: 900, fontSize: 18, color: '#0f172a', marginBottom: 4 }}>Recent Orders</h2>
+              <p style={{ color: '#94a3b8', fontSize: 13 }}>Latest platform activity across all stores</p>
             </div>
-            <div style={{ fontSize: 12, color: '#64748b', fontWeight: 700 }}>{stats?.recentOrders.length} Shown</div>
+            <span style={{ background: '#f1f5f9', padding: '4px 12px', borderRadius: 20, fontSize: 12, fontWeight: 700, color: '#64748b' }}>{stats?.recentOrders.length} shown</span>
           </div>
 
           {stats?.recentOrders.length ? (
-            <div style={{ display: 'flex', flexDirection: 'column', gap: 2 }}>
-              <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr 120px 100px', gap: 16, padding: '8px 16px', fontSize: 11, fontWeight: 800, color: '#475569', textTransform: 'uppercase', letterSpacing: '0.5px' }}>
-                <span>Order ID</span>
-                <span>Customer</span>
-                <span>Amount</span>
-                <span>Status</span>
+            <div>
+              <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr 140px 110px', gap: 16, padding: '8px 16px', fontSize: 11, fontWeight: 800, color: '#94a3b8', textTransform: 'uppercase', letterSpacing: '0.5px', borderBottom: '1px solid #f1f5f9', marginBottom: 4 }}>
+                <span>Order ID</span><span>Customer</span><span>Amount</span><span>Status</span>
               </div>
               {stats.recentOrders.map((o, i) => {
                 const statusColor: Record<string, string> = { completed: '#10b981', pending: '#f59e0b', cancelled: '#ef4444', preparing: '#3b82f6', ready: '#8b5cf6' };
+                const statusBg: Record<string, string> = { completed: '#ecfdf5', pending: '#fffbeb', cancelled: '#fff1f2', preparing: '#eff6ff', ready: '#f5f3ff' };
                 return (
-                  <div key={i} style={{ display: 'grid', gridTemplateColumns: '1fr 1fr 120px 100px', gap: 16, padding: '16px', borderRadius: 12, background: i % 2 === 0 ? 'rgba(255,255,255,0.02)' : 'transparent', alignItems: 'center' }}>
+                  <div key={i} style={{ display: 'grid', gridTemplateColumns: '1fr 1fr 140px 110px', gap: 16, padding: '14px 16px', borderRadius: 10, background: i % 2 === 0 ? '#f8fafc' : '#fff', alignItems: 'center' }}>
                     <span style={{ fontSize: 13, fontFamily: 'monospace', color: '#94a3b8' }}>#{o.id?.slice(0, 8)}...</span>
-                    <span style={{ fontSize: 13, fontWeight: 600 }}>{o.customer_name || 'Anonymous'}</span>
-                    <span style={{ fontSize: 14, fontWeight: 800 }}>R{o.total_amount?.toFixed(2) || '0.00'}</span>
-                    <span style={{ fontSize: 11, fontWeight: 800, color: statusColor[o.status] || '#94a3b8', background: `${statusColor[o.status] || '#94a3b8'}20`, padding: '4px 10px', borderRadius: 20, textTransform: 'uppercase', width: 'fit-content' }}>{o.status}</span>
+                    <span style={{ fontSize: 13, fontWeight: 600, color: '#0f172a' }}>{o.customer_name || 'Anonymous'}</span>
+                    <span style={{ fontSize: 15, fontWeight: 900, color: '#0f172a' }}>R{o.total_amount?.toFixed(2) || '0.00'}</span>
+                    <span style={{ fontSize: 11, fontWeight: 800, color: statusColor[o.status] || '#94a3b8', background: statusBg[o.status] || '#f1f5f9', padding: '4px 10px', borderRadius: 20, textTransform: 'uppercase', width: 'fit-content' }}>{o.status}</span>
                   </div>
                 );
               })}
             </div>
           ) : (
-            <div style={{ padding: '40px', textAlign: 'center', color: '#475569', fontSize: 15 }}>
-              No orders placed yet. Activity will appear here as customers order.
+            <div style={{ padding: '48px', textAlign: 'center', color: '#cbd5e1', fontSize: 15 }}>
+              <div style={{ fontSize: 48, marginBottom: 16 }}>📭</div>
+              No orders placed yet.
             </div>
           )}
         </div>
 
         {/* Footer */}
-        <div style={{ marginTop: 48, paddingTop: 32, borderTop: '1px solid rgba(255,255,255,0.05)', display: 'flex', justifyContent: 'space-between', alignItems: 'center', color: '#475569', fontSize: 12 }}>
+        <div style={{ marginTop: 40, paddingTop: 28, borderTop: '1px solid #e2e8f0', display: 'flex', justifyContent: 'space-between', alignItems: 'center', color: '#cbd5e1', fontSize: 12, fontWeight: 600 }}>
           <span>Guma Basket Admin Portal • Private & Confidential</span>
           <span>Data synced from Supabase in real-time</span>
         </div>
