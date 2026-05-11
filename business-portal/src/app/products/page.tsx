@@ -43,6 +43,8 @@ function ProductsContent() {
   const [editingId, setEditingId] = useState<string | null>(null);
   const [editPrice, setEditPrice] = useState(0);
   const [editStock, setEditStock] = useState(0);
+  const [editCategory, setEditCategory] = useState('');
+  const [editUnit, setEditUnit] = useState('');
   const [selectedCategory, setSelectedCategory] = useState<string | null>(null);
 
   const checkAuth = useCallback(async () => {
@@ -86,13 +88,22 @@ function ProductsContent() {
     setEditingId(p.id);
     setEditPrice(p.base_price);
     setEditStock(p.stock_quantity);
+    setEditCategory(p.category);
+    setEditUnit(p.unit);
   };
 
   const handleSaveEdit = async () => {
     if (!editingId) return;
-    const res = await updateProductDetails(editingId, editPrice, editStock);
+    const res = await updateProductDetails(editingId, editPrice, editStock, editCategory, editUnit);
     if (res.success) {
-      setProducts(prev => prev.map(p => p.id === editingId ? { ...p, base_price: editPrice, premium_price: editPrice * 1.15, stock_quantity: editStock } : p));
+      setProducts(prev => prev.map(p => p.id === editingId ? { 
+        ...p, 
+        base_price: editPrice, 
+        premium_price: editPrice * 1.15, 
+        stock_quantity: editStock,
+        category: editCategory,
+        unit: editUnit
+      } : p));
       setEditingId(null);
     } else {
       alert("Error updating product");
@@ -249,11 +260,27 @@ function ProductsContent() {
                               <h4 style={{ marginBottom: 16 }}>Edit {p.title}</h4>
                               <div style={{ marginBottom: 12 }}>
                                 <label style={{ display: 'block', fontSize: 12, fontWeight: 700 }}>Base Price</label>
-                                <input type="number" step="0.01" value={editPrice} onChange={e => setEditPrice(parseFloat(e.target.value))} style={{ width: '100%', padding: '8px', border: '1px solid #ccc', borderRadius: 8 }} />
+                                <input type="number" step="0.01" value={editPrice} onChange={e => setEditPrice(parseFloat(e.target.value))} style={{ width: '100%', padding: '8px', border: '1px solid #ccc', borderRadius: 8, fontSize: '14px' }} />
+                              </div>
+                              <div style={{ marginBottom: 12 }}>
+                                <label style={{ display: 'block', fontSize: 12, fontWeight: 700 }}>Stock Quantity</label>
+                                <input type="number" value={editStock} onChange={e => setEditStock(parseInt(e.target.value))} style={{ width: '100%', padding: '8px', border: '1px solid #ccc', borderRadius: 8, fontSize: '14px' }} />
+                              </div>
+                              <div style={{ marginBottom: 12 }}>
+                                <label style={{ display: 'block', fontSize: 12, fontWeight: 700 }}>Category</label>
+                                <select 
+                                  value={editCategory} 
+                                  onChange={e => setEditCategory(e.target.value)} 
+                                  style={{ width: '100%', padding: '8px', border: '1px solid #ccc', borderRadius: 8, fontSize: '14px' }}
+                                >
+                                  {Object.entries(CAT_LABELS).map(([key, label]) => (
+                                    <option key={key} value={key}>{label}</option>
+                                  ))}
+                                </select>
                               </div>
                               <div style={{ marginBottom: 20 }}>
-                                <label style={{ display: 'block', fontSize: 12, fontWeight: 700 }}>Stock</label>
-                                <input type="number" value={editStock} onChange={e => setEditStock(parseInt(e.target.value))} style={{ width: '100%', padding: '8px', border: '1px solid #ccc', borderRadius: 8 }} />
+                                <label style={{ display: 'block', fontSize: 12, fontWeight: 700 }}>Weight / Unit (e.g. 1kg, 500g, Each)</label>
+                                <input type="text" value={editUnit} onChange={e => setEditUnit(e.target.value)} style={{ width: '100%', padding: '8px', border: '1px solid #ccc', borderRadius: 8, fontSize: '14px' }} />
                               </div>
                               <div style={{ display: 'flex', gap: 8, marginTop: 'auto' }}>
                                 <button onClick={() => setEditingId(null)} style={{ flex: 1, padding: '12px', background: '#e2e8f0', border: 'none', borderRadius: 8, fontWeight: 700, cursor: 'pointer' }}>Cancel</button>

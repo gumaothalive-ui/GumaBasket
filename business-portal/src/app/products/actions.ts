@@ -51,7 +51,7 @@ export async function deleteProduct(id: string) {
   return { success: true };
 }
 
-export async function updateProductDetails(id: string, basePrice: number, stock: number) {
+export async function updateProductDetails(id: string, basePrice: number, stock: number, category: string, unit: string) {
   const sessionRaw = (await cookies()).get('vendor_session')?.value;
   const session = sessionRaw ? decodeURIComponent(sessionRaw) : null;
   if (!session) return { success: false, error: 'Unauthorized' };
@@ -60,7 +60,13 @@ export async function updateProductDetails(id: string, basePrice: number, stock:
 
   const { error } = await supabase
     .from('products')
-    .update({ base_price: basePrice, premium_price: premiumPrice, stock_quantity: stock })
+    .update({ 
+      base_price: basePrice, 
+      premium_price: premiumPrice, 
+      stock_quantity: stock,
+      category: category,
+      unit: unit
+    })
     .eq('id', id)
     .eq('vendor_name', session); // Ensure they own it
 
