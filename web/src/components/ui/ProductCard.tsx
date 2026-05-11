@@ -99,7 +99,7 @@ export function ProductCard({
           <div className={styles.priceRow}>
             <div className={styles.prices}>
               <span className={styles.currentPrice}>R {price.toFixed(2)}</span>
-              {originalPrice && <span className={styles.oldPrice}>R {originalPrice.toFixed(2)}</span>}
+              {originalPrice && originalPrice > price && <span className={styles.oldPrice}>R {originalPrice.toFixed(2)}</span>}
             </div>
             <span className={styles.unit}>{unit}</span>
           </div>

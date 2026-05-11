@@ -187,7 +187,7 @@ export function MobileHome({ products, sellers = [] }: MobileHomeProps) {
                 <div className={styles.priceRow}>
                   <div style={{ display: 'flex', gap: 6, alignItems: 'baseline' }}>
                     <span className={styles.currentPrice}>R{p.premium_price?.toFixed(2)}</span>
-                    {p.base_price > 0 && p.base_price < p.premium_price && (
+                    {p.base_price > 0 && p.base_price > p.premium_price && (
                       <span className={styles.oldPrice}>R{Number(p.base_price).toFixed(2)}</span>
                     )}
                   </div>

@@ -72,7 +72,20 @@ export default async function ProductDetailPage({ params }: { params: Promise<{ 
           </header>
 
           <div className={styles.priceBox}>
-             <div className={styles.price}>R {product.premium_price.toFixed(2)}</div>
+             <div className={styles.price}>
+               R {product.premium_price.toFixed(2)}
+               {product.original_price && product.original_price > product.premium_price && (
+                 <span className={styles.oldPrice} style={{ 
+                   fontSize: '0.9rem', 
+                   color: '#999', 
+                   textDecoration: 'line-through', 
+                   marginLeft: '10px',
+                   fontWeight: 400 
+                 }}>
+                   R {product.original_price.toFixed(2)}
+                 </span>
+               )}
+             </div>
              <div className={styles.unitPrice}>(R {product.premium_price.toFixed(2)} / {product.unit || 'Each'})</div>
           </div>
 
