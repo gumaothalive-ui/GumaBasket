@@ -86,7 +86,7 @@ export function MobileHome({ products, sellers = [] }: MobileHomeProps) {
       </div>
 
       {/* TABS */}
-      <div className={styles.categoryTabs}>
+      <div className={styles.categoryTabs} style={{ marginBottom: activeTab ? '10px' : '0' }}>
         {CATEGORY_TABS.map(tab => (
           <div
             key={tab.label}
@@ -163,73 +163,117 @@ export function MobileHome({ products, sellers = [] }: MobileHomeProps) {
         </div>
       )}
 
-      {/* POPULAR PRODUCTS */}
-      <div className={styles.sectionBlock}>
-        <div className={styles.sectionHeader}>
-          <h3 className={styles.sectionTitle}>Popular Products</h3>
-          <Link href="/shop" className={styles.seeAll}>See All &gt;</Link>
-        </div>
-        <div className={styles.productGrid}>
-          {popularProducts.map((p, i) => (
-            <Link href={`/product/${p.id}`} key={p.id} style={{textDecoration:'none'}}>
-              <div className={styles.productCard}>
-                {i % 2 === 0 ? <div className={`${styles.productBadge} ${styles.sale}`}>Sale</div> : <div className={styles.productBadge}>New</div>}
-                <div className={styles.imageWrapper}>
-                  <img src={p.image_url} alt={p.title} onError={(e) => { (e.target as HTMLImageElement).src = 'https://images.unsplash.com/photo-1542838132-92c53300491e?w=400&q=60'; }} />
-                </div>
-                <h4 className={styles.productTitle}>{p.title}</h4>
-                <div className={styles.ratingRow}>
-                  {Array.from({length: 5}).map((_, idx) => (
-                    <svg key={idx} className={styles.starIcon} fill={idx < Math.floor(p.rating || 5) ? 'currentColor' : 'none'} stroke="currentColor" viewBox="0 0 20 20"><path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"/></svg>
-                  ))}
-                  <span className={styles.ratingText}>({p.reviewCount || 120})</span>
-                </div>
-                <div className={styles.priceRow}>
-                  <div style={{ display: 'flex', gap: 6, alignItems: 'baseline' }}>
-                    <span className={styles.currentPrice}>R{p.premium_price?.toFixed(2)}</span>
-                    {p.base_price > 0 && p.base_price > p.premium_price && (
-                      <span className={styles.oldPrice}>R{Number(p.base_price).toFixed(2)}</span>
-                    )}
+      {/* RESULTS / CONTENT */}
+      {activeTab ? (
+        <div className={styles.sectionBlock}>
+          <div className={styles.sectionHeader}>
+            <h3 className={styles.sectionTitle}>
+              {CATEGORY_TABS.find(t => t.value === activeTab)?.label}
+            </h3>
+            <span className={styles.itemCountMobile}>{filtered.length} Items</span>
+          </div>
+          <div className={styles.productGrid}>
+            {filtered.map((p, i) => (
+              <Link href={`/product/${p.id}`} key={p.id} style={{textDecoration:'none'}}>
+                <div className={styles.productCard}>
+                  {p.is_on_sale && <div className={`${styles.productBadge} ${styles.sale}`}>Sale</div>}
+                  <div className={styles.imageWrapper}>
+                    <img src={p.image_url} alt={p.title} onError={(e) => { (e.target as HTMLImageElement).src = 'https://images.unsplash.com/photo-1542838132-92c53300491e?w=400&q=60'; }} />
                   </div>
-                  <button onClick={(e) => handleQuickAdd(e, p)} className={styles.quickAddBtn}>
-                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5"><path d="M12 5v14M5 12h14"/></svg>
-                  </button>
+                  <h4 className={styles.productTitle}>{p.title}</h4>
+                  <div className={styles.ratingRow}>
+                    {Array.from({length: 5}).map((_, idx) => (
+                      <svg key={idx} className={styles.starIcon} fill={idx < Math.floor(p.rating || 5) ? 'currentColor' : 'none'} stroke="currentColor" viewBox="0 0 20 20"><path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"/></svg>
+                    ))}
+                    <span className={styles.ratingText}>({p.reviewCount || 120})</span>
+                  </div>
+                  <div className={styles.priceRow}>
+                    <div style={{ display: 'flex', gap: 6, alignItems: 'baseline' }}>
+                      <span className={styles.currentPrice}>R{p.premium_price?.toFixed(2)}</span>
+                      {p.base_price > 0 && p.base_price > p.premium_price && (
+                        <span className={styles.oldPrice}>R{Number(p.base_price).toFixed(2)}</span>
+                      )}
+                    </div>
+                    <button onClick={(e) => handleQuickAdd(e, p)} className={styles.quickAddBtn}>
+                      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5"><path d="M12 5v14M5 12h14"/></svg>
+                    </button>
+                  </div>
                 </div>
-              </div>
-            </Link>
-          ))}
+              </Link>
+            ))}
+          </div>
         </div>
-      </div>
+      ) : (
+        <>
+          {/* POPULAR PRODUCTS */}
+          <div className={styles.sectionBlock}>
+            <div className={styles.sectionHeader}>
+              <h3 className={styles.sectionTitle}>Popular Products</h3>
+              <Link href="/shop" className={styles.seeAll}>See All &gt;</Link>
+            </div>
+            <div className={styles.productGrid}>
+              {popularProducts.map((p, i) => (
+                <Link href={`/product/${p.id}`} key={p.id} style={{textDecoration:'none'}}>
+                  <div className={styles.productCard}>
+                    {i % 2 === 0 ? <div className={`${styles.productBadge} ${styles.sale}`}>Sale</div> : <div className={styles.productBadge}>New</div>}
+                    <div className={styles.imageWrapper}>
+                      <img src={p.image_url} alt={p.title} onError={(e) => { (e.target as HTMLImageElement).src = 'https://images.unsplash.com/photo-1542838132-92c53300491e?w=400&q=60'; }} />
+                    </div>
+                    <h4 className={styles.productTitle}>{p.title}</h4>
+                    <div className={styles.ratingRow}>
+                      {Array.from({length: 5}).map((_, idx) => (
+                        <svg key={idx} className={styles.starIcon} fill={idx < Math.floor(p.rating || 5) ? 'currentColor' : 'none'} stroke="currentColor" viewBox="0 0 20 20"><path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"/></svg>
+                      ))}
+                      <span className={styles.ratingText}>({p.reviewCount || 120})</span>
+                    </div>
+                    <div className={styles.priceRow}>
+                      <div style={{ display: 'flex', gap: 6, alignItems: 'baseline' }}>
+                        <span className={styles.currentPrice}>R{p.premium_price?.toFixed(2)}</span>
+                        {p.base_price > 0 && p.base_price > p.premium_price && (
+                          <span className={styles.oldPrice}>R{Number(p.base_price).toFixed(2)}</span>
+                        )}
+                      </div>
+                      <button onClick={(e) => handleQuickAdd(e, p)} className={styles.quickAddBtn}>
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5"><path d="M12 5v14M5 12h14"/></svg>
+                      </button>
+                    </div>
+                  </div>
+                </Link>
+              ))}
+            </div>
+          </div>
 
-      {/* RECENT WATCHED */}
-      <div className={styles.sectionBlock}>
-        <div className={styles.sectionHeader}>
-          <h3 className={styles.sectionTitle}>Recent Watched</h3>
-          <Link href="/shop" className={styles.seeAll}>See All &gt;</Link>
-        </div>
-        <div className={styles.productGrid}>
-          {recentWatched.map((p, i) => (
-            <Link href={`/product/${p.id}`} key={p.id} style={{textDecoration:'none'}}>
-              <div className={styles.productCard}>
-                <div className={styles.imageWrapper}>
-                  <img src={p.image_url} alt={p.title} />
-                </div>
-                <h4 className={styles.productTitle}>{p.title}</h4>
-                <div className={styles.ratingRow}>
-                  <span className={styles.starIcon} style={{color:'#1cb5a3'}}><svg fill="currentColor" viewBox="0 0 20 20"><path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"/></svg></span>
-                  <span className={styles.ratingText}>{p.rating || 4.5} | {p.vendor_name?.substring(0, 5) || '1K+'} sold</span>
-                </div>
-                <div className={styles.priceRow}>
-                  <span className={styles.currentPrice}>R{p.premium_price?.toFixed(2)}</span>
-                  <button onClick={(e) => handleQuickAdd(e, p)} className={styles.quickAddBtn}>
-                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5"><path d="M12 5v14M5 12h14"/></svg>
-                  </button>
-                </div>
-              </div>
-            </Link>
-          ))}
-        </div>
-      </div>
+          {/* RECENT WATCHED */}
+          <div className={styles.sectionBlock}>
+            <div className={styles.sectionHeader}>
+              <h3 className={styles.sectionTitle}>Recent Watched</h3>
+              <Link href="/shop" className={styles.seeAll}>See All &gt;</Link>
+            </div>
+            <div className={styles.productGrid}>
+              {recentWatched.map((p, i) => (
+                <Link href={`/product/${p.id}`} key={p.id} style={{textDecoration:'none'}}>
+                  <div className={styles.productCard}>
+                    <div className={styles.imageWrapper}>
+                      <img src={p.image_url} alt={p.title} />
+                    </div>
+                    <h4 className={styles.productTitle}>{p.title}</h4>
+                    <div className={styles.ratingRow}>
+                      <span className={styles.starIcon} style={{color:'#1cb5a3'}}><svg fill="currentColor" viewBox="0 0 20 20"><path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"/></svg></span>
+                      <span className={styles.ratingText}>{p.rating || 4.5} | {p.vendor_name?.substring(0, 5) || '1K+'} sold</span>
+                    </div>
+                    <div className={styles.priceRow}>
+                      <span className={styles.currentPrice}>R{p.premium_price?.toFixed(2)}</span>
+                      <button onClick={(e) => handleQuickAdd(e, p)} className={styles.quickAddBtn}>
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5"><path d="M12 5v14M5 12h14"/></svg>
+                      </button>
+                    </div>
+                  </div>
+                </Link>
+              ))}
+            </div>
+          </div>
+        </>
+      )}
 
     </div>
   );
