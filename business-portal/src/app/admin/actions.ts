@@ -1,9 +1,8 @@
 'use server';
 
-import { createClient } from '@/utils/supabase/server';
+import { supabase } from '@/lib/supabase';
 
 export async function getAdminStats() {
-  const supabase = createClient();
 
   try {
     // 1. Total Customers (from profiles)
